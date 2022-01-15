@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "E0971773-1C6C-4784-B54F-D0813EC3BBCF"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "71FACF79-0200-4D8C-9228-EBA39282A627"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EqGuide/BleWizard.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "setNotify(uuid:onNotify:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "71FACF79-0200-4D8C-9228-EBA39282A627 - 7367c80f43d301f6"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EqGuide.BleWizard.setNotify(uuid: __C.CBUUID, onNotify: (EqGuide.GuideDataBlock) -&gt; ()) -&gt; ()"
+                  moduleName = "EqGuide"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rbb/Documents/Projects/TelescopeMount/XCode/EqGuide/EqGuide/BleWizard.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "179"
+                  endingLineNumber = "179"
+                  offsetFromSymbolStart = "536">
+               </Location>
+               <Location
+                  uuid = "71FACF79-0200-4D8C-9228-EBA39282A627 - 7367c80f43d301f6"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EqGuide.BleWizard.setNotify(uuid: __C.CBUUID, onNotify: (EqGuide.GuideDataBlock) -&gt; ()) -&gt; ()"
+                  moduleName = "EqGuide"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rbb/Documents/Projects/TelescopeMount/XCode/EqGuide/EqGuide/BleWizard.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "179"
+                  endingLineNumber = "179"
+                  offsetFromSymbolStart = "632">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
