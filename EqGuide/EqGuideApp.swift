@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct EqGuideApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+  
+//  @ObservedObject var guideModel = GuideModel()
+  
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
     }
+  }
 }

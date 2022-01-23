@@ -25,8 +25,9 @@ struct ContentView: View {
 
   var body: some View {
     NavigationView{
+//      Spacer()
+      
       VStack {
-        Spacer()
         HStack{
           Text("Status: ")
           Text(guideModel.statusString)
@@ -34,30 +35,48 @@ struct ContentView: View {
 
         Spacer()
         
-        Text("Var1: \(guideModel.var1)")
-        Text("Word1: \(guideModel.guideDataBlock.word1)")
-        Text("Word2: \(guideModel.guideDataBlock.word2)")
+        VStack {
+          Text("RA Count: \(guideModel.guideDataBlock.raCount)")
+          Text("RA Deg:   \(guideModel.guideDataBlock.raDeg)")
+          Text("RA Min:   \(guideModel.guideDataBlock.raMin)")
+          Text("RA Sec:   \(guideModel.guideDataBlock.raSec)")
+        }
+        
+        Spacer()
+        
+        VStack {
+          Text("DEC Count: \(guideModel.guideDataBlock.decCount)")
+          Text("DEC Deg:   \(guideModel.guideDataBlock.decDeg)")
+          Text("DEC Min:   \(guideModel.guideDataBlock.decMin)")
+          Text("DEC Sec:   \(guideModel.guideDataBlock.decSec)")
+        }
+
+        Spacer()
+        
         Text("readCount: \(guideModel.readCount)")
 
-//        Spacer()
+        Spacer()
 
-        HStack {
-          Text("RA")
-          uiRaDec()
+        VStack {
+          HStack {
+            Text("RA")
+            uiRaDec()
+          }
+          HStack {
+            Text("Dec")
+            uiRaDec()
+          }
+          NavigationLink {
+            ObjectListView()
+          } label: {
+            Text("Switch to Location Selector View")
+          }
+          .padding()
+          .navigationTitle("Guide Drive")
         }
-        HStack {
-          Text("Dec")
-          uiRaDec()
-        }
-        NavigationLink {
-          ObjectListView()
-        } label: {
-          Text("Switch to Location Selector View!")
-        }
-        .padding()
-        .navigationTitle("Guide Drive")
+        
 //        Spacer()
-      } // VStack
+      } // Top Level VStack
       .onAppear{
         guideModel.guideModelInit()
       }

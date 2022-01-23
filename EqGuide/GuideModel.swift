@@ -9,8 +9,14 @@ import SwiftUI
 import CoreBluetooth
 
 struct GuideDataBlock {
-  var word1:Int32 = 0
-  var word2:Int32 = 0
+  var raCount:Int32 = 0
+  var raDeg:Int32 = 0
+  var raMin:Int32 = 0
+  var raSec:Int32 = 0
+  var decCount:Int32 = 0
+  var decDeg:Int32 = 0
+  var decMin:Int32 = 0
+  var decSec:Int32 = 0
 }
 
 class GuideModel : BleWizardDelegate, ObservableObject  {
@@ -22,8 +28,7 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
 
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
-  private let GUIDE_VAR1_UUID    = CBUUID(string: "828b0011-046a-42c7-9c16-00ca297e95eb")
-  private let GUIDE_DATA_STRUCT_UUID = CBUUID(string: "828b0012-046a-42c7-9c16-00ca297e95eb")
+  private let GUIDE_DATA_BLOCK_UUID = CBUUID(string: "828b0011-046a-42c7-9c16-00ca297e95eb")
 
   private let bleWizard: BleWizard  //contain a BleWizard
   
@@ -31,7 +36,7 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   init() {
     self.bleWizard = BleWizard(
       serviceUUID: GUIDE_SERVICE_UUID,
-      bleDataUUIDs: [GUIDE_VAR1_UUID, GUIDE_DATA_STRUCT_UUID])
+      bleDataUUIDs: [GUIDE_DATA_BLOCK_UUID])
 
     // Force self implement all delegate methods of BleWizardDelegate protocol
     bleWizard.delegate = self
@@ -77,7 +82,7 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
 //      self?.readCount += 1
 ////      self?.readVar1()
 //    }
-    bleWizard.setNotify(uuid: GUIDE_DATA_STRUCT_UUID) { [weak self] guideData in
+    bleWizard.setNotify(uuid: GUIDE_DATA_BLOCK_UUID) { [weak self] guideData in
       self?.guideDataBlock = guideData
       self?.readCount += 1
     }
@@ -85,16 +90,16 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
 //    readVar1()
   }
   
-  func readVar1()  {
-    do {
-      try bleWizard.bleRead(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
-        self?.var1 = resultInt
-        self?.readCount += 1
-        self?.readVar1()
-      }
-    } catch {
-      print(error)
-    }
-  }
+//  func readVar1()  {
+//    do {
+//      try bleWizard.bleRead(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
+//        self?.var1 = resultInt
+//        self?.readCount += 1
+//        self?.readVar1()
+//      }
+//    } catch {
+//      print(error)
+//    }
+//  }
   
 }

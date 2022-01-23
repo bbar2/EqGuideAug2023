@@ -200,11 +200,9 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
       print(e.localizedDescription)
       return
     }
-    print("in peripheral callback for readValue or setNotifyValue");
 
     // call UUID's responder with the Int32 Data
     if let readResponder = readResponderDictionary[characteristic.uuid] {
-      print("Begin read responder search");
       // assume all read values are Int32
       // - else require each responder to perform appropriate .getBytes mapping
       var readData:Int32 = -1  // if I see this, I know nothing read
@@ -212,13 +210,11 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
       if let data = characteristic.value {
         (data as NSData).getBytes(&readData, length:4)
       }
-      print("call a readResponder")
       readResponder(readData)
     }
     
     // or .. call UUID's notify responder
     if let notifyResponder = notifyResponderDictionary[characteristic.uuid] {
-      print("Begin notify responder search");
       // assume all notify responders are handling the GuideDataBlock struct
       var dataBlock = GuideDataBlock()
       // Copy Data buffer to Int32
@@ -226,7 +222,6 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         (data as NSData).getBytes(
           &dataBlock, length:MemoryLayout<GuideDataBlock>.size)
       }
-      print("call a notifyResponder")
       notifyResponder(dataBlock)
     }
   }
