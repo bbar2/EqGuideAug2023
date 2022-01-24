@@ -160,17 +160,18 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
                                        type: .withoutResponse)
     }
   }
-  
+
   // Called by GuideModel to write data to BLE
   func bleWrite(_ write_uuid: CBUUID, writeBlock: GuideCommandBlock) {
     if let write_characteristic = dataDictionary[write_uuid] {
-      let data = Data(bytes: [writeBlock], count: 12)
+      let data = Data(bytes: [writeBlock],
+                      count: MemoryLayout<GuideDataBlock>.size)
       focusMotorPeripheral?.writeValue(data,
                                        for: write_characteristic!,
                                        type: .withoutResponse)
     }
   }
-  
+
   enum BluetoothReadError: LocalizedError {
     case characteristicNotFound
   }

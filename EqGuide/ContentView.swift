@@ -66,8 +66,8 @@ struct ContentView: View {
           Button("Sub 1 Deg EL") {
             let subCommand = GuideCommandBlock(
               command:GuideCommand.elSub1Deg.rawValue,
-              raOffset:-15,
-              decOffset:-25)
+              raOffset:-16,
+              decOffset:-27)
             guideModel.guideCommand(subCommand)
           }
           Spacer()
