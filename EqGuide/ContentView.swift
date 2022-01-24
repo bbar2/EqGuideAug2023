@@ -21,7 +21,7 @@ struct uiRaDec:View {
 
 struct ContentView: View {
 
-  @ObservedObject var guideModel = GuideModel()
+  @ObservedObject var guideModel:GuideModel
 
   var body: some View {
     NavigationView{
@@ -53,27 +53,49 @@ struct ContentView: View {
 
         Spacer()
         
+        HStack{
+          Spacer()
+          Button("Add 1 Deg EL") {
+            let addCommand = GuideCommandBlock(
+              command:GuideCommand.elAdd1Deg.rawValue,
+              raOffset:10,
+              decOffset:20)
+            guideModel.guideCommand(addCommand)
+          }
+          Spacer()
+          Button("Sub 1 Deg EL") {
+            let subCommand = GuideCommandBlock(
+              command:GuideCommand.elSub1Deg.rawValue,
+              raOffset:-15,
+              decOffset:-25)
+            guideModel.guideCommand(subCommand)
+          }
+          Spacer()
+        }
+
+        Spacer()
+
         Text("readCount: \(guideModel.readCount)")
 
         Spacer()
 
-        VStack {
-          HStack {
-            Text("RA")
-            uiRaDec()
-          }
-          HStack {
-            Text("Dec")
-            uiRaDec()
-          }
-          NavigationLink {
-            ObjectListView()
-          } label: {
-            Text("Switch to Location Selector View")
-          }
-          .padding()
-          .navigationTitle("Guide Drive")
-        }
+//        VStack {
+//          HStack {
+//            Text("RA")
+//            uiRaDec()
+//          }
+//          HStack {
+//            Text("Dec")
+//            uiRaDec()
+//          }
+//          NavigationLink {
+//            ObjectListView()
+//          } label: {
+//            Text("Switch to Location Selector View")
+//          }
+//          .padding()
+//          .navigationTitle("Guide Drive")
+//        }
         
 //        Spacer()
       } // Top Level VStack
@@ -86,7 +108,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
+    ContentView(guideModel: GuideModel())
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
       .previewInterfaceOrientation(.portrait)
   }

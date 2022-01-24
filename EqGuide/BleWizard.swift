@@ -45,7 +45,7 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     super.init()
   }
   
-  // Called by derived class to initialize BLE communication
+  // Called by BleWizard's containing model to initialize BLE communication
   public func start() {
     cbCentralManager = CBCentralManager(delegate: self, queue: nil)
   }
@@ -151,10 +151,20 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
   
 //MARK:- Write(UUID) and Read(UUID) calls
 
-  // Called by derived class to write data to BLE
+  // Called by owner to write data to BLE
   func bleWrite(_ write_uuid: CBUUID, writeData: Int32) {
     if let write_characteristic = dataDictionary[write_uuid] {
       let data = Data(bytes: [writeData], count: 4) // Int32 writeData is 4 bytes
+      focusMotorPeripheral?.writeValue(data,
+                                       for: write_characteristic!,
+                                       type: .withoutResponse)
+    }
+  }
+  
+  // Called by GuideModel to write data to BLE
+  func bleWrite(_ write_uuid: CBUUID, writeBlock: GuideCommandBlock) {
+    if let write_characteristic = dataDictionary[write_uuid] {
+      let data = Data(bytes: [writeBlock], count: 12)
       focusMotorPeripheral?.writeValue(data,
                                        for: write_characteristic!,
                                        type: .withoutResponse)

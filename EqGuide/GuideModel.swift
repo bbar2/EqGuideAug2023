@@ -19,33 +19,51 @@ struct GuideDataBlock {
   var decSec:Int32 = 0
 }
 
+struct GuideCommandBlock {
+  var command:Int32
+  var raOffset:Int32
+  var decOffset:Int32
+}
+
+enum GuideCommand:Int32 {
+  case noOp = 0
+  case elAdd1Deg = 1
+  case elSub1Deg = 2
+}
+
 class GuideModel : BleWizardDelegate, ObservableObject  {
 
   @Published var statusString = "Not Started"
   @Published var var1:Int32 = 0
   @Published var readCount = 0
   @Published var guideDataBlock = GuideDataBlock()
-
+  
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_DATA_BLOCK_UUID = CBUUID(string: "828b0011-046a-42c7-9c16-00ca297e95eb")
+  private let GUIDE_COMMAND_UUID = CBUUID(string: "828b0012-046a-42c7-9c16-00ca297e95eb")
 
   private let bleWizard: BleWizard  //contain a BleWizard
   
+  private var initialized = false
   
   init() {
+    
     self.bleWizard = BleWizard(
       serviceUUID: GUIDE_SERVICE_UUID,
-      bleDataUUIDs: [GUIDE_DATA_BLOCK_UUID])
+      bleDataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
 
     // Force self implement all delegate methods of BleWizardDelegate protocol
     bleWizard.delegate = self
   }
 
   func guideModelInit() {
-    bleWizard.start()
-    statusString = "Searching for RocketMount ..."
-    initViewModel()
+    if (!initialized) {
+      bleWizard.start()
+      statusString = "Searching for RocketMount ..."
+      initViewModel()
+      initialized = true
+    }
   }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
@@ -77,17 +95,14 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   }
   
   func reportBleServiceCharaceristicsScanned() {
-//    bleWizard.setNotify(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
-//      self?.var1 = resultInt
-//      self?.readCount += 1
-////      self?.readVar1()
-//    }
     bleWizard.setNotify(uuid: GUIDE_DATA_BLOCK_UUID) { [weak self] guideData in
       self?.guideDataBlock = guideData
       self?.readCount += 1
     }
     
-//    readVar1()
+  }
+  func guideCommand(_ writeBlock:GuideCommandBlock) {
+    bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
   }
   
 //  func readVar1()  {

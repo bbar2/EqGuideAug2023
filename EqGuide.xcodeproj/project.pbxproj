@@ -59,11 +59,11 @@
 		35FBF0522787963D001EFA53 /* EqGuide */ = {
 			isa = PBXGroup;
 			children = (
-				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 				35FBF0532787963D001EFA53 /* EqGuideApp.swift */,
 				35FBF0552787963D001EFA53 /* ContentView.swift */,
 				35FBF0612787AF52001EFA53 /* ObjectListView.swift */,
 				35FBF06727888866001EFA53 /* GuideModel.swift */,
+				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 				35FBF05727879640001EFA53 /* Assets.xcassets */,
 				35FBF05927879640001EFA53 /* Preview Content */,
 				35FBF0632787AF67001EFA53 /* ToDo.md */,
