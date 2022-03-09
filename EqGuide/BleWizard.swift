@@ -3,14 +3,17 @@
 //  FocusControl
 //
 //  Created by Barry Bryant on 12/5/21
-//  Base class sets iOS app as BLE Central to communicate with BLE Peripheral
+//  Class sets iOS app as BLE Central to communicate with BLE Peripheral
 //
-//  Derive a model class from this class.  Then call:
-//  1. bleInit - to initiate CBCentralManager and CBPeripheral Delegates
-//  2. Optionally override any report...() methods to sync model state to any
-//     state of delegate processing.
-//  3. bleWrite - to write data to a Peripheral
-//  4. bleRead - to initiate a noWait read from Peripheral.
+//  1. Include this object in project Model class.
+//  2. Make the model comply to the BleWizardDelagate protocol.
+//  3. Construct with service and characteristic UUID's
+//  4. Set BleWizard's delegate property to the Model class.
+//  5. Then Call:
+//     1. start - to initiate CBCentralManager and CBPeripheral Delegates
+//     2. bleWrite - to write data to a Peripheral
+//     3. bleRead - to initiate a noWait read from Peripheral.
+//     4. Handle events and status with the delagate methods.
 
 import CoreBluetooth
 import UIKit
@@ -30,35 +33,40 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
   private var service_uuid: CBUUID     // UUID of desired service
   private var ble_data_uuids: [CBUUID]  // UUID for each BLE data value
- 
-  private var dataDictionary: [CBUUID: CBCharacteristic?] = [:] // uuid to characteristic mapping
+
+  // Use dictionary's for uuid to characteristic mapping
+  private var dataDictionary: [CBUUID: CBCharacteristic?] = [:]
   private var readResponderDictionary: [CBUUID: (Int32)->Void] = [:]
   private var notifyResponderDictionary: [CBUUID: (GuideDataBlock)->Void] = [:]
 
   // Core Bluetooth variables
-  private var cbCentralManager       : CBCentralManager!
-  private var focusMotorPeripheral   : CBPeripheral?
+  private var cbCentralManager     : CBCentralManager!
+  private var focusMotorPeripheral : CBPeripheral?
 
-  init(serviceUUID: CBUUID, bleDataUUIDs: [CBUUID]) {
+  init(serviceUUID: CBUUID, bleDataUUIDs: [CBUUID])
+  {
     self.service_uuid = serviceUUID
     self.ble_data_uuids = bleDataUUIDs
     super.init()
   }
   
-  // Called by BleWizard's containing model to initialize BLE communication
+  // Called by BleWizard's owning model to initialize BLE communication
   public func start() {
     cbCentralManager = CBCentralManager(delegate: self, queue: nil)
   }
 
-
 //MARK:- CBCentralManagerDelegate
 
   // Step 1 - Start scanning for BLE DEVICE advertising required SERVICE
-  func centralManagerDidUpdateState(_ central: CBCentralManager) {
-    if (central.state == .poweredOn) {
+  func centralManagerDidUpdateState(_ central: CBCentralManager)
+  {
+    if (central.state == .poweredOn)
+    {
       delegate?.reportBleScanning()
       central.scanForPeripherals(withServices: [service_uuid], options: nil)
-    } else {
+    }
+    else
+    {
       delegate?.reportBleNotAvailable()
     }
   }
@@ -188,16 +196,14 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     if let read_characteristic = dataDictionary[uuid] {
       focusMotorPeripheral?.setNotifyValue(true, for: read_characteristic!)
       notifyResponderDictionary[uuid] = onNotify
-      print("Just set a notify responder");
    }
-    print("size of GuideDataBlock = \(MemoryLayout<GuideDataBlock>.size) bytes")
+//    print("size of GuideDataBlock = \(MemoryLayout<GuideDataBlock>.size) bytes")
   }
   
   func peripheral(_ peripheral: CBPeripheral,
                   didUpdateNotificationStateFor characteristic:CBCharacteristic,
                   error: Error?)
   {
-      print("setNotify Success")
   }
 
   // Called by peripheral.readValue,
@@ -211,7 +217,7 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
       print(e.localizedDescription)
       return
     }
-
+    
     // call UUID's responder with the Int32 Data
     if let readResponder = readResponderDictionary[characteristic.uuid] {
       // assume all read values are Int32

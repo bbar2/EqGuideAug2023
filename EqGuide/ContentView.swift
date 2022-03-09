@@ -14,7 +14,7 @@ struct uiRaDec:View {
     HStack {
       TextField("deg", value:$dec, format:.number).fixedSize(horizontal: true, vertical: true)
       TextField("min", value:$dec, format:.number).fixedSize(horizontal: true, vertical: true)
-      Text("dec, \(dec ?? 0)")
+      Text("sec, \(dec ?? 0)")
     }
   }
 }
@@ -32,23 +32,25 @@ struct ContentView: View {
           Text("Status: ")
           Text(guideModel.statusString)
         }
+        
 
         Spacer()
         
         VStack {
           Text("RA Count: \(guideModel.guideDataBlock.raCount)")
-          Text("RA Deg:   \(guideModel.guideDataBlock.raDeg)")
-          Text("RA Min:   \(guideModel.guideDataBlock.raMin)")
-          Text("RA Sec:   \(guideModel.guideDataBlock.raSec)")
+//          Text("RA Deg:   \(guideModel.guideDataBlock.raDeg)")
+//          Text("RA Min:   \(guideModel.guideDataBlock.raMin)")
+//          Text("RA Sec:   \(guideModel.guideDataBlock.raSec)")
+          uiRaDec()
         }
         
         Spacer()
         
         VStack {
           Text("DEC Count: \(guideModel.guideDataBlock.decCount)")
-          Text("DEC Deg:   \(guideModel.guideDataBlock.decDeg)")
-          Text("DEC Min:   \(guideModel.guideDataBlock.decMin)")
-          Text("DEC Sec:   \(guideModel.guideDataBlock.decSec)")
+//          Text("DEC Deg:   \(guideModel.guideDataBlock.decDeg)")
+//          Text("DEC Min:   \(guideModel.guideDataBlock.decMin)")
+//          Text("DEC Sec:   \(guideModel.guideDataBlock.decSec)")
         }
 
         Spacer()
@@ -58,16 +60,16 @@ struct ContentView: View {
           Button("Add 1 Deg EL") {
             let addCommand = GuideCommandBlock(
               command:GuideCommand.elAdd1Deg.rawValue,
-              raOffset:10,
-              decOffset:20)
+              raOffset:10000,
+              decOffset:20000)
             guideModel.guideCommand(addCommand)
           }
           Spacer()
           Button("Sub 1 Deg EL") {
             let subCommand = GuideCommandBlock(
               command:GuideCommand.elSub1Deg.rawValue,
-              raOffset:-16,
-              decOffset:-27)
+              raOffset:-16000,
+              decOffset:-27000)
             guideModel.guideCommand(subCommand)
           }
           Spacer()

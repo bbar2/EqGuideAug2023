@@ -9,14 +9,10 @@ import SwiftUI
 import CoreBluetooth
 
 struct GuideDataBlock {
+  var mountState:Int32 = 0
+  var mountTimeMs:UInt32 = 0
   var raCount:Int32 = 0
-  var raDeg:Int32 = 0
-  var raMin:Int32 = 0
-  var raSec:Int32 = 0
   var decCount:Int32 = 0
-  var decDeg:Int32 = 0
-  var decMin:Int32 = 0
-  var decSec:Int32 = 0
 }
 
 struct GuideCommandBlock {
@@ -44,7 +40,7 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   private let GUIDE_COMMAND_UUID = CBUUID(string: "828b0012-046a-42c7-9c16-00ca297e95eb")
 
   private let bleWizard: BleWizard  //contain a BleWizard
-  
+
   private var initialized = false
   
   init() {
