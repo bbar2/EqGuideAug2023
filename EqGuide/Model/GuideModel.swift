@@ -9,6 +9,8 @@ import SwiftUI
 import CoreBluetooth
 
 struct GuideDataBlock {
+  var raDegPerStep:Float32 = 1
+  var decDegPerStep:Float32 = 1
   var mountState:Int32 = 0
   var mountTimeMs:UInt32 = 0
   var raCount:Int32 = 0
@@ -23,8 +25,8 @@ struct GuideCommandBlock {
 
 enum GuideCommand:Int32 {
   case noOp = 0
-  case elAdd1Deg = 1
-  case elSub1Deg = 2
+  case setOffset = 1
+  case tbd = 2
 }
 
 class GuideModel : BleWizardDelegate, ObservableObject  {
@@ -91,6 +93,8 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   }
   
   func reportBleServiceCharaceristicsScanned() {
+
+    // Setup notify handler for incomming data from Guide Mount
     bleWizard.setNotify(uuid: GUIDE_DATA_BLOCK_UUID) { [weak self] guideData in
       self?.guideDataBlock = guideData
       self?.readCount += 1
@@ -99,6 +103,15 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   }
   func guideCommand(_ writeBlock:GuideCommandBlock) {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
+  }
+
+  func offsetRaDec(raOffsetDeg: Float, decOffsetDeg: Float){
+    let offsetCommand = GuideCommandBlock(
+      command:   GuideCommand.setOffset.rawValue,
+      raOffset:  Int32(raOffsetDeg / guideDataBlock.raDegPerStep),
+      decOffset: Int32(decOffsetDeg / guideDataBlock.decDegPerStep)
+    )
+    guideCommand(offsetCommand)
   }
   
 //  func readVar1()  {

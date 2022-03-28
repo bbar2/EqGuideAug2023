@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct EqGuideApp: App {
   
-  // keep model in scope, even as views change
+  // keep model in scope, as views change
   var appLevelGuideModel = GuideModel()
   
   var body: some Scene {
