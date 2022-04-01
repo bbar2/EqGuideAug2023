@@ -10,28 +10,29 @@ import SwiftUI
 struct RaDecPairView: View {
   var pairTitle:String
   var pair:RaDec
+  var gapPad = 30.0
   
   var body: some View {
     VStack{
       Divider()
+
       Text(pairTitle)
         .font(.headline).bold()
       
       HStack {
-        VStack {
+        HStack{
           Text("RA").font(.subheadline).bold()
           HmsView(angle: pair.ra)
         }
+        .padding([.trailing], gapPad/2)
         
-        Spacer()
-        
-        VStack {
+        HStack {
           Text("DEC").font(.subheadline).bold()
           DmsView(angle: pair.dec)
         }
+        .padding([.leading], gapPad/2)
       }
-      .padding([.leading, .trailing], 45)
-      Divider()
+
     }
     
   }

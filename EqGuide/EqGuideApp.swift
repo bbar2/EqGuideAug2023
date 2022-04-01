@@ -11,11 +11,12 @@ import SwiftUI
 struct EqGuideApp: App {
   
   // keep model in scope, as views change
-  var appLevelGuideModel = GuideModel()
+  @StateObject private var guideModel = GuideModel()
   
   var body: some Scene {
     WindowGroup {
-      ContentView(guideModel: appLevelGuideModel)
+      ContentView()
+        .environmentObject(guideModel)
     }
   }
 }

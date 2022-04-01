@@ -21,16 +21,17 @@ import SwiftUI
 
 struct ContentView: View {
   
-  @ObservedObject var guideModel:GuideModel
+ @EnvironmentObject var guideModel:GuideModel
   
   var body: some View {
-    GuideView(guideModel: guideModel)
+    GuideView()
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView(guideModel: GuideModel())
+    ContentView()
+      .environmentObject(GuideModel())
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
       .previewInterfaceOrientation(.portrait)
   }
