@@ -24,6 +24,7 @@ struct ContentView: View {
  @EnvironmentObject var guideModel:GuideModel
   
   var body: some View {
+    // ToDo - Add Tab View with GuideView() and FocusControl() as tabs.
     GuideView()
   }
 }

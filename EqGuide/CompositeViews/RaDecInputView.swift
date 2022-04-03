@@ -10,68 +10,54 @@ import SwiftUI
 struct RaDecInputView: View {
   
   var label:String
-  @Binding var coord:RaDec
+  @ObservedObject var coord:RaDec
   
-  @State var raString:String = "0.0"
-  @State var decString:String = "0.0"
-  @State var editInFloat = true
-  
-  @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+  @State private var tempRaDec = RaDec()
+  @State private var editInFloat = true
+  @Environment(\.dismiss) private var dismissView
   
   var body: some View {
     
     VStack {
       Text(label).font(.title)
-            
-      VStack{
-        if (editInFloat) {
-          VStack{
-            FloatInputView(floatString: $raString,
-                           prefix: " RA:",
-                           msg:"xx.yyy")
-            FloatInputView(floatString: $decString,
-                           prefix: "Dec:",
-                           msg:"xx.yyy")
-          }
+      
+      VStack {
+        if editInFloat {
+          FloatInputView(floatValue: $tempRaDec.ra, prefix: "RA")
+          FloatInputView(floatValue: $tempRaDec.dec, prefix: "DEC")
         } else {
-          VStack {
-            DmsInputView(prefix: "RA:  ")
-            DmsInputView(prefix: "Dec: ")
-          }
-        }
-        BigButton(label:"Apply") {
-          UIApplication.shared.endEditing()
-          coord.ra = Float(raString) ?? 0.0
-          coord.dec = Float(decString) ?? 0.0
-          self.presentationMode.wrappedValue.dismiss()
+          DmsInputView(decimalDegrees: $tempRaDec.ra, prefix: "RA")
+          DmsInputView(decimalDegrees: $tempRaDec.dec, prefix: "DEC")
         }
       }
-      HStack {
-        Toggle(isOn: $editInFloat) {
-          Text("Input in Decimal Degrees").bold()
-        }
-        Spacer()
+      Button() {
+        editInFloat = !editInFloat
+      } label: {
+        Text(editInFloat ? "Switch to DMS" : "Switch To Float")
+          .font(.title2)
+          .bold()
       }
-
-      Spacer()
+      .onAppear() {
+        tempRaDec.ra = coord.ra
+        tempRaDec.dec = coord.dec
+      }
+      
+      BigButton(label:"Apply") {
+        coord.ra  = tempRaDec.ra
+        coord.dec = tempRaDec.dec
+        dismissView()
+      }
     }
-    .onAppear() {
-      raString  = String(format:"%.3f", coord.ra)
-      decString = String(format:"%.3f", coord.dec)
-    }
+    
+    Spacer()
   }
 }
 
 struct RaInputView_Previews: PreviewProvider {
-  @State static var crap = RaDec(ra:97.5, dec: 0.5)
+  //  @StateObject static var crap = RaDec(ra:97.5, dec: 0.25)
+  @StateObject static var testCoord = RaDec(ra: 97.5, dec: 0.25)
   static var previews: some View {
-    RaDecInputView(label: "Enter RA/DEC Pair", coord: $crap)
+    RaDecInputView(label: "Enter RA/DEC Pair", coord: testCoord)
   }
 }
 
-// extension for keyboard to dismiss
-extension UIApplication {
-  func endEditing() {
-    sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-  }
-}

@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct ObjectListView: View {
+  
     var body: some View {
         Text("Future Object List View")
     }

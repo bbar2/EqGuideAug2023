@@ -11,14 +11,11 @@ struct GuideView: View {
   
   @EnvironmentObject var guideModel:GuideModel
   
-  @State private var refCoord = RaDec(ra:97.5, dec:0.0)
-  @State private var targetCoord = RaDec()
-  
   var gdb:GuideDataBlock {
-    return guideModel.guideDataBlock
+    guideModel.guideDataBlock
   }
   
-  let armAngle:Float = 45.0
+  let armAngle:Float = 45.0 // future gdb value from mount
   
   var body: some View {
     
@@ -36,22 +33,25 @@ struct GuideView: View {
             pair: RaDec(ra: Float32(gdb.raCount) * gdb.raDegPerStep,
                         dec: Float32(gdb.decCount) * gdb.decDegPerStep) )
           ArmAngleView(angleDeg: armAngle)
+
           NavigationLink {
             RaDecInputView(label: "Enter Reference Coordinates",
-                           coord: $refCoord)
+                           coord: guideModel.refCoord)
           } label: {
             RaDecPairView(pairTitle: "Reference Coordinates",
-                          pair: refCoord)
+                          pair: guideModel.refCoord)
           }
+
           NavigationLink {
             RaDecInputView(label: "Enter Target Coordinates",
-                           coord: $targetCoord)
+                           coord: guideModel.targetCoord)
           } label: {
             RaDecPairView(pairTitle: "Target Coordinates",
-                          pair: targetCoord)
+                          pair: guideModel.targetCoord)
           }
+
           RaDecPairView(pairTitle: "Offset to Target",
-                        pair: targetCoord - refCoord)
+                        pair: guideModel.targetCoord - guideModel.refCoord)
         }
         
         Spacer()
@@ -63,7 +63,6 @@ struct GuideView: View {
         Spacer()
         
         RawDataView(gdb: gdb)
-        
       } // Top Level VStack
       .onAppear{
         guideModel.guideModelInit()

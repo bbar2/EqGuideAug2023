@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		350E7EDB27EF675300642A2A /* DmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350E7EDA27EF675300642A2A /* DmsView.swift */; };
 		351204AF27F214F5006DF60B /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* FloatInputView.swift */; };
+		3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */; };
+		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
@@ -34,6 +36,8 @@
 /* Begin PBXFileReference section */
 		350E7EDA27EF675300642A2A /* DmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsView.swift; sourceTree = "<group>"; };
 		351204AE27F214F5006DF60B /* FloatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
+		3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDataBlock.swift; sourceTree = "<group>"; };
+		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
@@ -68,6 +72,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3574C9F827F9D7700036CD94 /* SubInputViews */ = {
+			isa = PBXGroup;
+			children = (
+				351204AE27F214F5006DF60B /* FloatInputView.swift */,
+				35DE202B27F4AD8500D96C68 /* DmsInputView.swift */,
+			);
+			path = SubInputViews;
+			sourceTree = "<group>";
+		};
 		35C9A95627F09E8200BFE4CE /* CompositeViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +94,8 @@
 		35C9A95727F09EAA00BFE4CE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
+				3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */,
 				35FBF06727888866001EFA53 /* GuideModel.swift */,
 				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
@@ -90,7 +105,7 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		35C9A95827F09ED700BFE4CE /* SubViews */ = {
+		35C9A95827F09ED700BFE4CE /* SubDisplayViews */ = {
 			isa = PBXGroup;
 			children = (
 				358067EB27EF938400CAF595 /* RaDecPairView.swift */,
@@ -98,12 +113,17 @@
 				358067ED27EFA0B200CAF595 /* RawDataView.swift */,
 				350E7EDA27EF675300642A2A /* DmsView.swift */,
 				35C9A95227EFA65300BFE4CE /* HmsView.swift */,
-				35DE202B27F4AD8500D96C68 /* DmsInputView.swift */,
-				351204AE27F214F5006DF60B /* FloatInputView.swift */,
+			);
+			path = SubDisplayViews;
+			sourceTree = "<group>";
+		};
+		35D8B48D27F799AF00ECFCCD /* SingleControlViews */ = {
+			isa = PBXGroup;
+			children = (
 				35DE202727F3D66600D96C68 /* BigButton.swift */,
 				35EE3F9727F6958F007DA575 /* SignButton.swift */,
 			);
-			path = SubViews;
+			path = SingleControlViews;
 			sourceTree = "<group>";
 		};
 		35FBF0472787963D001EFA53 = {
@@ -128,7 +148,9 @@
 				35FBF0532787963D001EFA53 /* EqGuideApp.swift */,
 				35FBF0552787963D001EFA53 /* ContentView.swift */,
 				35C9A95627F09E8200BFE4CE /* CompositeViews */,
-				35C9A95827F09ED700BFE4CE /* SubViews */,
+				35C9A95827F09ED700BFE4CE /* SubDisplayViews */,
+				3574C9F827F9D7700036CD94 /* SubInputViews */,
+				35D8B48D27F799AF00ECFCCD /* SingleControlViews */,
 				35C9A95727F09EAA00BFE4CE /* Model */,
 				35FBF05727879640001EFA53 /* Assets.xcassets */,
 				35FBF05927879640001EFA53 /* Preview Content */,
@@ -220,9 +242,11 @@
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35C9A95327EFA65300BFE4CE /* HmsView.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
+				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				35FBF0622787AF52001EFA53 /* ObjectListView.swift in Sources */,
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
+				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
 				35FBF06827888866001EFA53 /* GuideModel.swift in Sources */,
 				35FBF066278880E4001EFA53 /* BleWizard.swift in Sources */,
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
