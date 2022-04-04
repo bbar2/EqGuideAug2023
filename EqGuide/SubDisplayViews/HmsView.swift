@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct HmsView: View {
-  var angle:Float
+  var angleDegrees: Float
   
   var body: some View {
-    let hms = Hms(deg: angle)
+    let hms = Hms(deg: angleDegrees)
     VStack {
-      let decimalDegString = String(format: "%.2f deg", angle)
+      let decimalDegString = String(format: "%.2f deg", angleDegrees)
       let dmsString = String(format: "%dh   %d'   %d\"",
                              hms.hour, hms.min, hms.sec)
       Text(decimalDegString)//.padding(2)
@@ -25,11 +25,11 @@ struct HmsView: View {
 struct hmsView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      HmsView(angle: Float(0.0) )
-      HmsView(angle: Float(-45.0) )
-      HmsView(angle: Float(45.0) )
-      HmsView(angle: Hms(h: -23, m: -59, s: -59).degrees)
-      HmsView(angle: Hms(h: 23, m: 59, s: 59).degrees)
+      HmsView(angleDegrees: Float(0.0) )
+      HmsView(angleDegrees: Float(-45.0) )
+      HmsView(angleDegrees: Float(45.0) )
+      HmsView(angleDegrees: Hms(h: -23, m: -59, s: -59).degrees)
+      HmsView(angleDegrees: Hms(h: 23, m: 59, s: 59).degrees)
     }
     .previewLayout(.fixed(width: 300, height: 70))
   }

@@ -94,13 +94,13 @@
 		35C9A95727F09EAA00BFE4CE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				35FBF06727888866001EFA53 /* GuideModel.swift */,
+				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
 				3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */,
-				35FBF06727888866001EFA53 /* GuideModel.swift */,
-				35FBF065278880E4001EFA53 /* BleWizard.swift */,
-				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
 				35DE202D27F4AEB600D96C68 /* Dms.swift */,
 				35DF7EC827F4B1DB008E925A /* Hms.swift */,
+				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

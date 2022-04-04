@@ -2,7 +2,10 @@
 //  RaDec.swift
 //  EqGuide
 //
-//  Created by Barry Bryant on 3/28/22.
+//  Object to hold the two angles required to point to an object.
+//  Operators for calculating offsets between objects.
+//  ra = Right Ascension.  0 to 360 degrees when specified in decimal degrees.
+//  dec = Declination.  0 to 180 degrees when speciried in decimal degrees.
 //
 
 import SwiftUI

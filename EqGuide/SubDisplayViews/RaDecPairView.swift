@@ -22,13 +22,13 @@ struct RaDecPairView: View {
       HStack {
         HStack{
           Text("RA").font(.subheadline).bold()
-          HmsView(angle: pair.ra)
+          HmsView(angleDegrees: pair.ra)
         }
         .padding([.trailing], gapPad/2)
         
         HStack {
           Text("DEC").font(.subheadline).bold()
-          DmsView(angle: pair.dec)
+          DmsView(angleDegrees: pair.dec)
         }
         .padding([.leading], gapPad/2)
       }

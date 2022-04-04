@@ -10,7 +10,6 @@
 //  Uses a Sign Button for sign since .decimalPad has no sign key.
 //  Sign Button is also consistent with DMS/HMS views which use a signButton to enforce consist signs across all three terms.
 //
-//
 
 import SwiftUI
 

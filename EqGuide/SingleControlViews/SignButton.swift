@@ -4,6 +4,8 @@
 //
 //  Created by Barry Bryant on 3/31/22.
 //
+// Button to set sign of a numeric value input via a TextField.
+//
 
 import SwiftUI
 

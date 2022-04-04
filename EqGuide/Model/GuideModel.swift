@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreBluetooth
+import Combine
 
 class GuideModel : BleWizardDelegate, ObservableObject  {
 
@@ -14,8 +15,8 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   @Published var var1:Int32 = 0
   @Published var readCount = 0
   @Published var guideDataBlock = GuideDataBlock()
-  @Published var refCoord = RaDec(ra:97.5, dec:15.5)
-  @Published var targetCoord = RaDec()
+  var refCoord = RaDec(ra: 97.5, dec: 25.5)
+  var targetCoord = RaDec(ra: 100.0, dec: 15.0)
 
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
