@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		350E7EDB27EF675300642A2A /* DmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350E7EDA27EF675300642A2A /* DmsView.swift */; };
 		351204AF27F214F5006DF60B /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* FloatInputView.swift */; };
+		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
 		3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */; };
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		350E7EDA27EF675300642A2A /* DmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsView.swift; sourceTree = "<group>"; };
 		351204AE27F214F5006DF60B /* FloatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
+		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
 		3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDataBlock.swift; sourceTree = "<group>"; };
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 			children = (
 				351204AE27F214F5006DF60B /* FloatInputView.swift */,
 				35DE202B27F4AD8500D96C68 /* DmsInputView.swift */,
+				356CDF8527FB68B800F44A99 /* HmsInputView.swift */,
 			);
 			path = SubInputViews;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				35FBF06827888866001EFA53 /* GuideModel.swift in Sources */,
 				35FBF066278880E4001EFA53 /* BleWizard.swift in Sources */,
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
+				356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */,
 				35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */,
 				35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */,
 				359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */,

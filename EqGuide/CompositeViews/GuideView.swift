@@ -17,6 +17,9 @@ struct GuideView: View {
   
   let armAngle:Float = 45.0 // future gdb value from mount
   
+  @State var useDirectOffset = false
+  @State var directOffset = RaDec(ra: 0.0, dec: 0.0)
+  
   var body: some View {
     
     NavigationView{
@@ -50,14 +53,29 @@ struct GuideView: View {
                           pair: guideModel.targetCoord)
           }
 
+          if useDirectOffset {
+            NavigationLink {
+              RaDecInputView(label: "Enter Direct Offset",
+                             coord: $directOffset)
+            } label: {
+              RaDecPairView(pairTitle: "Offset to Target",
+                            pair: directOffset)
+            }
+          } else {
+            RaDecPairView(pairTitle: "Offset to Target",
+                          pair: guideModel.offset)
+
+          }
           RaDecPairView(pairTitle: "Offset to Target",
                         pair: guideModel.targetCoord - guideModel.refCoord)
+          Toggle("Use Direct Offset", isOn: $useDirectOffset)
         }
         
         Spacer()
         
         BigButton(label:" Update Mount ") {
-          guideModel.offsetRaDec(raOffsetDeg: 0.0, decOffsetDeg: 10.0)
+          guideModel.offsetRaDec(coord: (
+            useDirectOffset ? directOffset : guideModel.offset))
         }
         
         Spacer()

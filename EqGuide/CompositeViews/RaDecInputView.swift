@@ -36,14 +36,14 @@ struct RaDecInputView: View {
           FloatInputView(floatValue: $tempRaDec.ra, prefix: "RA")
           FloatInputView(floatValue: $tempRaDec.dec, prefix: "DEC")
         } else {
-          DmsInputView(decimalDegrees: $tempRaDec.ra, prefix: "RA")
+          HmsInputView(decimalDegrees: $tempRaDec.ra, prefix: "RA")
           DmsInputView(decimalDegrees: $tempRaDec.dec, prefix: "DEC")
         }
       }
       Button() {
         editInFloat = !editInFloat
       } label: {
-        Text(editInFloat ? "Switch to DMS" : "Switch To Decimal Degrees")
+        Text(editInFloat ? "Switch to HMS/DMS" : "Switch To Decimal Degrees")
           .font(.title2)
           .bold()
       }

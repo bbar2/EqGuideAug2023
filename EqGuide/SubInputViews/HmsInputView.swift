@@ -2,9 +2,11 @@
 //  DmsInput.swift
 //  EqGuide
 //
+//  This is a very slightly modified copy of DmsInputView.swift.
+//
 //  Display and edit binding to a float for decimalDegrees - using integer
-//  Degrees, ArcMinutes and ArcSeconds
-//  Although not mathematically necessary, force Deg, Min, and Sec to have the
+//  Hours, Minutes and Seconds
+//  Although not mathematically necessary, force Hour, Min, and Sec to have the
 //  same sign by using  a Sign Button for the group of input fields.
 //  Use of Sign Button also addresses .decimalPad lack of sign key.
 //  Encapsulate the string conversions here
@@ -15,11 +17,11 @@
 
 import SwiftUI
 
-struct DmsInputView: View {
+struct HmsInputView: View {
   @Binding var decimalDegrees: Float
   var prefix = String("")
   
-  @State var degString = String(33)
+  @State var hourString = String(24)
   @State var minString = String(11)
   @State var secString = String(44)
   @State var isPos = true
@@ -37,13 +39,13 @@ struct DmsInputView: View {
         }
       
       HStack {
-        TextField("dd", text: $degString)
+        TextField("dd", text: $hourString)
           .frame(width:60)
           .border(.black)
-          .onChange(of: degString) { _ in
+          .onChange(of: hourString) { _ in
             reBuildFloatInput()
           }
-        Text("º")
+        Text("h")
 
         Spacer()
         TextField("dd", text: $minString)
@@ -67,11 +69,11 @@ struct DmsInputView: View {
       }
       .keyboardType(.numberPad)
       .onAppear() {
-        let dms = Dms(deg: decimalDegrees)
-        degString = String(abs(dms.deg))
-        minString = String(abs(dms.min))
-        secString = String(abs(dms.sec))
-        isPos = (dms.sign > 0 ? true : false)
+        let hms = Hms(deg: decimalDegrees)
+        hourString = String(abs(hms.hour))
+        minString = String(abs(hms.min))
+        secString = String(abs(hms.sec))
+        isPos = (hms.sign > 0 ? true : false)
       }
     }
     .font(.title)
@@ -79,7 +81,7 @@ struct DmsInputView: View {
   }
   
   func reBuildFloatInput() {
-    decimalDegrees = Dms(d: Int(degString) ?? 0,
+    decimalDegrees = Hms(h: Int(hourString) ?? 0,
                          m: Int(minString) ?? 0,
                          s: Int(secString) ?? 0).degrees
     decimalDegrees *= (isPos ? 1.0 : -1.0)
@@ -87,10 +89,10 @@ struct DmsInputView: View {
   
 }
 
-struct DmsInputView_Previews: PreviewProvider {
+struct HmsInputView_Previews: PreviewProvider {
   @State static var angle = Float(-90.5)
   
   static var previews: some View {
-    DmsInputView(decimalDegrees: $angle)
+    HmsInputView(decimalDegrees: $angle)
   }
 }

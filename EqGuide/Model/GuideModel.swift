@@ -21,6 +21,10 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
 //  @Published var refDec = Float(25.5)
 //  @Published var targetRa = Float(-100.25)
 //  @Published var targetDec = Float(15.0)
+  
+  var offset: RaDec {
+    targetCoord - refCoord
+  }
 
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
@@ -91,6 +95,10 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
   }
 
+  func offsetRaDec(coord: RaDec) {
+    offsetRaDec(raOffsetDeg: coord.ra, decOffsetDeg: coord.dec)
+  }
+  
   func offsetRaDec(raOffsetDeg: Float, decOffsetDeg: Float){
     let offsetCommand = GuideCommandBlock(
       command:   GuideCommand.setOffset.rawValue,
