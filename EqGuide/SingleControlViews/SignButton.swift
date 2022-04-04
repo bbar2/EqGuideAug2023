@@ -13,7 +13,8 @@ struct SignButton: View {
   @Binding var isPos:Bool
   
   var body: some View {
-    Button() { isPos = !isPos
+    Button() {
+      isPos = !isPos
     } label: {
       Text(isPos ? "＋" : "−")
         .font(.title)

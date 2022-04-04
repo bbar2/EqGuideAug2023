@@ -18,10 +18,10 @@ import Combine
 struct FloatInputView: View {
   @Binding var floatValue: Float
   var prefix = String("")
-
+  
   @State var isPos: Bool = true
   @State var floatString = String("3.14")
-
+  
   var body: some View {
     HStack {
       if prefix != "" {
@@ -29,21 +29,29 @@ struct FloatInputView: View {
       }
       
       SignButton(isPos: $isPos)
+        .onChange(of: isPos) { _ in
+          reBuildFloatInput()
+        }
       
       TextField("xx.yy", text: $floatString)
         .frame(width:100, alignment: .center)
         .border(.black)
         .keyboardType(.decimalPad)
+        .onChange(of: floatString) { _ in
+          reBuildFloatInput()
+        }
     }
     .font(.title)
     .multilineTextAlignment(.center)
-    .onChange(of: floatString) { _ in
-      floatValue = Float(floatString) ?? 0.0
-      floatValue *= (isPos ? Float(1.0) : Float(-1.0))
-    }
     .onAppear() {
-      floatString = String(floatValue)
+      isPos = (floatValue >= 0.0 ? true : false)
+      floatString = String(abs(floatValue))
     }
+  }
+  
+  func reBuildFloatInput() {
+    floatValue = Float(floatString) ?? 0.0
+    floatValue *= (isPos ? Float(1.0) : Float(-1.0))
   }
 }
 

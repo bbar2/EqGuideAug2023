@@ -2,13 +2,15 @@
 //  DmsInput.swift
 //  EqGuide
 //
-//  Edit binding to a float for decimalDegrees
-//  Encapsulate the string conversion here
+//  Display and edit binding to a float for decimalDegrees - using integer
+//  Degrees, ArcMinutes and ArcSeconds
+//  Although not mathematically necessary, force Deg, Min, and Sec to have the
+//  same sign by using  a Sign Button for the group of input fields.
+//  Use of Sign Button also addresses .decimalPad lack of sign key.
+//  Encapsulate the string conversions here
 //  Update the bound value:Float on every keystroke
 //  Could add keyboard filtering, but being lazy and relying on .keyboardType
 //  Parent must dismiss the view to terminate this editing session
-//  Uses a Sign Button for sign since .decimalPad has no sign key.
-//  Sign Button is also consistent with DMS/HMS views which use a signButton to enforce consist signs across all three terms.
 //
 
 import SwiftUI
@@ -31,7 +33,7 @@ struct DmsInputView: View {
       
       SignButton(isPos: $isPos)
         .onChange(of: isPos) { _ in
-          print("DMS Sign Button Change \(isPos)")
+          reBuildFloatInput()
         }
       
       HStack {
@@ -40,9 +42,7 @@ struct DmsInputView: View {
           .frame(width:60)
           .border(.black)
           .onChange(of: degString) { _ in
-            decimalDegrees = Dms(d: Int(degString) ?? 0,
-                                 m: Int(minString) ?? 0,
-                                 s: Int(secString) ?? 0).degrees
+            reBuildFloatInput()
           }
         
         Spacer()
@@ -51,35 +51,40 @@ struct DmsInputView: View {
           .frame(width:50)
           .border(.black)
           .onChange(of: minString) { _ in
-            decimalDegrees = Dms(d: Int(degString) ?? 0,
-                                 m: Int(minString) ?? 0,
-                                 s: Int(secString) ?? 0).degrees
+            reBuildFloatInput()
           }
-
+        
         Spacer()
         Text("S")
         TextField("dd", text: $secString)
           .frame(width:50)
           .border(.black)
           .onChange(of: secString) { _ in
-            decimalDegrees = Dms(d: Int(degString) ?? 0,
-                                 m: Int(minString) ?? 0,
-                                 s: Int(secString) ?? 0).degrees
+            reBuildFloatInput()
           }
-
+        
         Spacer()
       }
       .keyboardType(.numberPad)
       .onAppear() {
         let dms = Dms(deg: decimalDegrees)
-        degString = String(dms.deg)
-        minString = String(dms.min)
-        secString = String(dms.sec)
+        degString = String(abs(dms.deg))
+        minString = String(abs(dms.min))
+        secString = String(abs(dms.sec))
+        isPos = (dms.sign > 0 ? true : false)
       }
     }
     .font(.title)
     .multilineTextAlignment(.center)
   }
+  
+  func reBuildFloatInput() {
+    decimalDegrees = Dms(d: Int(degString) ?? 0,
+                         m: Int(minString) ?? 0,
+                         s: Int(secString) ?? 0).degrees
+    decimalDegrees *= (isPos ? 1.0 : -1.0)
+  }
+  
 }
 
 struct DmsInputView_Previews: PreviewProvider {
