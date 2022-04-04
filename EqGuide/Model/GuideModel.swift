@@ -15,8 +15,12 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   @Published var var1:Int32 = 0
   @Published var readCount = 0
   @Published var guideDataBlock = GuideDataBlock()
-  var refCoord = RaDec(ra: 97.5, dec: 25.5)
-  var targetCoord = RaDec(ra: -100.25, dec: 15.0)
+  //var refCoord = RaDec(ra: 97.5, dec: 25.5)
+//  var targetCoord = RaDec(ra: -100.25, dec: 15.0)
+  @Published var refRa = Float(97.5)
+  @Published var refDec = Float(25.5)
+  @Published var targetRa = Float(-100.25)
+  @Published var targetDec = Float(15.0)
 
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")

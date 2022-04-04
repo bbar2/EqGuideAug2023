@@ -10,7 +10,9 @@ import SwiftUI
 struct RaDecInputView: View {
   
   var label:String
-  @ObservedObject var coord:RaDec
+//  @ObservedObject var coord:RaDec
+  @Binding var coordRa: Float
+  @Binding var coordDec: Float
   
   @State private var tempRaDec = RaDec()
   @State private var editInFloat = true
@@ -38,13 +40,13 @@ struct RaDecInputView: View {
           .bold()
       }
       .onAppear() {
-        tempRaDec.ra = coord.ra
-        tempRaDec.dec = coord.dec
+        tempRaDec.ra = coordRa
+        tempRaDec.dec = coordDec
       }
       
       BigButton(label:"Apply") {
-        coord.ra  = tempRaDec.ra
-        coord.dec = tempRaDec.dec
+        coordRa  = tempRaDec.ra
+        coordDec = tempRaDec.dec
         dismissView()
       }
     }
@@ -55,9 +57,13 @@ struct RaDecInputView: View {
 
 struct RaInputView_Previews: PreviewProvider {
   //  @StateObject static var crap = RaDec(ra:97.5, dec: 0.25)
-  @StateObject static var testCoord = RaDec(ra: 97.5, dec: 0.25)
+//  @StateObject static var testCoord = RaDec(ra: 97.5, dec: 0.25)
+  @State static var testRa = Float(97.5)
+  @State static var testDec = Float(0.25)
   static var previews: some View {
-    RaDecInputView(label: "Enter RA/DEC Pair", coord: testCoord)
+    RaDecInputView(label: "Enter RA/DEC Pair",
+                   coordRa: $testRa,
+                   coordDec: $testDec)
   }
 }
 

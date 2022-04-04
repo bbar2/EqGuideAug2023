@@ -30,28 +30,40 @@ struct GuideView: View {
         VStack{
           RaDecPairView(
             pairTitle: "Current Position",
-            pair: RaDec(ra: Float32(gdb.raCount) * gdb.raDegPerStep,
-                        dec: Float32(gdb.decCount) * gdb.decDegPerStep) )
+            pairRa: Float(Float32(gdb.raCount) * gdb.raDegPerStep),
+            pairDec: Float(Float32(gdb.decCount) * gdb.decDegPerStep) )
+//            pair: RaDec(ra: Float32(gdb.raCount) * gdb.raDegPerStep,
+//                        dec: Float32(gdb.decCount) * gdb.decDegPerStep) )
           ArmAngleView(angleDeg: armAngle)
 
           NavigationLink {
             RaDecInputView(label: "Enter Reference Coordinates",
-                           coord: guideModel.refCoord)
+                           coordRa: $guideModel.refRa,
+                           coordDec: $guideModel.refDec)
+//                           coord: guideModel.refCoord)
           } label: {
             RaDecPairView(pairTitle: "Reference Coordinates",
-                          pair: guideModel.refCoord)
+                          pairRa: guideModel.refRa,
+                          pairDec: guideModel.refDec)
+//                          pair: guideModel.refCoord)
           }
 
           NavigationLink {
             RaDecInputView(label: "Enter Target Coordinates",
-                           coord: guideModel.targetCoord)
+                           coordRa: $guideModel.targetRa,
+                           coordDec: $guideModel.targetDec)
+//                           coord: guideModel.targetCoord)
           } label: {
             RaDecPairView(pairTitle: "Target Coordinates",
-                          pair: guideModel.targetCoord)
+                          pairRa: guideModel.targetRa,
+                          pairDec: guideModel.targetDec)
+//                          pair: guideModel.targetCoord)
           }
 
           RaDecPairView(pairTitle: "Offset to Target",
-                        pair: guideModel.targetCoord - guideModel.refCoord)
+                        pairRa: guideModel.targetRa - guideModel.refRa,
+                        pairDec: guideModel.targetDec - guideModel.refDec)
+//                        pair: guideModel.targetCoord - guideModel.refCoord)
         }
         
         Spacer()
