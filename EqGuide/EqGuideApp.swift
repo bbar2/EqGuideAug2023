@@ -15,8 +15,7 @@ struct EqGuideApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView()
-        .environmentObject(guideModel)
+      ContentView(guideModel: guideModel)
     }
   }
 }

@@ -10,9 +10,9 @@
 
 import SwiftUI
 
-class RaDec : ObservableObject {
-  @Published var ra: Float
-  @Published var dec: Float
+struct RaDec {
+  var ra: Float
+  var dec: Float
   
   init(ra: Float = 0.0, dec: Float = 0.0) {
     self.ra = ra;

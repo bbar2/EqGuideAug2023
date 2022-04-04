@@ -10,9 +10,7 @@ import SwiftUI
 struct RaDecInputView: View {
   
   var label:String
-//  @ObservedObject var coord:RaDec
-  @Binding var coordRa: Float
-  @Binding var coordDec: Float
+  @Binding var coord:RaDec
   
   @State private var tempRaDec = RaDec()
   @State private var editInFloat = true
@@ -21,7 +19,17 @@ struct RaDecInputView: View {
   var body: some View {
     
     VStack {
-      Text(label).font(.title)
+      HStack{
+        Button{
+          dismissView()
+        } label: {
+          Text("< Cancel").font(.title3).bold()
+        }
+        Spacer()
+      }
+      Text(label)
+        .font(.title)
+        .padding([.top], 20)
       
       VStack {
         if editInFloat {
@@ -35,35 +43,29 @@ struct RaDecInputView: View {
       Button() {
         editInFloat = !editInFloat
       } label: {
-        Text(editInFloat ? "Switch to DMS" : "Switch To Float")
+        Text(editInFloat ? "Switch to DMS" : "Switch To Decimal Degrees")
           .font(.title2)
           .bold()
       }
       .onAppear() {
-        tempRaDec.ra = coordRa
-        tempRaDec.dec = coordDec
+        tempRaDec = coord
       }
       
       BigButton(label:"Apply") {
-        coordRa  = tempRaDec.ra
-        coordDec = tempRaDec.dec
+        coord  = tempRaDec
         dismissView()
       }
+      Spacer()
     }
-    
-    Spacer()
+    .navigationBarBackButtonHidden(true)
+
   }
 }
 
 struct RaInputView_Previews: PreviewProvider {
-  //  @StateObject static var crap = RaDec(ra:97.5, dec: 0.25)
-//  @StateObject static var testCoord = RaDec(ra: 97.5, dec: 0.25)
-  @State static var testRa = Float(97.5)
-  @State static var testDec = Float(0.25)
+  @State static var testCoord = RaDec(ra: 97.5, dec: 0.25)
   static var previews: some View {
-    RaDecInputView(label: "Enter RA/DEC Pair",
-                   coordRa: $testRa,
-                   coordDec: $testDec)
+    RaDecInputView(label: "Enter RA/DEC Pair", coord: $testCoord)
   }
 }
 

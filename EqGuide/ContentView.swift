@@ -10,18 +10,17 @@ import SwiftUI
 
 struct ContentView: View {
   
- @EnvironmentObject var guideModel:GuideModel
+ @ObservedObject var guideModel:GuideModel
   
   var body: some View {
     // ToDo - Add Tab View with GuideView() and FocusControl() as tabs.
-    GuideView()
+    GuideView(guideModel: guideModel)
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
-      .environmentObject(GuideModel())
+    ContentView(guideModel: GuideModel())
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
       .previewInterfaceOrientation(.portrait)
   }

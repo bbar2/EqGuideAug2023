@@ -9,9 +9,9 @@ import SwiftUI
 
 struct RaDecPairView: View {
   var pairTitle:String
-//  var pair:RaDec
-  var pairRa: Float
-  var pairDec: Float
+  var pair:RaDec
+//  var pairRa: Float
+//  var pairDec: Float
   
   var gapPad = 30.0
   
@@ -25,13 +25,13 @@ struct RaDecPairView: View {
       HStack {
         HStack{
           Text("RA").font(.subheadline).bold()
-          HmsView(angleDegrees: pairRa)
+          HmsView(angleDegrees: pair.ra)
         }
         .padding([.trailing], gapPad/2)
         
         HStack {
           Text("DEC").font(.subheadline).bold()
-          DmsView(angleDegrees: pairDec)
+          DmsView(angleDegrees: pair.dec)
         }
         .padding([.leading], gapPad/2)
       }
@@ -42,10 +42,8 @@ struct RaDecPairView: View {
 }
 
 struct raDecPairView_Previews: PreviewProvider {
-//  static let pair = RaDec(ra:3.33, dec:2.22)
-  static let ra = Float(3.33)
-  static let dec = Float(2.22)
+  static let pair = RaDec(ra:3.33, dec:2.22)
     static var previews: some View {
-      RaDecPairView(pairTitle: "Title", pairRa: ra, pairDec: dec)
+      RaDecPairView(pairTitle: "Title", pair: pair)
     }
 }
