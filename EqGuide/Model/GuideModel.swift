@@ -101,12 +101,14 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   
   func offsetRaDec(raOffsetDeg: Float, decOffsetDeg: Float){
     let offsetCommand = GuideCommandBlock(
-      command:   GuideCommand.setOffset.rawValue,
+      command:   GuideCommand.SetOffset.rawValue,
       raOffset:  Int32(raOffsetDeg / guideDataBlock.raDegPerStep),
       decOffset: Int32(decOffsetDeg / guideDataBlock.decDegPerStep)
     )
     guideCommand(offsetCommand)
   }
+  
+  
   
 //  func readVar1()  {
 //    do {

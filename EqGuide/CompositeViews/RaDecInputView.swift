@@ -21,6 +21,7 @@ struct RaDecInputView: View {
     VStack {
       HStack{
         Button{
+          softBump()
           dismissView()
         } label: {
           Text("< Cancel").font(.title3).bold()
@@ -42,6 +43,7 @@ struct RaDecInputView: View {
       }
       Button() {
         editInFloat = !editInFloat
+        softBump()
       } label: {
         Text(editInFloat ? "Switch to HMS/DMS" : "Switch To Decimal Degrees")
           .font(.title2)
@@ -53,13 +55,28 @@ struct RaDecInputView: View {
       
       BigButton(label:"Apply") {
         coord  = tempRaDec
+        heavyBump()
         dismissView()
       }
       Spacer()
     }
     .navigationBarBackButtonHidden(true)
+    .onAppear() {
+      softBump()
+    }
 
   }
+  
+  func heavyBump(){
+    let haptic = UIImpactFeedbackGenerator(style: .heavy)
+    haptic.impactOccurred()
+  }
+  
+  func softBump(){
+    let haptic = UIImpactFeedbackGenerator(style: .soft)
+    haptic.impactOccurred()
+  }
+  
 }
 
 struct RaInputView_Previews: PreviewProvider {

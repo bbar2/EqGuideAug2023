@@ -17,7 +17,6 @@ struct ArmAngleView: View {
       Text("deg").font(.subheadline)
     }
   }
-
 }
 
 struct ArmAngleView_Previews: PreviewProvider {

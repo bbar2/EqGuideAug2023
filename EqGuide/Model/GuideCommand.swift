@@ -9,14 +9,16 @@
 
 import Foundation
 
+enum GuideCommand:Int32 {
+  case NoOp = 0
+  case SetOffset = 1
+  case SetTarget = 2
+  case NumCommands = 3
+}
+
 struct GuideCommandBlock {
   var command:Int32
   var raOffset:Int32
   var decOffset:Int32
 }
 
-enum GuideCommand:Int32 {
-  case noOp = 0
-  case setOffset = 1
-  case tbd = 2
-}

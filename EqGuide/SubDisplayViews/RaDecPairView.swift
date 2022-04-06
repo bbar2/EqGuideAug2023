@@ -17,6 +17,7 @@ struct RaDecPairView: View {
   
   var body: some View {
     VStack{
+
       Divider()
 
       Text(pairTitle)
@@ -35,7 +36,6 @@ struct RaDecPairView: View {
         }
         .padding([.leading], gapPad/2)
       }
-
     }
     
   }

@@ -18,4 +18,5 @@ struct EqGuideApp: App {
       ContentView(guideModel: guideModel)
     }
   }
+
 }

@@ -16,6 +16,7 @@ struct ContentView: View {
     // ToDo - Add Tab View with GuideView() and FocusControl() as tabs.
     GuideView(guideModel: guideModel)
   }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
