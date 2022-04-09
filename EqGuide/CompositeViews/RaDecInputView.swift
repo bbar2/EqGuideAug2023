@@ -27,11 +27,12 @@ struct RaDecInputView: View {
           Text("< Cancel").font(.title3).bold()
         }
         Spacer()
-      }
+      }.padding([.bottom], 20)
+
       Text(label)
         .font(.title)
         .padding([.top], 20)
-      
+
       VStack {
         if editInFloat {
           FloatInputView(floatValue: $tempRaDec.ra, prefix: "RA")
@@ -61,6 +62,9 @@ struct RaDecInputView: View {
       Spacer()
     }
     .navigationBarBackButtonHidden(true)
+    .navigationBarTitle("") // needed for navigationBarHidden to work.
+    .navigationBarHidden(true)
+
     .onAppear() {
       softBump()
     }

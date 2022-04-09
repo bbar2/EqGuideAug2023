@@ -15,6 +15,8 @@
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
+		35B92FEF280068C800342F7F /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FEE280068C800342F7F /* AppOptions.swift */; };
+		35B92FF12800B86300342F7F /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FF02800B86300342F7F /* FocusView.swift */; };
 		35C9A95327EFA65300BFE4CE /* HmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95227EFA65300BFE4CE /* HmsView.swift */; };
 		35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95427F09D1400BFE4CE /* GuideView.swift */; };
 		35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */; };
@@ -43,6 +45,8 @@
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
+		35B92FEE280068C800342F7F /* AppOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOptions.swift; sourceTree = "<group>"; };
+		35B92FF02800B86300342F7F /* FocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
 		35C9A95227EFA65300BFE4CE /* HmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsView.swift; sourceTree = "<group>"; };
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
@@ -84,10 +88,18 @@
 			path = SubInputViews;
 			sourceTree = "<group>";
 		};
-		35C9A95627F09E8200BFE4CE /* CompositeViews */ = {
+		35B92FF22800B89400342F7F /* TopTabViews */ = {
 			isa = PBXGroup;
 			children = (
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
+				35B92FF02800B86300342F7F /* FocusView.swift */,
+			);
+			path = TopTabViews;
+			sourceTree = "<group>";
+		};
+		35C9A95627F09E8200BFE4CE /* CompositeViews */ = {
+			isa = PBXGroup;
+			children = (
 				35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */,
 				35FBF0612787AF52001EFA53 /* ObjectListView.swift */,
 			);
@@ -97,6 +109,7 @@
 		35C9A95727F09EAA00BFE4CE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				35FBF06727888866001EFA53 /* GuideModel.swift */,
 				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
@@ -150,6 +163,7 @@
 			children = (
 				35FBF0532787963D001EFA53 /* EqGuideApp.swift */,
 				35FBF0552787963D001EFA53 /* ContentView.swift */,
+				35B92FF22800B89400342F7F /* TopTabViews */,
 				35C9A95627F09E8200BFE4CE /* CompositeViews */,
 				35C9A95827F09ED700BFE4CE /* SubDisplayViews */,
 				3574C9F827F9D7700036CD94 /* SubInputViews */,
@@ -246,6 +260,7 @@
 				35C9A95327EFA65300BFE4CE /* HmsView.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
+				35B92FF12800B86300342F7F /* FocusView.swift in Sources */,
 				35FBF0622787AF52001EFA53 /* ObjectListView.swift in Sources */,
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
@@ -261,6 +276,7 @@
 				35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */,
 				35DE202827F3D66600D96C68 /* BigButton.swift in Sources */,
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,
+				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				35DE202A27F498E600D96C68 /* ArmAngleView.swift in Sources */,
 				350E7EDB27EF675300642A2A /* DmsView.swift in Sources */,
 			);

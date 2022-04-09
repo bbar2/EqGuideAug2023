@@ -16,7 +16,7 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   @Published var readCount = 0
   @Published var guideDataBlock = GuideDataBlock()
   @Published var refCoord = RaDec(ra: 97.5, dec: 25.5)
-  @Published var targetCoord = RaDec(ra: -100.25, dec: 15.0)
+  @Published var targetCoord = RaDec(ra: 107.25, dec: 35.5)
 //  @Published var refRa = Float(97.5)
 //  @Published var refDec = Float(25.5)
 //  @Published var targetRa = Float(-100.25)
@@ -93,6 +93,15 @@ class GuideModel : BleWizardDelegate, ObservableObject  {
   }
   func guideCommand(_ writeBlock:GuideCommandBlock) {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
+  }
+  
+  func targetRaDec(coord: RaDec) {
+    let targetCommand = GuideCommandBlock(
+      command:   GuideCommand.SetTarget.rawValue,
+      raOffset:  Int32(coord.ra / guideDataBlock.raDegPerStep),
+      decOffset: Int32(coord.dec / guideDataBlock.decDegPerStep)
+    )
+    guideCommand(targetCommand)
   }
 
   func offsetRaDec(coord: RaDec) {

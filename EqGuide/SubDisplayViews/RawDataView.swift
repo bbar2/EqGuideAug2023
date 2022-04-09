@@ -45,6 +45,7 @@ struct RawDataView: View {
       let minute = minSecs / UInt32(60)
       let second = minSecs % UInt32(60)
       Text("Mount Time    h:\(hour)   m:\(minute)   s:\(second)")
+      
       Divider()
     }
     .padding([.leading, .trailing], 5)

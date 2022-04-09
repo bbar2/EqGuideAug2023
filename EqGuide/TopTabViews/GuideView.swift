@@ -15,6 +15,12 @@ struct GuideView: View {
     guideModel.guideDataBlock
   }
   
+  var mountStateString:String {
+    let stateEnum = MountState(rawValue: gdb.mountState)
+    let stateString:String = "\(stateEnum ?? MountState.StateError)"
+    return(stateString)
+  }
+  
   let armAngle:Float = 45.0 // future gdb value from mount
   
   @State var useDirectOffset = false
@@ -26,7 +32,13 @@ struct GuideView: View {
       
       HStack{
         Text("Status: ")
-        Text(guideModel.statusString)
+        let statusString =  guideModel.statusString
+        if statusString != "Connected" {
+          Text(statusString)
+        } else {
+          let stateEnum = MountState(rawValue: gdb.mountState)
+          Text(String("\(stateEnum ?? MountState.StateError)"))
+        }
       }.font(.title)
       Divider()
       
@@ -42,8 +54,16 @@ struct GuideView: View {
 
           Divider()
 
-          Toggle("Use Direct Offset", isOn: $useDirectOffset)
+          Picker(selection: $useDirectOffset,
+                 label: Text("???")) {
+            Text("Offset").tag(true)
+            Text("Ref/Targ").tag(false)
+          }
+//          .onChange(of: useDirectOffset) {softBump()}
+          .pickerStyle(.segmented)
+          .padding([.leading, .trailing], 10)
 
+          
           if !useDirectOffset {
             NavigationLink {
               RaDecInputView(label: "Enter Reference Coordinates",
@@ -74,6 +94,8 @@ struct GuideView: View {
             }
           }
           
+          Divider()
+          
           Spacer()
           
           if useDirectOffset {
@@ -83,14 +105,15 @@ struct GuideView: View {
             }
           } else {
             BigButton(label:" Set Target  ") {
-              guideModel.offsetRaDec(coord: guideModel.offset)
+              guideModel.targetRaDec(coord: guideModel.offset)
               heavyBump()
             }
           }
           
           RawDataView(gdb: gdb)
+            .foregroundColor((guideModel.statusString == "Connected" ? .black : .gray))
         } // VStack in NavigationView
-        .navigationBarTitle("")
+        .navigationBarTitle("") // needed for navigationBarHidden to work.
         .navigationBarHidden(true)
    
       } // NavigationView
@@ -99,6 +122,18 @@ struct GuideView: View {
     .onAppear{
       guideModel.guideModelInit()
       
+      //this changes the "thumb" that selects between items
+//      UISegmentedControl.appearance().selectedSegmentTintColor = .white
+      //and this changes the color for the whole "bar" background
+//      UISegmentedControl.appearance().backgroundColor = UIColor(red:0.9, green:0.9, blue:0.9, alpha: 1.0)
+
+      //this will change the font size
+      UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .title2)], for: .normal)
+
+      //these lines change the text color for various states
+//      UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.blue], for: .selected)
+//      UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.blue], for: .normal)
+
     } // body: some View
   }
 

@@ -10,13 +10,33 @@ import SwiftUI
 
 struct ContentView: View {
   
- @ObservedObject var guideModel:GuideModel
+  @ObservedObject var guideModel:GuideModel
+  
+  enum Tab {
+    case focus
+    case guide
+  }
+  
+  @State private var selection: Tab = .guide
   
   var body: some View {
-    // ToDo - Add Tab View with GuideView() and FocusControl() as tabs.
-    GuideView(guideModel: guideModel)
+    
+    TabView (selection: $selection) {
+      GuideView(guideModel: guideModel)
+        .tabItem {
+          Label("Guide", systemImage: "arrow.2.squarepath")
+        }
+        .tag(Tab.guide)
+      
+      FocusView()
+        .tabItem {
+          Label("Focus", systemImage: "staroflife.circle")
+        }
+        .tag(Tab.focus)
+    }
+    
   }
-
+  
 }
 
 struct ContentView_Previews: PreviewProvider {
