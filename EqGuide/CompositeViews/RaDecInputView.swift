@@ -11,9 +11,11 @@ struct RaDecInputView: View {
   
   var label:String
   @Binding var coord:RaDec
-  
+  @Binding var editInFloat:Bool
+
+  @EnvironmentObject var viewOptions: ViewOptions
+
   @State private var tempRaDec = RaDec()
-  @State private var editInFloat = true
   @Environment(\.dismiss) private var dismissView
   
   var body: some View {
@@ -24,7 +26,9 @@ struct RaDecInputView: View {
           softBump()
           dismissView()
         } label: {
-          Text("< Cancel").font(.title3).bold()
+          Text("< Cancel")
+            .font(.title3).bold()
+            .foregroundColor(viewOptions.appActionColor)
         }
         Spacer()
       }.padding([.bottom], 20)
@@ -85,8 +89,16 @@ struct RaDecInputView: View {
 
 struct RaInputView_Previews: PreviewProvider {
   @State static var testCoord = RaDec(ra: 97.5, dec: 0.25)
+  @State static var viewOptions = ViewOptions()
+  @State static var editInFloat = true
+  
   static var previews: some View {
-    RaDecInputView(label: "Enter RA/DEC Pair", coord: $testCoord)
+    RaDecInputView(label: "Enter RA/DEC Pair",
+                   coord: $testCoord,
+                   editInFloat: $editInFloat)
+      .environmentObject(viewOptions)
+      .preferredColorScheme(.dark)
+      .foregroundColor(viewOptions.appRedColor)
   }
 }
 

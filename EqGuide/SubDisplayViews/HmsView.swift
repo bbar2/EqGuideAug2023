@@ -14,8 +14,8 @@ struct HmsView: View {
     let hms = Hms(deg: angleDegrees)
     VStack {
       let decimalDegString = String(format: "%.2f deg", angleDegrees)
-      let dmsString = String(format: "%dh   %d'   %d\"",
-                             hms.hour, hms.min, hms.sec)
+      let dmsString = String(format: "%dh   %dm   %ds",
+                             hms.h, hms.m, hms.s)
       Text(decimalDegString)//.padding(2)
       Text(dmsString)//.padding(2)
     }

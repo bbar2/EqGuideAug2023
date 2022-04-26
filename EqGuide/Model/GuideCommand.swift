@@ -6,14 +6,14 @@
 //
 //  Structure sent to Mount Microcontroller via Bluetooth send operation.
 //  Note that microcontroller uses 32 bit words.
-
-import Foundation
+//  Struct and enum must match EqMount project's NAppBleLogic.hpp
 
 enum GuideCommand:Int32 {
   case NoOp = 0
   case SetOffset = 1
   case SetTarget = 2
-  case NumCommands = 3
+  case AckReference = 3
+  case NumCommands  = 4
 }
 
 struct GuideCommandBlock {

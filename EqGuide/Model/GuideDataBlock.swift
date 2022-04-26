@@ -26,11 +26,17 @@ enum MountState:Int32 {
 }
 
 struct GuideDataBlock {
-  var raDegPerStep:Float32 = 1
+  var armDegPerStep:Float32 = 1
   var decDegPerStep:Float32 = 1
   var mountState:Int32 = MountState.PowerUp.rawValue
-  var markRefNow:Int32 = 0
+  var markRefNowInt:Int32 = 0
   var mountTimeMs:UInt32 = 0
-  var raCount:Int32 = 0
+  var armCount:Int32 = 0
   var decCount:Int32 = 0
+
+  var markReferenceNow: Bool {
+    return markRefNowInt != 0
+  }
+  
 }
+

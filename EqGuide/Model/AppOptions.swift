@@ -8,9 +8,12 @@
 import Foundation
 
 class AppOptions : ObservableObject {
-  var fontSize: Int;
+  var showSecs: Bool
+  var editInFloat: Bool
   
   init() {
-    fontSize = Int(3)
+    showSecs = false
+    editInFloat = true
   }
+  
 }

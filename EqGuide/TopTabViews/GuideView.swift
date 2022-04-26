@@ -9,7 +9,13 @@ import SwiftUI
 
 struct GuideView: View {
   
-  @ObservedObject var guideModel:GuideModel
+  // App level options into Environment
+  @StateObject private var appOptions = AppOptions()
+  
+  // Model at App scope.  Pass to Views as needed.
+  @StateObject private var guideModel = GuideModel()
+  
+  @EnvironmentObject var viewOptions: ViewOptions
   
   var gdb:GuideDataBlock {
     guideModel.guideDataBlock
@@ -21,8 +27,6 @@ struct GuideView: View {
     return(stateString)
   }
   
-  let armAngle:Float = 45.0 // future gdb value from mount
-  
   @State var useDirectOffset = false
   @State var directOffset = RaDec(ra: 0.0, dec: 0.0)
   
@@ -31,11 +35,11 @@ struct GuideView: View {
     VStack {
       
       HStack{
-        Text("Status: ")
-        let statusString =  guideModel.statusString
-        if statusString != "Connected" {
-          Text(statusString)
+        if !guideModel.bleConnected {
+          Text("Status: ")
+          Text(guideModel.statusString)
         } else {
+          Text("EqMount: ")
           let stateEnum = MountState(rawValue: gdb.mountState)
           Text(String("\(stateEnum ?? MountState.StateError)"))
         }
@@ -47,38 +51,54 @@ struct GuideView: View {
         VStack{
           RaDecPairView(
             pairTitle: "Current Position",
-            pair: RaDec(ra: Float32(gdb.raCount) * gdb.raDegPerStep,
-                        dec: Float32(gdb.decCount) * gdb.decDegPerStep) )
-
-          ArmAngleView(angleDeg: armAngle)
-
+            pair: guideModel.currentPosition )
+          
+          ArmAngleView(angleDeg: guideModel.armCurrentDeg)
+          
           Divider()
-
+          
           Picker(selection: $useDirectOffset,
                  label: Text("???")) {
             Text("Offset").tag(true)
             Text("Ref/Targ").tag(false)
           }
-//          .onChange(of: useDirectOffset) {softBump()}
-          .pickerStyle(.segmented)
-          .padding([.leading, .trailing], 10)
-
+                 .pickerStyle(.segmented)
+                 .padding([.leading, .trailing], 10)
+          
           
           if !useDirectOffset {
             NavigationLink {
               RaDecInputView(label: "Enter Reference Coordinates",
-                             coord: $guideModel.refCoord)
+                             coord: $guideModel.refCoord,
+                             editInFloat: $appOptions.editInFloat)
             } label: {
-              RaDecPairView(pairTitle: "Reference Coordinates",
-                            pair: guideModel.refCoord)
+              ZStack {
+                // works well but causes sizing issues in OFFSET mode
+//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
+//                  .fill(viewOptions.thumbColor)
+//                  .padding([.top],20)
+                RaDecPairView(pairTitle: "Reference Coordinates",
+                              pair: guideModel.refCoord)
+                .foregroundColor(viewOptions.appActionColor)
+
+              }
             }
             
             NavigationLink {
               RaDecInputView(label: "Enter Target Coordinates",
-                             coord: $guideModel.targetCoord)
+                             coord: $guideModel.targetCoord,
+                             editInFloat: $appOptions.editInFloat)
+
             } label: {
-              RaDecPairView(pairTitle: "Target Coordinates",
-                            pair: guideModel.targetCoord)
+              ZStack {
+//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
+//                  .fill(viewOptions.thumbColor)
+//                  .padding([.top],20)
+                RaDecPairView(pairTitle: "Target Coordinates",
+                              pair: guideModel.targetCoord)
+                .foregroundColor(viewOptions.appActionColor)
+
+              }
             }
             
             RaDecPairView(pairTitle: "Offset to Target",
@@ -87,10 +107,17 @@ struct GuideView: View {
           } else {
             NavigationLink {
               RaDecInputView(label: "Enter Direct Offset",
-                             coord: $directOffset)
+                             coord: $directOffset,
+                             editInFloat: $appOptions.editInFloat)
             } label: {
-              RaDecPairView(pairTitle: "Direct Offset",
-                            pair: directOffset)
+              ZStack {
+//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
+//                  .fill(viewOptions.thumbColor)
+//                  .padding([.top],20)
+                RaDecPairView(pairTitle: "Direct Offset",
+                              pair: directOffset)
+                .foregroundColor(viewOptions.appActionColor)
+              }
             }
           }
           
@@ -111,46 +138,46 @@ struct GuideView: View {
           }
           
           RawDataView(gdb: gdb)
-            .foregroundColor((guideModel.statusString == "Connected" ? .black : .gray))
+            .foregroundColor((guideModel.bleConnected ? viewOptions.appRedColor : .gray) )
         } // VStack in NavigationView
         .navigationBarTitle("") // needed for navigationBarHidden to work.
         .navigationBarHidden(true)
-   
+        
       } // NavigationView
       
     } // Top Level VStack
     .onAppear{
       guideModel.guideModelInit()
-      
-      //this changes the "thumb" that selects between items
-//      UISegmentedControl.appearance().selectedSegmentTintColor = .white
-      //and this changes the color for the whole "bar" background
-//      UISegmentedControl.appearance().backgroundColor = UIColor(red:0.9, green:0.9, blue:0.9, alpha: 1.0)
-
-      //this will change the font size
-      UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .title2)], for: .normal)
-
-      //these lines change the text color for various states
-//      UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.blue], for: .selected)
-//      UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.blue], for: .normal)
-
+      setupSegmentControl()
+      softBump()
     } // body: some View
   }
-
-  func heavyBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .heavy)
-    haptic.impactOccurred()
+  
+  func setupSegmentControl() {
+    // Set color of "thumb" that selects between items
+    UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(viewOptions.thumbColor)
+    
+    // Set color for whole "bar" background
+    UISegmentedControl.appearance().backgroundColor = UIColor(viewOptions.thumbBarColor)
+    
+    // Set font attributes - call once for each state (.normal, .selected)
+    UISegmentedControl.appearance().setTitleTextAttributes(
+      [.font : UIFont.preferredFont(forTextStyle: .title2),
+       .foregroundColor : UIColor(viewOptions.appActionColor)], for: .normal)
+    
+    UISegmentedControl.appearance().setTitleTextAttributes(
+      [.foregroundColor : UIColor(viewOptions.appActionColor),
+       .font : UIFont.preferredFont(forTextStyle: .title2)], for: .selected)
   }
   
-  func softBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .soft)
-    haptic.impactOccurred()
-  }
-
 }
 
 struct GuideView_Previews: PreviewProvider {
+  static let viewOptions = ViewOptions()
   static var previews: some View {
-    GuideView(guideModel: GuideModel())
+    GuideView()
+      .environmentObject(viewOptions)
+      .preferredColorScheme(.dark)
+      .foregroundColor(viewOptions.appRedColor)
   }
 }

@@ -19,6 +19,8 @@ struct DmsInputView: View {
   @Binding var decimalDegrees: Float
   var prefix = String("")
   
+  @EnvironmentObject var viewOptions: ViewOptions
+  
   @State var degString = String(33)
   @State var minString = String(11)
   @State var secString = String(44)
@@ -75,7 +77,8 @@ struct DmsInputView: View {
       }
     }
     .font(.title)
-    .multilineTextAlignment(.center)
+    .multilineTextAlignment(.trailing)
+    .foregroundColor(viewOptions.appActionColor)
   }
   
   func reBuildFloatInput() {
@@ -92,5 +95,6 @@ struct DmsInputView_Previews: PreviewProvider {
   
   static var previews: some View {
     DmsInputView(decimalDegrees: $angle)
+      .environmentObject(ViewOptions())
   }
 }

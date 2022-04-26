@@ -9,17 +9,15 @@ import SwiftUI
 
 @main
 struct EqGuideApp: App {
-  
-  // App level options into Environment
-  @StateObject private var appOptions = AppOptions()
-  
-  // Model at App scope.  Pass to Views as needed.
-  @StateObject private var guideModel = GuideModel()
+  // viewOptions shared across all top level tabs
+  @StateObject var viewOptions = ViewOptions()
   
   var body: some Scene {
     WindowGroup {
-      ContentView(guideModel: guideModel)
-        .environmentObject(appOptions)
+      ContentView()
+        .preferredColorScheme(.dark)
+        .foregroundColor(viewOptions.appRedColor)
+        .environmentObject(viewOptions)
     }
   }
   

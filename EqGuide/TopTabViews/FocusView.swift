@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct FocusView: View {
-    var body: some View {
-        Text("Insert Focus View Here!")
-    }
+  var body: some View {
+    Text("Insert Focus App Here")
+      .onAppear(){
+        softBump()
+      }
+    
+  }
 }
 
 struct FocusView_Previews: PreviewProvider {
-    static var previews: some View {
-        FocusView()
-    }
+  static var previews: some View {
+    FocusView()
+  }
 }

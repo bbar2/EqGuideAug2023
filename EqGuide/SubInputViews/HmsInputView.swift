@@ -21,6 +21,8 @@ struct HmsInputView: View {
   @Binding var decimalDegrees: Float
   var prefix = String("")
   
+  @EnvironmentObject var viewOptions: ViewOptions
+  
   @State var hourString = String(24)
   @State var minString = String(11)
   @State var secString = String(44)
@@ -54,7 +56,7 @@ struct HmsInputView: View {
           .onChange(of: minString) { _ in
             reBuildFloatInput()
           }
-        Text("'")
+        Text("m")
 
         Spacer()
         TextField("dd", text: $secString)
@@ -63,21 +65,22 @@ struct HmsInputView: View {
           .onChange(of: secString) { _ in
             reBuildFloatInput()
           }
-        Text("\"")
+        Text("s")
 
         Spacer()
       }
       .keyboardType(.numberPad)
       .onAppear() {
         let hms = Hms(deg: decimalDegrees)
-        hourString = String(abs(hms.hour))
-        minString = String(abs(hms.min))
-        secString = String(abs(hms.sec))
+        hourString = String(abs(hms.h))
+        minString = String(abs(hms.m))
+        secString = String(abs(hms.s))
         isPos = (hms.sign > 0 ? true : false)
       }
     }
     .font(.title)
-    .multilineTextAlignment(.center)
+    .multilineTextAlignment(.trailing)
+    .foregroundColor(viewOptions.appActionColor)
   }
   
   func reBuildFloatInput() {
@@ -94,5 +97,6 @@ struct HmsInputView_Previews: PreviewProvider {
   
   static var previews: some View {
     HmsInputView(decimalDegrees: $angle)
+      .environmentObject(ViewOptions())
   }
 }

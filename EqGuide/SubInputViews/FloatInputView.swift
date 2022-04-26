@@ -19,6 +19,8 @@ struct FloatInputView: View {
   @Binding var floatValue: Float
   var prefix = String("")
   
+  @EnvironmentObject var viewOptions: ViewOptions
+  
   @State var isPos: Bool = true
   @State var floatString = String("3.14")
   
@@ -34,8 +36,10 @@ struct FloatInputView: View {
         }
       
       TextField("xx.yy", text: $floatString)
-        .frame(width:100, alignment: .center)
+        .frame(width:125)
+        .multilineTextAlignment(.leading)
         .border(.black)
+        .foregroundColor(viewOptions.appActionColor)
         .keyboardType(.decimalPad)
         .onChange(of: floatString) { _ in
           reBuildFloatInput()
@@ -59,5 +63,6 @@ struct FloatInputView_Previews: PreviewProvider {
   @State static var testValue = Float(33.03)
   static var previews: some View {
     FloatInputView(floatValue: $testValue)
+      .environmentObject(ViewOptions())
   }
 }

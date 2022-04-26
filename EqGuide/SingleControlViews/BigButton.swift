@@ -11,6 +11,8 @@ struct BigButton: View {
   var label:String
   var action: ()->Void
   
+  @EnvironmentObject var viewOptions: ViewOptions
+  
   var body: some View {
     Button() {
       action()
@@ -21,7 +23,8 @@ struct BigButton: View {
     }
     .frame(height: 75)
     .frame(minWidth: 100)
-    .background(Color(red:0.9, green:0.9, blue:0.9))
+    .background(viewOptions.thumbColor)
+    .foregroundColor(viewOptions.appActionColor)
     .cornerRadius(20)
   }
 }
@@ -29,5 +32,6 @@ struct BigButton: View {
 struct BigButton_Previews: PreviewProvider {
   static var previews: some View {
     BigButton(label: "Test"){}
+      .environmentObject(ViewOptions())
   }
 }

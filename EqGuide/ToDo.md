@@ -2,6 +2,7 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
+2022-04-09: Why do I get one MarkRefNow on EqGuide reset. 
 2022-04-06: Coordinate Current Position and Arm Angle once a reference is "Marked".
 2022-04-06: Current time and date to Siderial time straight above.
 2022-04-06: Siderial location of Arm from current siderial time and Arm Angle.  

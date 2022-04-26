@@ -12,6 +12,8 @@ import SwiftUI
 struct SignButton: View {
   @Binding var isPos:Bool
   
+  @EnvironmentObject var viewOptions: ViewOptions
+  
   var body: some View {
     Button() {
       isPos = !isPos
@@ -19,7 +21,7 @@ struct SignButton: View {
       Text(isPos ? "＋" : "−")
         .font(.title)
         .bold()
-        .foregroundColor(.blue)
+        .foregroundColor(viewOptions.appActionColor)
     }
   }
 }
@@ -33,5 +35,7 @@ struct SignButton_Previews: PreviewProvider {
       SignButton(isPos: $falseBinding)
     }
     .previewLayout(.fixed(width: 300, height: 50))
+    .environmentObject(ViewOptions())
+    .preferredColorScheme(.dark)
   }
 }
