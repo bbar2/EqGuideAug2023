@@ -27,7 +27,7 @@
 		35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95427F09D1400BFE4CE /* GuideView.swift */; };
 		35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */; };
 		35DE202827F3D66600D96C68 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202727F3D66600D96C68 /* BigButton.swift */; };
-		35DE202A27F498E600D96C68 /* ArmAngleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202927F498E600D96C68 /* ArmAngleView.swift */; };
+		35DE202A27F498E600D96C68 /* AngleDegView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202927F498E600D96C68 /* AngleDegView.swift */; };
 		35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202B27F4AD8500D96C68 /* DmsInputView.swift */; };
 		35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202D27F4AEB600D96C68 /* Dms.swift */; };
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
@@ -63,7 +63,7 @@
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
 		35DE202727F3D66600D96C68 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
-		35DE202927F498E600D96C68 /* ArmAngleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArmAngleView.swift; sourceTree = "<group>"; };
+		35DE202927F498E600D96C68 /* AngleDegView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDegView.swift; sourceTree = "<group>"; };
 		35DE202B27F4AD8500D96C68 /* DmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsInputView.swift; sourceTree = "<group>"; };
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				358067EB27EF938400CAF595 /* RaDecPairView.swift */,
-				35DE202927F498E600D96C68 /* ArmAngleView.swift */,
+				35DE202927F498E600D96C68 /* AngleDegView.swift */,
 				358067ED27EFA0B200CAF595 /* RawDataView.swift */,
 				350E7EDA27EF675300642A2A /* DmsView.swift */,
 				35C9A95227EFA65300BFE4CE /* HmsView.swift */,
@@ -300,7 +300,7 @@
 				352168492814A86D00C76670 /* LocationData.swift in Sources */,
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				351D447B28037FBE00A00E2E /* Catalogue.swift in Sources */,
-				35DE202A27F498E600D96C68 /* ArmAngleView.swift in Sources */,
+				35DE202A27F498E600D96C68 /* AngleDegView.swift in Sources */,
 				350E7EDB27EF675300642A2A /* DmsView.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
 			);

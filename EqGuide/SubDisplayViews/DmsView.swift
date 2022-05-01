@@ -13,11 +13,11 @@ struct DmsView: View {
   var body: some View {
     let dms = Dms(deg: angleDegrees)
     VStack {
-      let decimalDegString = String(format: "%.2f deg", angleDegrees)
+      let decimalDegString = String(format: "%.2f deg", dms.degrees)
       let dmsString = String(format: "%dº   %d'   %d\"",
-                             dms.deg, dms.min, dms.sec)
-      Text(decimalDegString)//.padding(2)
-      Text(dmsString)//.padding(2)
+                             dms.d, dms.m, dms.s)
+      Text(decimalDegString)
+      Text(dmsString)
     }
   }
 }
@@ -27,6 +27,7 @@ struct dmsView_Previews: PreviewProvider {
     Group {
       DmsView(angleDegrees: 0.0)
       DmsView(angleDegrees: 180.0)
+      DmsView(angleDegrees: -180.0)
       DmsView(angleDegrees: 90.0 + 28.0/60.0 + 2.0/3600.0)
       DmsView(angleDegrees: Dms(d:  359, m:  59, s:  59 ).degrees)
       DmsView(angleDegrees: Dms(d: -359, m: -59, s: -59 ).degrees)

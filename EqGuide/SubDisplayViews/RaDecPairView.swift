@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct RaDecPairView: View {
-  var pairTitle:String
-  var pair:RaDec
+  var pairTitle: String
+  var pair: RaDec
 //  var pairRa: Float
 //  var pairDec: Float
-  
+
   var gapPad = 30.0
   
   var body: some View {
+
     VStack{
 
       Divider()
@@ -37,7 +38,6 @@ struct RaDecPairView: View {
         .padding([.leading], gapPad/2)
       }
     }
-    
   }
 }
 

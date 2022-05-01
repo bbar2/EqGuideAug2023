@@ -4,44 +4,55 @@
 //
 //  Created by Barry Bryant on 3/30/22.
 //
-// Declination is either Float Degrees or DMS integers, where:
-//   0<=D<360, 0<=M<60, 0<=S<60
+// Dms is either Float Degrees or DMS integers, where:
+//   -180 < D <= 180, 0<=M<60, 0<=S<60
 //
-// Positions are always positive.  DMS offsets can be negative.
+// To operate with a 0 to 360 range, comment out mapTo180
 //
 // D, M, and S should all have the same sign.  DMS is mathamaticaly correct
 // with different signs, but it's not meaningful.
 //
-// ToDo - Update for appropriate range of +90 to -90.
-// Really - If |deg| >  90, implies change RA by 12 Hr
+// Although Declination angles are limited to -90 <= Declination <= 90,
+// that limit is not enforced in this DMS implementation.
+//
 
 struct Dms {
-  private var _degrees: Float32
+  private var _degrees: Float
   
-  let MinPerDeg = Float32(60.0)
-  let SecPerDeg = Float32(60.0 * 60.0)
+  let MinPerDeg = Float(60.0)
+  let SecPerDeg = Float(60.0 * 60.0)
   
-  init(deg: Float32) {
-    _degrees = deg
+  init(deg: Float) {
+    _degrees = deg.truncatingRemainder(dividingBy: 360.0)
+    mapTo180()
     buildDmsTermsFromDegrees()
+  }
+  
+  private mutating func mapTo180() {
+    if _degrees > 180.0 {
+      _degrees -= 360.0
+    } else if _degrees <= -180.0 {
+      _degrees += 360.0
+    }
   }
 
-  init (d:Int32, m:Int32, s:Int32) {
-    _degrees = Float32(
-      Float32(d) +
-      Float32(m) / 60.0 +
-      Float32(s) / 3600.0
+  init (d:Int, m:Int, s:Int) {
+    _degrees = Float(
+      Float(d) +
+      Float(m) / 60.0 +
+      Float(s) / 3600.0
     ).truncatingRemainder(dividingBy: 360.0)
+    mapTo180()
     buildDmsTermsFromDegrees()
   }
   
-  private var _d = Int32(0.0)
-  private var _m = Int32(0.0)
-  private var _s = Int32(0.0)
+  private var _d = Int(0.0)
+  private var _m = Int(0.0)
+  private var _s = Int(0.0)
   
   private mutating func buildDmsTermsFromDegrees() {
-    let roundingTerm = self.sign * Float32(0.5)
-    let totalSeconds = Int32(_degrees * 3600 + roundingTerm)
+    let roundingTerm = self.sign * Float(0.5)
+    let totalSeconds = Int(_degrees * 3600 + roundingTerm)
     _s = totalSeconds % 60
     let totalMinutes = totalSeconds / 60
     _m = totalMinutes % 60
@@ -54,27 +65,28 @@ struct Dms {
     }
     set {
       _degrees = newValue.truncatingRemainder(dividingBy: 360.0)
+      mapTo180()
       buildDmsTermsFromDegrees()
     }
   }
 
-  var sign:Float32 {
+  var sign:Float {
     return _degrees < 0.0 ? -1.0 : 1.0
   }
   
-  var d: Int32 {
+  var d: Int {
     get {
       return _d
     }
   }
   
-  var m: Int32 {
+  var m: Int {
     get {
       return _m
     }
   }
         
-  var s: Int32 {
+  var s: Int {
     get {
       return _s
     }

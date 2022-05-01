@@ -5,25 +5,65 @@
 //  Object to hold the two angles required to point to an object.
 //  Operators for calculating offsets between objects.
 //  ra = Right Ascension.  0 to 360 degrees when specified in decimal degrees.
-//  dec = Declination.  0 to 180 degrees when speciried in decimal degrees.
+//  dec = Declination.  -180 to 180 degrees when speciried in decimal degrees.
+//    Although typical usage is -90 <= dec <= 90
+//    Can use |dec| > 90 if ra and LST, cause armAngle to exceed its limit of about +-95
+//    Tranform (RA, DEC) to (RA+180º, 180º-DEC) or (RA+12H, 180º-DEC)
 //
 
 import SwiftUI
 
 struct RaDec {
-  var ra: Float
-  var dec: Float
+  private var _ra: Float
+  private var _dec: Float
   
   init(ra: Float = 0.0, dec: Float = 0.0) {
-    self.ra = ra;
-    self.dec = dec;
+    _ra = ra.truncatingRemainder(dividingBy: 360.0)
+    _dec = dec.truncatingRemainder(dividingBy: 360.0)
+    _dec = mapTo180(_dec);
+  }
+  
+  var ra: Float {
+    get {
+      return _ra
+    }
+    set {
+      _ra = newValue.truncatingRemainder(dividingBy: 360.0)
+    }
+  }
+  
+  var dec: Float {
+    get {
+      return _dec
+    }
+    set {
+      _dec = newValue.truncatingRemainder(dividingBy: 360.0)
+      _dec = mapTo180(_dec)
+    }
+  }
+  
+  // Use inverted RA/DEC with DEC > 90, if RA is unachievable by mount
+  mutating func raInvert() {
+    _ra = _ra + 180.0
+    _dec = mapTo180(180.0 - _dec);
   }
   
   static func + (left: RaDec, right: RaDec) -> RaDec {
-    return RaDec(ra: left.ra + right.ra, dec: left.dec + right.dec)
+    return RaDec(ra: left._ra + right._ra, dec: left._dec + right._dec)
   }
   
   static func - (left: RaDec, right: RaDec) -> RaDec {
-    return RaDec(ra: left.ra - right.ra, dec: left.dec - right.dec)
+    return RaDec(ra: left._ra - right._ra, dec: left._dec - right._dec)
   }
+  
+  private func mapTo180(_ input: Float) -> Float {
+    if input > 180.0 {
+      return input - 360.0
+    } else if input <= -180.0 {
+      return input + 360.0
+    } else {
+      return input
+    }
+  }
+
 }

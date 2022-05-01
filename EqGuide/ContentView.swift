@@ -54,4 +54,3 @@ struct ContentView_Previews: PreviewProvider {
       .environmentObject(ViewOptions())
   }
 }
-

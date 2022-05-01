@@ -51,9 +51,18 @@ struct GuideView: View {
         VStack{
           RaDecPairView(
             pairTitle: "Current Position",
-            pair: guideModel.currentPosition )
+            pair: guideModel.currentPosition)
+          .foregroundColor(pointingKnowledgeColor())
           
-          ArmAngleView(angleDeg: guideModel.armCurrentDeg)
+          VStack {
+            AngleDegView(label: "Arm: ",
+                         angleDeg: guideModel.armCurrentDeg)
+            .foregroundColor(pointingKnowledgeColor())
+            
+            AngleDegView(label: "LST: ",
+                         angleDeg: guideModel.lstDeg)
+            .foregroundColor(lstValidColor())
+          }
           
           Divider()
           
@@ -80,7 +89,6 @@ struct GuideView: View {
                 RaDecPairView(pairTitle: "Reference Coordinates",
                               pair: guideModel.refCoord)
                 .foregroundColor(viewOptions.appActionColor)
-
               }
             }
             
@@ -138,7 +146,7 @@ struct GuideView: View {
           }
           
           RawDataView(gdb: gdb)
-            .foregroundColor((guideModel.bleConnected ? viewOptions.appRedColor : .gray) )
+            .foregroundColor((guideModel.bleConnected ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         } // VStack in NavigationView
         .navigationBarTitle("") // needed for navigationBarHidden to work.
         .navigationBarHidden(true)
@@ -151,6 +159,22 @@ struct GuideView: View {
       setupSegmentControl()
       softBump()
     } // body: some View
+  }
+  
+  func pointingKnowledgeColor() -> Color {
+    switch (guideModel.pointingKnowledge)
+    {
+      case .none:
+        return viewOptions.confNoneColor
+      case .estimated:
+        return viewOptions.confEstColor
+      case .marked:
+        return viewOptions.appRedColor
+    }
+  }
+  
+  func lstValidColor() -> Color {
+    return guideModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
   }
   
   func setupSegmentControl() {

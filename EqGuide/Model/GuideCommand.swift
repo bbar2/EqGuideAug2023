@@ -10,15 +10,17 @@
 
 enum GuideCommand:Int32 {
   case NoOp = 0
-  case SetOffset = 1
-  case SetTarget = 2
-  case AckReference = 3
-  case NumCommands  = 4
+  case SetOffset = 1      // Tell Mount to move to offset without a Reference Mark
+  case SetTarget = 2      // Tell mount to Mark a Reference then Move to Offset
+  case AckReference = 3   // Acknowledge that MarkReference has been handled by iOS App
+  case SetArmPos = 4      // Inform Mount that Arm is in Positive hemisphere
+  case SetArmNeg = 5      // Inform Mount that Arm is in Negative hemisphere
+  case NumCommands = 6
 }
 
 struct GuideCommandBlock {
   var command:Int32
-  var raOffset:Int32
-  var decOffset:Int32
+  var armOffset:Int32
+  var diskOffset:Int32
 }
 

@@ -26,25 +26,22 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   @Published var locationData = LocationData() // Should I @Published since elements are @Published elements.
 
   // These offsets, with current counts (in GuideDataBlock), determine angles.
-  // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxxOffsetDeg
+  // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetConstants()
   private var armOffsetDeg = Float32(0.0)
-  private var decOffsetDeg = Float32(0.0)
+  private var diskOffsetDeg = Float32(0.0)
 
   // Mount Angles
   var lstDeg = Float32(0.0)
   var armCurrentDeg = Float32(0.0)
-  var decCurrentDeg = Float32(0.0)
+  var diskCurrentDeg = Float32(0.0)
+
   var raCurrentDeg = Float32(0.0)
+  var decCurrentDeg = Float32(0.0)
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
   
-  // Update all time depenedent model calcs at once
-  // Don't do in calculated vars, because there is too much repetition in use to
-  // calculate terms, and update Views.
-  // Call this everytime a new GuideDataBlock arrives from Mount
-  func updateMountAngles() {
-    
+  func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
       lstDeg = Float32(lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg))
@@ -52,42 +49,69 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       lstValid = false
       lstDeg = 0.0
     }
+  }
+  
+  // Update all time dependent model calcs at once
+  // Don't do in calculated vars, because there is too much repetition building
+  // terms, and updating Views.
+  // Call this everytime a new GuideDataBlock arrives from Mount
+  func updateMountAngles() {
+    
+    updateLstDeg() // Function of time (always changing) and longitude
 
-    // Arm Count's cause arm to advance CCW, to track CCW moving sky.
+    // Positive Count's advance axes CCW, looking to Polaris or top of scope
     armCurrentDeg = Float32(guideDataBlock.armCount) * guideDataBlock.armDegPerStep + armOffsetDeg
-    decCurrentDeg = Float32(guideDataBlock.decCount) * guideDataBlock.decDegPerStep + decOffsetDeg
+    diskCurrentDeg = Float32(guideDataBlock.diskCount) * guideDataBlock.diskDegPerStep + diskOffsetDeg
 
     // armAngle is +- ~95 deg in RA.
     // Positive armAngle is in direction of Sky Rotation (CCW).
     // Positive armAngle rotates CCW around north pole
-    // When armAngle is pos: RA = LST + 90 - armAngle
-    // When armAngle is neg: RA = LST - 90 - armAngle
-    // Durrint tracking, LST advancement is negated by armAngle tracking
-    if lstValid && (pointingKnowledge == Knowledge.marked) {
-      if (armCurrentDeg < 0) {
+    // When armAngle is pos: RA = LST + 90 - armCurrentDeg; DEC = diskCurrentDeg
+    // When armAngle is neg: RA = LST - 90 - armCurrentDeg; DEC = -diskCurrentDeg
+    // Durring tracking, LST advancement is negated by armAngle tracking
+    if lstValid && (pointingKnowledge != Knowledge.none) {
+      if (armCurrentDeg > 0) {
         raCurrentDeg = lstDeg + 90.0 - armCurrentDeg
+        decCurrentDeg = diskCurrentDeg
       } else {
         raCurrentDeg = lstDeg - 90.0 - armCurrentDeg
+        decCurrentDeg = -diskCurrentDeg
       }
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
       
-      raCurrentDeg = lstDeg - armCurrentDeg // RA is meaningless with no pointing knowledge
+      raCurrentDeg = lstDeg - armCurrentDeg // RA unknown without pointing knowledge
+      decCurrentDeg = diskCurrentDeg // DEC unknown without pointing knowledge
     }
   }
     
-  func clearOffsets() {
-    armOffsetDeg = 0.0
-    decOffsetDeg = 0.0
-    pointingKnowledge = .none
-  }
-            
   var currentPosition: RaDec {
     return RaDec(ra: raCurrentDeg, dec: decCurrentDeg)
   }
   
+  // TODO Declination Flip in here.  Check hemispheres of ref and target.
+  // Returned values are arm and disk changes required.
   var offset: RaDec {
+    // Get LST
+    let LST = Float(1.0)
+
+    let target = targetCoord
+    let ref = refCoord
+    
+    var targetArm = 0.0
+    var targetDisk = 0.0
+    var refArm = 0.0
+    var refDisk = 0.0
+    
+    if (targetCoord.ra > LST) {
+      targetArm = 0.0//LST + 90.0 - target.ra
+    } else {
+      targetArm = 0.0//LST - 90.0 - target.ra
+    }
+        
+    // Find arm and disk angle for taget and Ref
+    
     return targetCoord - refCoord
   }
 
@@ -106,33 +130,39 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let refRaDeg = refCoord.ra
     let refDecDeg = refCoord.dec
 
-    let lst = lstDeg
-    clearOffsets()
-    
+    let armCountDeg = Float32(guideDataBlock.armCount) * guideDataBlock.armDegPerStep
+    let diskCountDeg = Float32(guideDataBlock.diskCount) * guideDataBlock.diskDegPerStep
+
+    updateLstDeg()
+
     // When armAngle is +: RA = LST + 90 - armAngle
     // When armAngle is -: RA = LST - 90 - armAngle
     // given: armAngle = (armCount * armDegPerStep + armOffsetDeg)
     // So when armAngle is +: RA = LST + 90 - armCount * armDegPerStep - armOffsetDeg
     // So When armAngle is -: RA = LST - 90 - armCount * armDegPerStep - armOffsetDeg
 
-    // When armAngle is unknown, infer it's sign by comparing lst and RefRaDeg
+    // When armAngle is unknown, infer it's sign by comparing lst and RefRaDeg.
     // armAngle sign is + if refCoord.ra > lst, else armAngle sign is -
     // Bias toward negative arm angle to init to >|-90| for refRaDeg close to LST.
     let bias = Float32(2.0) // This can be up to |NegArmLimitDeg| - 90.0
-    if refRaDeg >= (lst + bias) {
-      // When armAngle is +: RA = LST + 90 - armCount*armDegPerStep - armOffsetDeg
-      // armCurrentDeg = armCount * armDegPerStep after clearOffsets()
-      armOffsetDeg = lst + 90.0 - armCurrentDeg - refRaDeg
+    if refRaDeg >= (lstDeg + bias) {
+      // When armAngle is +:
+      //  RA = LST + 90 - armCount*armDegPerStep - armOffsetDeg
+      //  DEC = diskCount*diskDegPerStep + diskOffset
+      armOffsetDeg = lstDeg + 90.0 - armCountDeg - refRaDeg
+      diskOffsetDeg = refDecDeg - diskCountDeg
     } else {
-      // When amrAngle is -: RA = LST - 90 - armCount*armDegPerStep - armOffsetDeg
-      // armCurrentDeg = armCount * armDegPerStep after clearOffsets()
-      armOffsetDeg = lst - 90.0 - armCurrentDeg - refRaDeg
+      // When amrAngle is -:
+      //   RA = LST - 90 - armCount*armDegPerStep - armOffsetDeg
+      //   DEC = -diskCount*diskDegPerStep - diskOffset
+      armOffsetDeg = lstDeg - 90.0 - armCountDeg - refRaDeg
+      diskOffsetDeg = -diskCountDeg - refRaDeg
     }
     
-    decOffsetDeg = refDecDeg - decCurrentDeg
-
     // Used for color coding values that depend on references
     pointingKnowledge = lstValid ? .marked : .none
+    print("armOffsetDeg = \(armOffsetDeg)")
+    print("decOffsetDeg = \(diskOffsetDeg)")
   }
   
 
@@ -224,6 +254,9 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     updateMountAngles()
 
     // Process specific GuideDataBlock commands
+    if guideDataBlock.mountState == MountState.PowerUp.rawValue {
+      pointingKnowledge = .none
+    }
     
     // Mark Reference on markRefNow transition away from zero
     @State var readyForRefMark = true
@@ -250,33 +283,34 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
   }
   
+  // todo - no flipping in here.  Don't know enough.  This can convert degree offsets to counts.  Nothing else.
   func targetRaDec(coord: RaDec) {
+    // Arm moves opposite direction of increasing RA
+    let armOffset = -coord.ra / guideDataBlock.armDegPerStep
     let targetCommand = GuideCommandBlock(
-      command:   GuideCommand.SetTarget.rawValue,
-      raOffset:  Int32(coord.ra / guideDataBlock.armDegPerStep),
-      decOffset: Int32(coord.dec / guideDataBlock.decDegPerStep)
+      command: GuideCommand.SetTarget.rawValue,
+      armOffset: Int32(armOffset),
+      diskOffset: Int32(coord.dec / guideDataBlock.diskDegPerStep)
     )
     guideCommand(targetCommand)
   }
 
+  // todo - udpate diskOffset(dec) as function of RA and LST.
   func offsetRaDec(coord: RaDec) {
-    offsetRaDec(raOffsetDeg: coord.ra, decOffsetDeg: coord.dec)
-  }
-  
-  func offsetRaDec(raOffsetDeg: Float, decOffsetDeg: Float){
-    let offsetCommand = GuideCommandBlock(
-      command:   GuideCommand.SetOffset.rawValue,
-      raOffset:  Int32(raOffsetDeg / guideDataBlock.armDegPerStep),
-      decOffset: Int32(decOffsetDeg / guideDataBlock.decDegPerStep)
+    // Arm moves opposite direction of increasing RA
+    let targetCommand = GuideCommandBlock(
+      command: GuideCommand.SetOffset.rawValue,
+      armOffset: Int32(-coord.ra / guideDataBlock.armDegPerStep),
+      diskOffset: Int32(coord.dec / guideDataBlock.diskDegPerStep)
     )
-    guideCommand(offsetCommand)
+    guideCommand(targetCommand)
   }
-  
+    
   func ackReference() {
     let ackCommand = GuideCommandBlock(
       command: GuideCommand.AckReference.rawValue,
-      raOffset: Int32(0),
-      decOffset: Int32(0)
+      armOffset: Int32(0),
+      diskOffset: Int32(0)
     )
     guideCommand(ackCommand)
   }

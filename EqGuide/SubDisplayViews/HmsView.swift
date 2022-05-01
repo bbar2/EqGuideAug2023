@@ -13,11 +13,11 @@ struct HmsView: View {
   var body: some View {
     let hms = Hms(deg: angleDegrees)
     VStack {
-      let decimalDegString = String(format: "%.2f deg", angleDegrees)
+      let decimalDegString = String(format: "%.2f deg", hms.degrees)
       let dmsString = String(format: "%dh   %dm   %ds",
                              hms.h, hms.m, hms.s)
-      Text(decimalDegString)//.padding(2)
-      Text(dmsString)//.padding(2)
+      Text(decimalDegString)
+      Text(dmsString)
     }
   }
 }
@@ -27,7 +27,7 @@ struct hmsView_Previews: PreviewProvider {
     Group {
       HmsView(angleDegrees: Float(0.0) )
       HmsView(angleDegrees: Float(-45.0) )
-      HmsView(angleDegrees: Float(45.0) )
+      HmsView(angleDegrees: Float(110.0) )
       HmsView(angleDegrees: Hms(h: -23, m: -59, s: -59).degrees)
       HmsView(angleDegrees: Hms(h: 23, m: 59, s: 59).degrees)
     }

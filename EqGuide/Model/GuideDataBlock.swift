@@ -5,7 +5,17 @@
 //  Created by Barry Bryant on 4/2/22.
 //
 //  Structure received from Mount microcontroller via Bluetooth receive operation.
-//  Note that microcontroller uses 32 bit words.
+//  Ensure 32 bit sized words to match 32 bit microcontroller.
+//
+//  The mount arm rotates in Right Ascension.
+//  The mount disk rotates in Declination.
+//  The relationship is dependent on arm hemisphere determined by RA vs LST
+//    If RA >= LST (Local Sidereal Time)
+//      armAngle = LST + 90 - RA
+//      diskAngle = DEC
+//    Else If RA <= LST
+//      armAngle = LST - 90 - RA
+//      diskAngle = -DEC
 
 import Foundation
 
@@ -26,13 +36,13 @@ enum MountState:Int32 {
 }
 
 struct GuideDataBlock {
-  var armDegPerStep:Float32 = 1
-  var decDegPerStep:Float32 = 1
-  var mountState:Int32 = MountState.PowerUp.rawValue
-  var markRefNowInt:Int32 = 0
-  var mountTimeMs:UInt32 = 0
-  var armCount:Int32 = 0
-  var decCount:Int32 = 0
+  var armDegPerStep: Float32 = 1
+  var diskDegPerStep: Float32 = 1
+  var mountState: Int32 = MountState.PowerUp.rawValue
+  var markRefNowInt: Int32 = 0
+  var mountTimeMs: UInt32 = 0
+  var armCount: Int32 = 0
+  var diskCount: Int32 = 0
 
   var markReferenceNow: Bool {
     return markRefNowInt != 0

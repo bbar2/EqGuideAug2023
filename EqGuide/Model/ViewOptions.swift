@@ -14,7 +14,9 @@ final class ViewOptions: ObservableObject {
   
   let appRedColor = Color(red:159/255, green: 0, blue: 0)
   let appActionColor = Color(red:200.0/255.0, green: 0, blue: 0)
-  let altFontColor = Color(.orange)
+  let appDisabledColor = Color(.gray)
+  let confNoneColor = Color(.yellow)
+  let confEstColor = Color(.orange)
   let thumbColor = Color(red: 0.2, green: 0.0, blue: 0.0)
   let thumbBarColor = Color(red: 0.05, green: 0.0, blue: 0.0)
   

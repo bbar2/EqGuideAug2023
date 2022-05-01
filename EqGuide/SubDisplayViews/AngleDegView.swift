@@ -7,20 +7,21 @@
 
 import SwiftUI
 
-struct ArmAngleView: View {
-  var angleDeg:Float
+struct AngleDegView: View {
+  var label: String
+  var angleDeg: Float
   
   var body: some View {
     HStack{
-      Text("Arm: ").font(.subheadline).bold()
-      Text(String(format:"%.3f", angleDeg))
-      Text("deg").font(.subheadline)
+      Text(label).font(.subheadline).bold()
+      Text(String(format:"%.3fº", angleDeg))
     }
   }
 }
 
 struct ArmAngleView_Previews: PreviewProvider {
   static var previews: some View {
-    ArmAngleView(angleDeg: 45.0)
+    AngleDegView(label: "Test: ",
+                 angleDeg: 45.0)
   }
 }

@@ -70,9 +70,9 @@ struct DmsInputView: View {
       .keyboardType(.numberPad)
       .onAppear() {
         let dms = Dms(deg: decimalDegrees)
-        degString = String(abs(dms.deg))
-        minString = String(abs(dms.min))
-        secString = String(abs(dms.sec))
+        degString = String(abs(dms.d))
+        minString = String(abs(dms.m))
+        secString = String(abs(dms.s))
         isPos = (dms.sign > 0 ? true : false)
       }
     }

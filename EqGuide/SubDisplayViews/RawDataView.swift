@@ -28,7 +28,7 @@ struct RawDataView: View {
         Spacer()
         Text("RA: \(gdb.armCount)")
         Spacer()
-        Text("Dec: \(gdb.decCount)")
+        Text("Dec: \(gdb.diskCount)")
       }
 
       HStack {
