@@ -17,12 +17,12 @@
 //
 
 struct Dms {
-  private var _degrees: Float
+  private var _degrees: Double
   
-  let MinPerDeg = Float(60.0)
-  let SecPerDeg = Float(60.0 * 60.0)
+  let MinPerDeg = Double(60.0)
+  let SecPerDeg = Double(60.0 * 60.0)
   
-  init(deg: Float) {
+  init(deg: Double) {
     _degrees = deg.truncatingRemainder(dividingBy: 360.0)
     mapTo180()
     buildDmsTermsFromDegrees()
@@ -37,10 +37,10 @@ struct Dms {
   }
 
   init (d:Int, m:Int, s:Int) {
-    _degrees = Float(
-      Float(d) +
-      Float(m) / 60.0 +
-      Float(s) / 3600.0
+    _degrees = Double(
+      Double(d) +
+      Double(m) / 60.0 +
+      Double(s) / 3600.0
     ).truncatingRemainder(dividingBy: 360.0)
     mapTo180()
     buildDmsTermsFromDegrees()
@@ -51,7 +51,7 @@ struct Dms {
   private var _s = Int(0.0)
   
   private mutating func buildDmsTermsFromDegrees() {
-    let roundingTerm = self.sign * Float(0.5)
+    let roundingTerm = self.sign * Double(0.5)
     let totalSeconds = Int(_degrees * 3600 + roundingTerm)
     _s = totalSeconds % 60
     let totalMinutes = totalSeconds / 60
@@ -59,7 +59,7 @@ struct Dms {
     _d = totalMinutes / 60
   }
   
-  var degrees: Float {
+  var degrees: Double {
     get {
       return _degrees
     }
@@ -70,7 +70,7 @@ struct Dms {
     }
   }
 
-  var sign:Float {
+  var sign:Double {
     return _degrees < 0.0 ? -1.0 : 1.0
   }
   

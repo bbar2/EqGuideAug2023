@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HmsView: View {
-  var angleDegrees: Float
+  var angleDegrees: Double
   
   var body: some View {
     let hms = Hms(deg: angleDegrees)
@@ -25,9 +25,9 @@ struct HmsView: View {
 struct hmsView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      HmsView(angleDegrees: Float(0.0) )
-      HmsView(angleDegrees: Float(-45.0) )
-      HmsView(angleDegrees: Float(110.0) )
+      HmsView(angleDegrees:   0.0 )
+      HmsView(angleDegrees: -45.0 )
+      HmsView(angleDegrees: 110.0 )
       HmsView(angleDegrees: Hms(h: -23, m: -59, s: -59).degrees)
       HmsView(angleDegrees: Hms(h: 23, m: 59, s: 59).degrees)
     }

@@ -14,16 +14,16 @@
 import SwiftUI
 
 struct RaDec {
-  private var _ra: Float
-  private var _dec: Float
+  private var _ra: Double
+  private var _dec: Double
   
-  init(ra: Float = 0.0, dec: Float = 0.0) {
+  init(ra: Double = 0.0, dec: Double = 0.0) {
     _ra = ra.truncatingRemainder(dividingBy: 360.0)
     _dec = dec.truncatingRemainder(dividingBy: 360.0)
     _dec = mapTo180(_dec);
   }
   
-  var ra: Float {
+  var ra: Double {
     get {
       return _ra
     }
@@ -32,7 +32,7 @@ struct RaDec {
     }
   }
   
-  var dec: Float {
+  var dec: Double {
     get {
       return _dec
     }
@@ -56,7 +56,7 @@ struct RaDec {
     return RaDec(ra: left._ra - right._ra, dec: left._dec - right._dec)
   }
   
-  private func mapTo180(_ input: Float) -> Float {
+  private func mapTo180(_ input: Double) -> Double {
     if input > 180.0 {
       return input - 360.0
     } else if input <= -180.0 {

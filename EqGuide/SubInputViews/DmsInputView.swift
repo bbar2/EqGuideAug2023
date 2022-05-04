@@ -16,7 +16,7 @@
 import SwiftUI
 
 struct DmsInputView: View {
-  @Binding var decimalDegrees: Float
+  @Binding var decimalDegrees: Double
   var prefix = String("")
   
   @EnvironmentObject var viewOptions: ViewOptions
@@ -91,7 +91,7 @@ struct DmsInputView: View {
 }
 
 struct DmsInputView_Previews: PreviewProvider {
-  @State static var angle = Float(-90.5)
+  @State static var angle = -90.5
   
   static var previews: some View {
     DmsInputView(decimalDegrees: $angle)

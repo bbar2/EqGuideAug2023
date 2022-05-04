@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DmsView: View {
-  var angleDegrees: Float
+  var angleDegrees: Double
   
   var body: some View {
     let dms = Dms(deg: angleDegrees)

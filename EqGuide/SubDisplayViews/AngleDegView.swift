@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AngleDegView: View {
   var label: String
-  var angleDeg: Float
+  var angleDeg: Double
   
   var body: some View {
     HStack{

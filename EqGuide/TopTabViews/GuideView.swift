@@ -34,16 +34,21 @@ struct GuideView: View {
     
     VStack {
       
-      HStack{
-        if !guideModel.bleConnected {
-          Text("Status: ")
-          Text(guideModel.statusString)
-        } else {
-          Text("EqMount: ")
-          let stateEnum = MountState(rawValue: gdb.mountState)
-          Text(String("\(stateEnum ?? MountState.StateError)"))
-        }
-      }.font(.title)
+      VStack {
+        HStack{
+          if !guideModel.bleConnected {
+            Text("Status: ")
+            Text(guideModel.statusString)
+          } else {
+            Text("EqMount: ")
+            let stateEnum = MountState(rawValue: gdb.mountState)
+            Text(String("\(stateEnum ?? MountState.StateError)"))
+          }
+        }.font(.title)
+        AngleDegView(label: "LST: ",
+                     angleDeg: guideModel.lstDeg)
+        .foregroundColor(lstValidColor())
+      }
       Divider()
       
       NavigationView {
@@ -54,15 +59,9 @@ struct GuideView: View {
             pair: guideModel.currentPosition)
           .foregroundColor(pointingKnowledgeColor())
           
-          VStack {
-            AngleDegView(label: "Arm: ",
-                         angleDeg: guideModel.armCurrentDeg)
-            .foregroundColor(pointingKnowledgeColor())
-            
-            AngleDegView(label: "LST: ",
-                         angleDeg: guideModel.lstDeg)
-            .foregroundColor(lstValidColor())
-          }
+          AngleDegView(label: "Arm: ",
+                       angleDeg: guideModel.armCurrentDeg)
+          .foregroundColor(pointingKnowledgeColor())
           
           Divider()
           
@@ -81,15 +80,9 @@ struct GuideView: View {
                              coord: $guideModel.refCoord,
                              editInFloat: $appOptions.editInFloat)
             } label: {
-              ZStack {
-                // works well but causes sizing issues in OFFSET mode
-//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
-//                  .fill(viewOptions.thumbColor)
-//                  .padding([.top],20)
-                RaDecPairView(pairTitle: "Reference Coordinates",
-                              pair: guideModel.refCoord)
-                .foregroundColor(viewOptions.appActionColor)
-              }
+              RaDecPairView(pairTitle: "Reference Coordinates",
+                            pair: guideModel.refCoord)
+              .foregroundColor(viewOptions.appActionColor)
             }
             
             NavigationLink {
@@ -98,19 +91,14 @@ struct GuideView: View {
                              editInFloat: $appOptions.editInFloat)
 
             } label: {
-              ZStack {
-//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
-//                  .fill(viewOptions.thumbColor)
-//                  .padding([.top],20)
-                RaDecPairView(pairTitle: "Target Coordinates",
-                              pair: guideModel.targetCoord)
-                .foregroundColor(viewOptions.appActionColor)
-
-              }
+              RaDecPairView(pairTitle: "Target Coordinates",
+                            pair: guideModel.targetCoord)
+              .foregroundColor(viewOptions.appActionColor)
             }
             
             RaDecPairView(pairTitle: "Offset to Target",
-                          pair: guideModel.offset)
+                          pair: RaDec(ra: guideModel.armDeltaDeg(),
+                                      dec:guideModel.diskDeltaDeg()))
             
           } else {
             NavigationLink {
@@ -118,14 +106,9 @@ struct GuideView: View {
                              coord: $directOffset,
                              editInFloat: $appOptions.editInFloat)
             } label: {
-              ZStack {
-//                RoundedRectangle(cornerRadius: CGFloat(30), style: .circular)
-//                  .fill(viewOptions.thumbColor)
-//                  .padding([.top],20)
-                RaDecPairView(pairTitle: "Direct Offset",
-                              pair: directOffset)
-                .foregroundColor(viewOptions.appActionColor)
-              }
+              RaDecPairView(pairTitle: "Direct Offset",
+                            pair: directOffset)
+              .foregroundColor(viewOptions.appActionColor)
             }
           }
           
@@ -135,12 +118,19 @@ struct GuideView: View {
           
           if useDirectOffset {
             BigButton(label:" Set Offset  ") {
-              guideModel.offsetRaDec(coord: directOffset)
+              // TODO - build arm and disk deltas in a guideModel func
+              // With LST and estimate of current RA, can build proper deltas.
+              // Otherwise, just make them proportional -- color yellow.
+              guideModel.offsetRaDec(gdb: guideModel.guideDataBlock,
+                                     armDeltaDeg:  directOffset.ra,
+                                     diskDeltaDeg: directOffset.dec)
               heavyBump()
             }
           } else {
             BigButton(label:" Set Target  ") {
-              guideModel.targetRaDec(coord: guideModel.offset)
+              guideModel.targetRaDec(gdb: guideModel.guideDataBlock,
+                                     armDeltaDeg: guideModel.armDeltaDeg(),
+                                     diskDeltaDeg: guideModel.diskDeltaDeg())
               heavyBump()
             }
           }

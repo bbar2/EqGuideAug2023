@@ -18,7 +18,7 @@
 import SwiftUI
 
 struct HmsInputView: View {
-  @Binding var decimalDegrees: Float
+  @Binding var decimalDegrees: Double
   var prefix = String("")
   
   @EnvironmentObject var viewOptions: ViewOptions
@@ -93,7 +93,7 @@ struct HmsInputView: View {
 }
 
 struct HmsInputView_Previews: PreviewProvider {
-  @State static var angle = Float(-90.5)
+  @State static var angle = Double(-90.5)
   
   static var previews: some View {
     HmsInputView(decimalDegrees: $angle)

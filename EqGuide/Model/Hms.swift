@@ -16,22 +16,22 @@
 // HMS terms are limited to: 0 <= H < 24
 
 struct Hms {
-  private var _degrees:Float
+  private var _degrees:Double
 
-  let DegPerHour = Float(360.0 / 24.0)
-  let MinPerHour = Float(60.0)
-  let SecPerHour = Float(60.0 * 60.0)
+  let DegPerHour = Double(360.0 / 24.0)
+  let MinPerHour = Double(60.0)
+  let SecPerHour = Double(60.0 * 60.0)
   
-  init(deg: Float) {
+  init(deg: Double) {
     _degrees = deg.truncatingRemainder(dividingBy: 360.0)
     buildHmsTermsFromDegrees()
   }
 
   init (h:Int, m:Int, s:Int) {
-    _degrees = Float(
-      Float(h) * DegPerHour +
-      Float(m) * DegPerHour / MinPerHour +
-      Float(s) * DegPerHour / SecPerHour
+    _degrees = Double(
+      Double(h) * DegPerHour +
+      Double(m) * DegPerHour / MinPerHour +
+      Double(s) * DegPerHour / SecPerHour
     ).truncatingRemainder(dividingBy: 360.0)
     buildHmsTermsFromDegrees()
   }
@@ -51,7 +51,7 @@ struct Hms {
     _h = totalMinutes / 60
   }
   
-  var degrees: Float {
+  var degrees: Double {
     get {
       return _degrees
     }
@@ -61,7 +61,7 @@ struct Hms {
     }
   }
   
-  var sign:Float {
+  var sign:Double {
     return _degrees < 0.0 ? -1.0 : 1.0
   }
   

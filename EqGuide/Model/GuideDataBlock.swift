@@ -44,8 +44,17 @@ struct GuideDataBlock {
   var armCount: Int32 = 0
   var diskCount: Int32 = 0
 
+  // Conversions from BLE Communication driven types to iOS Application native types
   var markReferenceNow: Bool {
     return markRefNowInt != 0
+  }
+  
+  var armCountDeg: Double {
+      return Double(armCount) * Double(armDegPerStep)
+  }
+  
+  var diskCountDeg: Double {
+    return Double(diskCount) * Double(diskDegPerStep)
   }
   
 }

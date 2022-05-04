@@ -39,8 +39,8 @@ struct RaDecInputView: View {
 
       VStack {
         if editInFloat {
-          FloatInputView(floatValue: $tempRaDec.ra, prefix: "RA")
-          FloatInputView(floatValue: $tempRaDec.dec, prefix: "DEC")
+          FloatInputView(doubleValue: $tempRaDec.ra, prefix: "RA")
+          FloatInputView(doubleValue: $tempRaDec.dec, prefix: "DEC")
         } else {
           HmsInputView(decimalDegrees: $tempRaDec.ra, prefix: "RA")
           DmsInputView(decimalDegrees: $tempRaDec.dec, prefix: "DEC")

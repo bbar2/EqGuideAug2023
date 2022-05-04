@@ -16,7 +16,7 @@ import SwiftUI
 import Combine
 
 struct FloatInputView: View {
-  @Binding var floatValue: Float
+  @Binding var doubleValue: Double
   var prefix = String("")
   
   @EnvironmentObject var viewOptions: ViewOptions
@@ -32,7 +32,7 @@ struct FloatInputView: View {
       
       SignButton(isPos: $isPos)
         .onChange(of: isPos) { _ in
-          reBuildFloatInput()
+          reBuildDoubleInput()
         }
       
       TextField("xx.yy", text: $floatString)
@@ -42,27 +42,27 @@ struct FloatInputView: View {
         .foregroundColor(viewOptions.appActionColor)
         .keyboardType(.decimalPad)
         .onChange(of: floatString) { _ in
-          reBuildFloatInput()
+          reBuildDoubleInput()
         }
     }
     .font(.title)
     .multilineTextAlignment(.center)
     .onAppear() {
-      isPos = (floatValue >= 0.0 ? true : false)
-      floatString = String(abs(floatValue))
+      isPos = (doubleValue >= 0.0 ? true : false)
+      floatString = String(abs(doubleValue))
     }
   }
   
-  func reBuildFloatInput() {
-    floatValue = Float(floatString) ?? 0.0
-    floatValue *= (isPos ? Float(1.0) : Float(-1.0))
+  func reBuildDoubleInput() {
+    doubleValue = Double(floatString) ?? 0.0
+    doubleValue *= (isPos ? 1.0 : -1.0)
   }
 }
 
 struct FloatInputView_Previews: PreviewProvider {
-  @State static var testValue = Float(33.03)
+  @State static var testValue = Double(33.03)
   static var previews: some View {
-    FloatInputView(floatValue: $testValue)
+    FloatInputView(doubleValue: $testValue)
       .environmentObject(ViewOptions())
   }
 }
