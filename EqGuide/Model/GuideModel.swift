@@ -18,13 +18,14 @@ enum Knowledge {
 
 class GuideModel : BleWizardDelegate, ObservableObject {
 
+  @Published var catalog: [Target] = loadJson("TargetData.json")
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
   @Published var guideDataBlock = GuideDataBlock()
-  @Published var refCoord = Catalogue().mizar //RaDec(ra: 97.5, dec: 25.5)
-  @Published var targetCoord = Catalogue().m81 // RaDec(ra: 107.25, dec: 35.5)
+  @Published var refCoord = RaDec(ra: 0, dec: 0)
+  @Published var targetCoord = RaDec(ra: 0, dec: 0)
   @Published var locationData = LocationData() // Should I @Published since elements are @Published elements.
-
+  
   // These offsets, with current counts (in GuideDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetsToReference()
@@ -49,6 +50,11 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       lstValid = false
       lstDeg = 0.0
     }
+  }
+  
+  func updateTarget() {
+    refCoord = RaDec(ra: catalog[0].ra, dec: catalog[0].dec)
+    targetCoord = RaDec(ra: catalog[1].ra, dec: catalog[1].dec)
   }
   
   // Update all time dependent model calcs at once
@@ -120,7 +126,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     // Check with refArmDeg+deltaDeg limits against physical limits.  Report error
     if abs(refArmDeg + deltaDeg) > 92.0 {
       // TODO - do something on UI
-      print("ERROR - targetArmDeg Exceeds 92º physical limit")
+//      print("WARN - targetArmDeg Exceeds 92º physical limit")
     }
     
     return deltaDeg
@@ -226,6 +232,9 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       initViewModel()
       initialized = true
     }
+    
+    updateTarget() // TODO - rename, sync with list views, do something better than this
+
   }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect

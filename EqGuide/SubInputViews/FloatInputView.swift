@@ -49,7 +49,7 @@ struct FloatInputView: View {
     .multilineTextAlignment(.center)
     .onAppear() {
       isPos = (doubleValue >= 0.0 ? true : false)
-      floatString = String(abs(doubleValue))
+      floatString = String(format:"%.2f", abs(doubleValue))
     }
   }
   

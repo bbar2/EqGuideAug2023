@@ -2,13 +2,13 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
-2022-05-02: Update GuideView's OffsetToTarget View to show ArmAngle and DiskAngle
-2022-04-09: Why do I get one MarkRefNow on EqGuide reset. 
-2022-04-08: When Mount reverses offset after a guide, update the EqApp so it's clear where next offset will take it. 
-2022-04-08: Top level decimal degree or Deg/Hour and Minute switch.  Keep on screen at all times.
-2022-04-08: Manual Top level Declination invert button, so support operation after azimuth flip. This could be automated after reading focus motor accelerometers, but might still be needed for times the focus motor is not on board, or down, or before reference angle set.   
-2022-04-08: Make UI view font sizes and colors consistent by storing in Environmnet Object. 
 2022-04-06: Create and read json file with target offsets. Update UI to set reference and target from json based list. 
+2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
+2022-05-02: Update GuideView's OffsetToTarget View to show ArmAngle and DiskAngle
+2022-05-04: Either a "Current To Ref Pos" Button, or add a "GoTo Target from Current"   
+2022-04-09: Why do I get one MarkRefNow on EqGuide reset. 
+2022-04-08: Top level decimal degree or Deg/Hour and Minute switch.  Keep on screen at all times.
+2022-04-08: Make UI view font sizes and colors consistent by storing in Environmnet Object. 
 2022-04-06: Get two BLE links running.  One to Mount, one to Focus.
 2022-04-06: After two BLE links, Integrate FocusControl as a separate Top level tab.
 2022-04-06: After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
@@ -17,8 +17,9 @@ Do I get spel checking.  No.
 2022-04-06: Create Icon - move to Assets - plan to use FocusControl icon. 
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
-
 # Done Items - Newest on top.  Date item completed.
+2022-05-05: OBE Since basic equations do the flip.  Manual Top level Declination invert button, so support operation after azimuth flip. This could be automated after reading focus motor accelerometers, but might still be needed for times the focus motor is not on board, or down, or before reference angle set.   
+2022-05-04: OBE - Removed reversals from Mount.  When Mount reverses offset after a guide, update the EqApp so it's clear where next offset will take it. 
 2022-05-02: Done - Fix DiskAngleOffset calc to use +180
 2022-05-02: Done - Coordinate Current Position and Arm Angle once a reference is "Marked".
 2022-04-20: Done - Siderial location of Arm from current siderial time and Arm Angle.  

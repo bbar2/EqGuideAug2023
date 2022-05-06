@@ -78,7 +78,8 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Reference Coordinates",
                              coord: $guideModel.refCoord,
-                             editInFloat: $appOptions.editInFloat)
+                             editInFloat: $appOptions.editInFloat,
+                             catalog: guideModel.catalog)
             } label: {
               RaDecPairView(pairTitle: "Reference Coordinates",
                             pair: guideModel.refCoord)
@@ -88,7 +89,8 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Target Coordinates",
                              coord: $guideModel.targetCoord,
-                             editInFloat: $appOptions.editInFloat)
+                             editInFloat: $appOptions.editInFloat,
+                             catalog: guideModel.catalog)
 
             } label: {
               RaDecPairView(pairTitle: "Target Coordinates",
@@ -104,7 +106,9 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Direct Offset",
                              coord: $directOffset,
-                             editInFloat: $appOptions.editInFloat)
+                             editInFloat: $appOptions.editInFloat,
+                             catalog: guideModel.catalog)
+                             
             } label: {
               RaDecPairView(pairTitle: "Direct Offset",
                             pair: directOffset)
@@ -116,6 +120,12 @@ struct GuideView: View {
           
           Spacer()
           
+          HStack {
+            BigButton(label:"Swap") {
+              let temp = guideModel.refCoord
+              guideModel.refCoord = guideModel.targetCoord
+              guideModel.targetCoord = temp
+            }
           if useDirectOffset {
             BigButton(label:" Set Offset  ") {
               // TODO - build arm and disk deltas in a guideModel func
@@ -133,6 +143,7 @@ struct GuideView: View {
                                      diskDeltaDeg: guideModel.diskDeltaDeg())
               heavyBump()
             }
+          }
           }
           
           RawDataView(gdb: gdb)

@@ -10,12 +10,14 @@ import SwiftUI
 struct RaDecInputView: View {
   
   var label:String
-  @Binding var coord:RaDec
-  @Binding var editInFloat:Bool
+  @Binding var coord: RaDec
+  @Binding var editInFloat: Bool
+  var catalog : [Target]
 
   @EnvironmentObject var viewOptions: ViewOptions
 
   @State private var tempRaDec = RaDec()
+  @State private var targetName = "Manual Entry"
   @Environment(\.dismiss) private var dismissView
   
   var body: some View {
@@ -33,9 +35,12 @@ struct RaDecInputView: View {
         Spacer()
       }.padding([.bottom], 20)
 
-      Text(label)
-        .font(.title)
-        .padding([.top], 20)
+      VStack {
+        Text(label)
+        Text(targetName)
+      }
+      .font(.title)
+      .padding([.top], 20)
 
       VStack {
         if editInFloat {
@@ -63,7 +68,8 @@ struct RaDecInputView: View {
         heavyBump()
         dismissView()
       }
-      Spacer()
+      
+      TargetListView(catalog: catalog, targetTapAction: makeTargetCurrent)
     }
     .navigationBarBackButtonHidden(true)
     .navigationBarTitle("") // needed for navigationBarHidden to work.
@@ -72,30 +78,28 @@ struct RaDecInputView: View {
     .onAppear() {
       softBump()
     }
+  }
 
+  func makeTargetCurrent(newTarget: Target) {
+    tempRaDec.ra = newTarget.ra
+    tempRaDec.dec = newTarget.dec
+    targetName = newTarget.name
+    softBump()
   }
-  
-  func heavyBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .heavy)
-    haptic.impactOccurred()
-  }
-  
-  func softBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .soft)
-    haptic.impactOccurred()
-  }
-  
+
 }
 
 struct RaInputView_Previews: PreviewProvider {
   @State static var testCoord = RaDec(ra: 97.5, dec: 0.25)
   @State static var viewOptions = ViewOptions()
   @State static var editInFloat = true
+  @State static var guideModel = GuideModel()
   
   static var previews: some View {
     RaDecInputView(label: "Enter RA/DEC Pair",
                    coord: $testCoord,
-                   editInFloat: $editInFloat)
+                   editInFloat: $editInFloat,
+                   catalog: guideModel.catalog)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

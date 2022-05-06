@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1001,
+    "name": "Mizar",
+    "description": "Double star at bend of Big Dipper Handle.  Companion star is Alcor, mag 4.0.",
+    "ra": 201.25,
+    "dec": 54.9333,
+    "mag": 2.3,
+    "category": "MultiStar",
+    "constellation": "Ursa Major",
+    "extra": "Not Used in code to demo that all JSON fields don't have to be used",
+    "but": "every field of data struct must be in JSON file"
+  },
+  {
+    "id": 1002,
+    "name": "M81",
+    "description": "Bode's galaxy - Spiral galaxy in Ursa Major.",
+    "ra": 149.0,
+    "dec": 69.0667,
+    "mag": 6.9,
+    "category": "Galaxy",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1003,
+    "name": "Arcturus",
+    "description": "Brightest star in northern celestial hemisphere.  4th brightest in night sky.",
+    "ra": 213.9154,
+    "dec": 19.1822,
+    "mag": -0.05,
+    "category": "Star",
+    "constellation": "Bootes"
+  },
+  {
+    "id": 1004,
+    "name": "Sirius",
+    "description": "Brightest star in night sky.  Really binary of Sirius A and B.",
+    "ra": 101.2875,
+    "dec": -16.7161,
+    "mag": -1.46,
+    "category": "MultiStar",
+    "constellation": "Canis Major"
+  },
+  {
+    "id": 1005,
+    "name": "M82",
+    "description": "The Cigar galaxy.  need description",
+    "ra": 149.0,
+    "dec": 69.6833,
+    "mag": 8.4,
+    "category": "Galaxy",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1006,
+    "name": "Alkaid",
+    "description": "First star of Big Dipper handle, before Mizar.",
+    "ra": 206.8833,
+    "dec": 49.3133,
+    "mag": 1.86,
+    "category": "Star",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1007,
+    "name": "Alioth",
+    "description": "Third star in Big Dipper handle, after Mizar, and brightest star in Ursa Major",
+    "ra": 193.5083,
+    "dec": 55.9597,
+    "mag": 1.77,
+    "category": "Star",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1008,
+    "name": "Megrez",
+    "description": "Handle side of Big Dipper bucket, and dimmest star in Big Dipper",
+    "ra": 183.8583,
+    "dec": 57.0325,
+    "mag": 3.312,
+    "category": "Star",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1009,
+    "name": "Phad",
+    "description": "Lower left star in bowl of Big Dipper.",
+    "ra": 178.4583,
+    "dec": 53.6947,
+    "mag": 2.438,
+    "category": "Star",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1010,
+    "name": "Merak",
+    "description": "Lower right star in bowl of Big Dipper.  First star of pointer, thru Dubhe (upper right of bucket) to Polaris.",
+    "ra": 165.4583,
+    "dec": 56.3825,
+    "mag": 2.37,
+    "category": "Star",
+    "constellation": "Ursa Major"
+  },
+  {
+    "id": 1011,
+    "name": "M101",
+    "description": "Pinwheel Galaxy.  Face on Spiral.  About half the size of full moon.",
+    "ra": 210.8042,
+    "dec": 54.3492,
+    "mag": 7.9,
+    "category": "Galaxy",
+    "constellation": "Ursa Major"
+  }
+]
