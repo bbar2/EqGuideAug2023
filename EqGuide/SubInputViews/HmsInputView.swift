@@ -71,16 +71,25 @@ struct HmsInputView: View {
       }
       .keyboardType(.numberPad)
       .onAppear() {
-        let hms = Hms(deg: decimalDegrees)
-        hourString = String(abs(hms.h))
-        minString = String(abs(hms.m))
-        secString = String(abs(hms.s))
-        isPos = (hms.sign > 0 ? true : false)
+        initEditableStrings()
+      }
+      // This onChange() handles cases where caller makes a change after onAppear
+      .onChange(of: decimalDegrees) {_ in
+        initEditableStrings()
       }
     }
     .font(.title)
     .multilineTextAlignment(.trailing)
     .foregroundColor(viewOptions.appActionColor)
+  }
+
+  // called by onAppear, and onChange when decimalDegrees changed by caller
+  func initEditableStrings() {
+    let hms = Hms(deg: decimalDegrees)
+    hourString = String(abs(hms.h))
+    minString = String(abs(hms.m))
+    secString = String(abs(hms.s))
+    isPos = (hms.sign > 0 ? true : false)
   }
   
   func reBuildFloatInput() {

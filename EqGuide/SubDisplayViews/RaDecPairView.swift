@@ -10,8 +10,6 @@ import SwiftUI
 struct RaDecPairView: View {
   var pairTitle: String
   var pair: RaDec
-//  var pairRa: Float
-//  var pairDec: Float
 
   var gapPad = 30.0
   

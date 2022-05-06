@@ -9,11 +9,11 @@ import Foundation
 
 class AppOptions : ObservableObject {
   var showSecs: Bool
-  var editInFloat: Bool
+  var showDmsHms: Bool
   
   init() {
     showSecs = false
-    editInFloat = true
+    showDmsHms = true
   }
   
 }

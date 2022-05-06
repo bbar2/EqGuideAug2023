@@ -29,6 +29,7 @@ struct GuideView: View {
   
   @State var useDirectOffset = false
   @State var directOffset = RaDec(ra: 0.0, dec: 0.0)
+  @State var junk = true
   
   var body: some View {
     
@@ -45,9 +46,25 @@ struct GuideView: View {
             Text(String("\(stateEnum ?? MountState.StateError)"))
           }
         }.font(.title)
-        AngleDegView(label: "LST: ",
-                     angleDeg: guideModel.lstDeg)
-        .foregroundColor(lstValidColor())
+        HStack {
+          if (appOptions.showDmsHms) {
+            let hms = Hms(deg: guideModel.lstDeg)
+            let dmsString = String(format: "LST: %02dh %02dm %02ds",
+                                   hms.h, hms.m, hms.s)
+            Text(dmsString)
+              .foregroundColor(lstValidColor())
+          } else {
+            AngleDegView(label: "LST: ",
+                         angleDeg: guideModel.lstDeg)
+            .foregroundColor(lstValidColor())
+          }
+          Spacer()
+          Button() {
+            appOptions.showDmsHms = !appOptions.showDmsHms
+          } label: {
+            Text(appOptions.showDmsHms ? "Show Degrees" : "Show DMS/HMS")
+          }
+        }
       }
       Divider()
       
@@ -78,7 +95,7 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Reference Coordinates",
                              coord: $guideModel.refCoord,
-                             editInFloat: $appOptions.editInFloat,
+                             unitHmsDms: $appOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
               RaDecPairView(pairTitle: "Reference Coordinates",
@@ -89,9 +106,9 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Target Coordinates",
                              coord: $guideModel.targetCoord,
-                             editInFloat: $appOptions.editInFloat,
+                             unitHmsDms: $appOptions.showDmsHms,
                              catalog: guideModel.catalog)
-
+              
             } label: {
               RaDecPairView(pairTitle: "Target Coordinates",
                             pair: guideModel.targetCoord)
@@ -106,9 +123,9 @@ struct GuideView: View {
             NavigationLink {
               RaDecInputView(label: "Enter Direct Offset",
                              coord: $directOffset,
-                             editInFloat: $appOptions.editInFloat,
+                             unitHmsDms: $appOptions.showDmsHms,
                              catalog: guideModel.catalog)
-                             
+              
             } label: {
               RaDecPairView(pairTitle: "Direct Offset",
                             pair: directOffset)
@@ -126,24 +143,24 @@ struct GuideView: View {
               guideModel.refCoord = guideModel.targetCoord
               guideModel.targetCoord = temp
             }
-          if useDirectOffset {
-            BigButton(label:" Set Offset  ") {
-              // TODO - build arm and disk deltas in a guideModel func
-              // With LST and estimate of current RA, can build proper deltas.
-              // Otherwise, just make them proportional -- color yellow.
-              guideModel.offsetRaDec(gdb: guideModel.guideDataBlock,
-                                     armDeltaDeg:  directOffset.ra,
-                                     diskDeltaDeg: directOffset.dec)
-              heavyBump()
+            if useDirectOffset {
+              BigButton(label:" Set Offset  ") {
+                // TODO - build arm and disk deltas in a guideModel func
+                // With LST and estimate of current RA, can build proper deltas.
+                // Otherwise, just make them proportional -- color yellow.
+                guideModel.offsetRaDec(gdb: guideModel.guideDataBlock,
+                                       armDeltaDeg:  directOffset.ra,
+                                       diskDeltaDeg: directOffset.dec)
+                heavyBump()
+              }
+            } else {
+              BigButton(label:" Set Target  ") {
+                guideModel.targetRaDec(gdb: guideModel.guideDataBlock,
+                                       armDeltaDeg: guideModel.armDeltaDeg(),
+                                       diskDeltaDeg: guideModel.diskDeltaDeg())
+                heavyBump()
+              }
             }
-          } else {
-            BigButton(label:" Set Target  ") {
-              guideModel.targetRaDec(gdb: guideModel.guideDataBlock,
-                                     armDeltaDeg: guideModel.armDeltaDeg(),
-                                     diskDeltaDeg: guideModel.diskDeltaDeg())
-              heavyBump()
-            }
-          }
           }
           
           RawDataView(gdb: gdb)

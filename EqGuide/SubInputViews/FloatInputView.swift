@@ -48,9 +48,17 @@ struct FloatInputView: View {
     .font(.title)
     .multilineTextAlignment(.center)
     .onAppear() {
-      isPos = (doubleValue >= 0.0 ? true : false)
-      floatString = String(format:"%.2f", abs(doubleValue))
+      initEditableString()
     }
+    // This onChange() handles cases where caller makes a change after onAppear
+    .onChange(of: doubleValue){ _ in
+      initEditableString()
+    }
+  }
+  
+  func initEditableString() {
+    isPos = (doubleValue >= 0.0 ? true : false)
+    floatString = String(format:"%.2f", abs(doubleValue))
   }
   
   func reBuildDoubleInput() {

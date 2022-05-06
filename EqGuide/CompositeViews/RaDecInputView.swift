@@ -11,15 +11,17 @@ struct RaDecInputView: View {
   
   var label:String
   @Binding var coord: RaDec
-  @Binding var editInFloat: Bool
+  @Binding var unitHmsDms: Bool
   var catalog : [Target]
 
   @EnvironmentObject var viewOptions: ViewOptions
-
-  @State private var tempRaDec = RaDec()
-  @State private var targetName = "Manual Entry"
   @Environment(\.dismiss) private var dismissView
-  
+
+//  @State private var tempRaDec = RaDec()
+  @State private var tempRa = Double(0)
+  @State private var tempDec = Double(0)
+  @State private var targetName = "Manual Entry"
+
   var body: some View {
     
     VStack {
@@ -43,28 +45,22 @@ struct RaDecInputView: View {
       .padding([.top], 20)
 
       VStack {
-        if editInFloat {
-          FloatInputView(doubleValue: $tempRaDec.ra, prefix: "RA")
-          FloatInputView(doubleValue: $tempRaDec.dec, prefix: "DEC")
+        if unitHmsDms {
+          HmsInputView(decimalDegrees: $tempRa, prefix: "RA")
+          DmsInputView(decimalDegrees: $tempDec, prefix: "DEC")
         } else {
-          HmsInputView(decimalDegrees: $tempRaDec.ra, prefix: "RA")
-          DmsInputView(decimalDegrees: $tempRaDec.dec, prefix: "DEC")
+          FloatInputView(doubleValue: $tempRa, prefix: "RA")
+          FloatInputView(doubleValue: $tempDec, prefix: "DEC")
         }
       }
-      Button() {
-        editInFloat = !editInFloat
-        softBump()
-      } label: {
-        Text(editInFloat ? "Switch to HMS/DMS" : "Switch To Decimal Degrees")
-          .font(.title2)
-          .bold()
-      }
       .onAppear() {
-        tempRaDec = coord
+        tempRa = coord.ra
+        tempDec = coord.dec
       }
       
       BigButton(label:"Apply") {
-        coord  = tempRaDec
+        coord.ra = tempRa
+        coord.dec = tempDec
         heavyBump()
         dismissView()
       }
@@ -80,10 +76,10 @@ struct RaDecInputView: View {
     }
   }
 
-  func makeTargetCurrent(newTarget: Target) {
-    tempRaDec.ra = newTarget.ra
-    tempRaDec.dec = newTarget.dec
-    targetName = newTarget.name
+  func makeTargetCurrent(tappedTarget: Target) {
+    tempRa  = tappedTarget.ra
+    tempDec = tappedTarget.dec
+    targetName = tappedTarget.name
     softBump()
   }
 
@@ -92,13 +88,13 @@ struct RaDecInputView: View {
 struct RaInputView_Previews: PreviewProvider {
   @State static var testCoord = RaDec(ra: 97.5, dec: 0.25)
   @State static var viewOptions = ViewOptions()
-  @State static var editInFloat = true
+  @State static var useHmsDms = true
   @State static var guideModel = GuideModel()
   
   static var previews: some View {
     RaDecInputView(label: "Enter RA/DEC Pair",
                    coord: $testCoord,
-                   editInFloat: $editInFloat,
+                   unitHmsDms: $useHmsDms,
                    catalog: guideModel.catalog)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)

@@ -23,12 +23,16 @@ struct TargetListView: View {
 
 struct ObjectListView_Previews: PreviewProvider {
   @State static var guideModel = GuideModel()
-
-  static func targetTapAction(_: Target) {
+  static func targetTapAction(_ target: Target) {
+    tappedTarget = target
   }
-  
+  @State static var tappedTarget = guideModel.catalog[0]
+
   static var previews: some View {
-    TargetListView(catalog: guideModel.catalog,
-    targetTapAction: targetTapAction)
+    VStack {
+      Text(tappedTarget.name)
+      TargetListView(catalog: guideModel.catalog,
+                     targetTapAction: targetTapAction)
+    }
   }
 }

@@ -69,16 +69,25 @@ struct DmsInputView: View {
       }
       .keyboardType(.numberPad)
       .onAppear() {
-        let dms = Dms(deg: decimalDegrees)
-        degString = String(abs(dms.d))
-        minString = String(abs(dms.m))
-        secString = String(abs(dms.s))
-        isPos = (dms.sign > 0 ? true : false)
+        initEditableStrings()
+      }
+      // This onChange() handles cases where caller makes a change after onAppear
+      .onChange(of: decimalDegrees) { _ in
+        initEditableStrings()
       }
     }
     .font(.title)
     .multilineTextAlignment(.trailing)
     .foregroundColor(viewOptions.appActionColor)
+  }
+  
+  // called by onAppear, and onChange when decimalDegrees changed by caller
+  func initEditableStrings() {
+    let dms = Dms(deg: decimalDegrees)
+    degString = String(abs(dms.d))
+    minString = String(abs(dms.m))
+    secString = String(abs(dms.s))
+    isPos = (dms.sign > 0 ? true : false)
   }
   
   func reBuildFloatInput() {
