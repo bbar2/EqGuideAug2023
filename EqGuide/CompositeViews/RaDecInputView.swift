@@ -35,14 +35,14 @@ struct RaDecInputView: View {
             .foregroundColor(viewOptions.appActionColor)
         }
         Spacer()
-      }.padding([.bottom], 20)
+      }.padding([.bottom], 10)
 
       VStack {
         Text(label)
         Text(tempName)
       }
       .font(.title)
-      .padding([.top], 20)
+      .padding([.top], 10)
 
       VStack {
         if unitHmsDms {

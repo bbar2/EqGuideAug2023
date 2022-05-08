@@ -61,17 +61,17 @@ struct GuideView: View {
       NavigationView {
         
         VStack{
+          HStack {
+            Text("Arm: " + Hms(guideModel.armCurrentDeg).string(false))
+              .foregroundColor(pointingKnowledgeColor())
+            Spacer()
+          }
+          
           RaDecPairView(
             pairTitle: "Current Position",
             pair: guideModel.currentPosition,
             unitHmsDms: appOptions.showDmsHms)
           .foregroundColor(pointingKnowledgeColor())
-          
-          HStack {
-          Text("Arm: " + Hms(guideModel.armCurrentDeg).string(false))
-            .foregroundColor(pointingKnowledgeColor())
-            Spacer()
-          }
           
           Divider()
           
@@ -112,7 +112,7 @@ struct GuideView: View {
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Angles:\nRef to Target",
+            RaDecPairView(pairTitle: "Mount Angles:\nRef to Target",
                           pair: guideModel.anglesReferenceToTarget(),
                           unitHmsDms: false,
                           labelRa: "Arm",
@@ -133,7 +133,7 @@ struct GuideView: View {
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Angles:\nCurrent to Target",
+            RaDecPairView(pairTitle: "Mount Angles:\nCurrent to Target",
                           pair: guideModel.anglesCurrentToTarget(),
                           unitHmsDms: false,
                           labelRa: "Arm",
@@ -146,9 +146,11 @@ struct GuideView: View {
           Spacer()
           
           HStack {
+            Spacer()
             BigButton(label:"Swap") {
               guideModel.swapRefAndTarg()
             }
+              Spacer()
             if startFromReference {
               BigButton(label:" Set Target  \n & Ref") {
                 guideModel.guideCommandReferenceToTarget()
@@ -160,6 +162,7 @@ struct GuideView: View {
                 heavyBump()
               }
             }
+            Spacer()
           }
           
           RawDataView(gdb: gdb)
