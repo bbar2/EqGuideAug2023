@@ -28,6 +28,7 @@ final class ViewOptions: ObservableObject {
   let appHeaderFont = Font.system(.title).monospacedDigit()
   let labelFont = Font.system(.title3)
   let bigValueFont = Font.system(.title2).bold().monospacedDigit()
+  let smallValueFont = Font.system(.body).monospacedDigit()
   let noteFont =  Font.system(.body)
   
   let leadingPad = CGFloat(10)

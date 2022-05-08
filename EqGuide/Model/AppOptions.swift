@@ -13,7 +13,7 @@ class AppOptions : ObservableObject {
   
   init() {
     showSecs = false
-    showDmsHms = true
+    showDmsHms = false
   }
   
 }

@@ -3,6 +3,7 @@ Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
 2022-05-07: Any edit should change coord name to Manual Entry.
+2022-05-08: Add overylay to RaDecInput view, so tapping outside keyboard will close it. 
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
 2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.

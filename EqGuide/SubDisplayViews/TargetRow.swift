@@ -16,7 +16,7 @@ struct TargetRow: View {
       HStack {
         VStack (alignment: .leading) {
           Text(target.name).bold()
-          Text(target.constellation)
+          Text(target.constellation + " " + target.category.rawValue)
         }
         Spacer()
         VStack (alignment: .trailing) {

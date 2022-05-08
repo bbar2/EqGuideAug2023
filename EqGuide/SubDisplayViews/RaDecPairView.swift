@@ -29,7 +29,7 @@ struct RaDecPairView: View {
           .font(viewOptions.labelFont)
           .multilineTextAlignment(.leading)
         Spacer()
-        VStack {
+        VStack (alignment: .trailing){
           HStack{
             Text(labelRa)
             Text(Hms(pair.ra).string(unitHmsDms))

@@ -18,6 +18,7 @@ struct Target: Hashable, Codable, Identifiable {
   enum Category: String, CaseIterable, Codable {
     case star = "Star"
     case multiStar = "MultiStar"
+    case cluster = "Cluster"
     case catalog = "Galaxy"
     case nebula = "Nebula"
     case planet = "Planet"

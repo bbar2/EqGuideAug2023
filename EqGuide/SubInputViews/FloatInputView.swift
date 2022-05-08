@@ -23,6 +23,7 @@ struct FloatInputView: View {
   
   @State var isPos: Bool = true
   @State var floatString = String("3.14")
+  @State var keyboardOpen = false
   
   var body: some View {
     HStack {
@@ -45,6 +46,13 @@ struct FloatInputView: View {
           reBuildDoubleInput()
         }
     }
+    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+      // Write code for keyboard opened.
+      keyboardOpen = true
+    }.onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidHideNotification)) { _ in
+      // Write code for keyboard closed.
+      keyboardOpen = false
+    }
     .font(.title)
     .multilineTextAlignment(.center)
     .onAppear() {
@@ -52,7 +60,9 @@ struct FloatInputView: View {
     }
     // This onChange() handles cases where caller makes a change after onAppear
     .onChange(of: doubleValue){ _ in
-      initEditableString()
+      if !keyboardOpen {
+        initEditableString()
+      }
     }
   }
   

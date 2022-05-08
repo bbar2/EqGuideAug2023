@@ -56,22 +56,25 @@ struct GuideView: View {
           }
         }
       }
-      Divider()
       
       NavigationView {
         
         VStack{
-          HStack {
-            Text("Arm: " + Hms(guideModel.armCurrentDeg).string(false))
-              .foregroundColor(pointingKnowledgeColor())
-            Spacer()
-          }
-          
           RaDecPairView(
             pairTitle: "Current Position",
             pair: guideModel.currentPosition,
             unitHmsDms: appOptions.showDmsHms)
           .foregroundColor(pointingKnowledgeColor())
+
+          Divider()
+
+          HStack {
+            let armString = "Arm: " + Hms(guideModel.armCurrentDeg).string(false)
+            Text(armString).foregroundColor(pointingKnowledgeColor())
+            Spacer()
+            let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(appOptions.showDmsHms)
+             Text("Long:" + longString).foregroundColor(lstValidColor())
+          }.font(viewOptions.smallValueFont)
           
           Divider()
           

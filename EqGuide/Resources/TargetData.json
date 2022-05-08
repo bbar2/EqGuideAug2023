@@ -110,5 +110,55 @@
     "mag": 7.9,
     "category": "Galaxy",
     "constellation": "Ursa Major"
+  },
+  {
+    "id": 1012,
+    "name": "M103",
+    "description": "Open cluster near Delta Cassiopia.",
+    "ra": 23.3,
+    "dec": 60.7,
+    "mag": 7.4,
+    "category": "Cluster",
+    "constellation": "Cassiopia"
+  },
+  {
+    "id": 1013,
+    "name": "𝝳 Cassiopia",
+    "description": "Delta Cassiopia - Eclipsing binary star located at Cassiopia's first northern knee.",
+    "ra": 21.4542,
+    "dec": 60.2353,
+    "mag": 2.68,
+    "category": "MultiStar",
+    "constellation": "Cassiopia"
+  },
+  {
+    "id": 1014,
+    "name": "η Cassiopia",
+    "description": "Eta Cassiopia - Binary star located north of Cassiopia's southern knee.",
+    "ra": 12.2750,
+    "dec": 57.8153,
+    "mag": 3.44,
+    "category": "MultiStar",
+    "constellation": "Cassiopia"
+  },
+  {
+    "id": 1015,
+    "name": "M104",
+    "description": "Sombrero Galaxy.  One of brightest glaxyies in sky.",
+    "ra": 189.9958,
+    "dec": -11.6231,
+    "mag": 8.0,
+    "category": "Galaxy",
+    "constellation": "Virgo"
+  },
+  {
+    "id": 1016,
+    "name": "Spica",
+    "description": "Brightest object in Virgo.  Spectroscopic binary.",
+    "ra": 201.3,
+    "dec": -11.1614,
+    "mag": 0.97,
+    "category": "Star",
+    "constellation": "Virgo"
   }
 ]

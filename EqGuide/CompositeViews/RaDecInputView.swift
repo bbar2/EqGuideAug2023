@@ -25,6 +25,7 @@ struct RaDecInputView: View {
   var body: some View {
     
     VStack {
+      Divider()
       HStack{
         Button{
           softBump()
