@@ -22,7 +22,7 @@ struct Hms {
   let MinPerHour = Double(60.0)
   let SecPerHour = Double(60.0 * 60.0)
   
-  init(deg: Double) {
+  init(_ deg: Double) {
     _degrees = deg.truncatingRemainder(dividingBy: 360.0)
     buildHmsTermsFromDegrees()
   }
@@ -83,11 +83,23 @@ struct Hms {
     }
   }
   
+  func string(_ inHms: Bool = true) -> String {
+    if inHms {
+      if degrees >= 0 {
+        return String(format: " %02d:%02d:%02d ", h, m, s)
+      } else {
+        return String(format: "-%02d:%02d:%02d ", -h, -m, -s)
+      }
+    } else {
+      return String(format: "%.02fº", degrees)
+    }
+  }
+  
   static func + (left: Hms, right: Hms) -> Hms {
-    return Hms(deg: left._degrees + right._degrees)
+    return Hms(left._degrees + right._degrees)
   }
   
   static func - (left: Hms, right: Hms) -> Hms {
-    return Hms(deg: left._degrees - right._degrees)
+    return Hms(left._degrees - right._degrees)
   }
 }

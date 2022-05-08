@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TargetRow: View {
   var target: Target
+  var unitHmsDms: Bool
   
   var body: some View {
     VStack {
@@ -19,8 +20,8 @@ struct TargetRow: View {
         }
         Spacer()
         VStack (alignment: .trailing) {
-          Text(String(format:"RA: %.2f", target.ra))
-          Text(String(format:" DEC: %.2f", target.dec))
+          Text("RA: " + Hms(target.ra).string(unitHmsDms))
+          Text("DEC: " + Dms(target.dec).string(unitHmsDms))
         }
       }
     }
@@ -33,7 +34,8 @@ struct TargetRow_Previews: PreviewProvider {
 
   static var previews: some View {
     Group {
-      TargetRow(target: guideModel.catalog[0])
+      TargetRow(target: guideModel.catalog[0], unitHmsDms: true)
+      TargetRow(target: guideModel.catalog[0], unitHmsDms: false)
     }
     .previewLayout(.fixed(width: 300, height: 70))
     .preferredColorScheme(.dark)

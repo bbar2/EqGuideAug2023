@@ -18,14 +18,17 @@ enum Knowledge {
 
 class GuideModel : BleWizardDelegate, ObservableObject {
 
-  @Published var catalog: [Target] = loadJson("TargetData.json")
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
   @Published var guideDataBlock = GuideDataBlock()
   @Published var refCoord = RaDec(ra: 0, dec: 0)
   @Published var targetCoord = RaDec(ra: 0, dec: 0)
   @Published var locationData = LocationData() // Should I @Published since elements are @Published elements.
-  
+  @Published var refName = ""
+  @Published var targName = ""
+
+  let catalog: [Target] = loadJson("TargetData.json")
+
   // These offsets, with current counts (in GuideDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetsToReference()
@@ -37,8 +40,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   var armCurrentDeg = 0.0
   var diskCurrentDeg = 0.0
 
-  var raCurrentDeg = 0.0
-  var decCurrentDeg = 0.0
+  var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
   
@@ -52,9 +54,13 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     }
   }
   
-  func updateTarget() {
-    refCoord = RaDec(ra: catalog[0].ra, dec: catalog[0].dec)
-    targetCoord = RaDec(ra: catalog[1].ra, dec: catalog[1].dec)
+  func swapRefAndTarg() {
+    let temp = refCoord
+    refCoord = targetCoord
+    targetCoord = temp
+    let tempName = targName
+    targName = refName
+    refName = tempName
   }
   
   // Update all time dependent model calcs at once
@@ -77,25 +83,21 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     // Durring tracking, LST advancement is negated by armAngle tracking
     if lstValid && (pointingKnowledge != Knowledge.none) {
       if (armCurrentDeg > 0) {
-        raCurrentDeg = lstDeg + 90.0 - armCurrentDeg
-        decCurrentDeg = diskCurrentDeg
+        currentPosition.ra = lstDeg + 90.0 - armCurrentDeg
+        currentPosition.dec = diskCurrentDeg
       } else {
-        raCurrentDeg = lstDeg - 90.0 - armCurrentDeg
-        decCurrentDeg = 180.0 - diskCurrentDeg
+        currentPosition.ra = lstDeg - 90.0 - armCurrentDeg
+        currentPosition.dec = 180.0 - diskCurrentDeg
       }
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
       
-      raCurrentDeg = lstDeg - armCurrentDeg // RA unknown without pointing knowledge
-      decCurrentDeg = diskCurrentDeg // DEC unknown without pointing knowledge
+      currentPosition.ra = lstDeg - armCurrentDeg // RA unknown without pointing knowledge
+      currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
     }
   }
     
-  var currentPosition: RaDec {
-    return RaDec(ra: raCurrentDeg, dec: decCurrentDeg)
-  }
-
   // ArmAngleDeg given hemisphere knowledge of LST vs RA
   func armAngleDeg(lst: Double, ra: Double) -> Double {
     if (ra > lst) {
@@ -117,28 +119,21 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // Uses LST, Reference, and Target to build arm angle change required to move from
   // Reference.ra to Target.ra
   // TODO - what do I do if LST or REF knowledge == .none
-  func armDeltaDeg() -> Double {
-    let refArmDeg = armAngleDeg(lst: lstDeg, ra: refCoord.ra)
-    let targetArmDeg = armAngleDeg(lst: lstDeg, ra: targetCoord.ra)
+  func armDeltaDeg(fromDeg: Double, toDeg: Double) -> Double {
+    let fromArmDeg = armAngleDeg(lst: lstDeg, ra: fromDeg)
+    let toArmDeg = armAngleDeg(lst: lstDeg, ra: toDeg)
+    let deltaDeg = toArmDeg - fromArmDeg
 
-    let deltaDeg = targetArmDeg - refArmDeg
-    
-    // Check with refArmDeg+deltaDeg limits against physical limits.  Report error
-    if abs(refArmDeg + deltaDeg) > 92.0 {
-      // TODO - do something on UI
-//      print("WARN - targetArmDeg Exceeds 92º physical limit")
-    }
-    
     return deltaDeg
   }
   
   // Uses LST, Reference, and Target to build disk angle change required to move from
   // Reference.dec to Target.dec
-  func diskDeltaDeg() -> Double {
-    let refDiskDeg = diskAngleDeg(lst: lstDeg, coord: refCoord)
-    let targetDiskDeg = diskAngleDeg(lst: lstDeg, coord: targetCoord)
+  func diskDeltaDeg(fromCoord: RaDec, toCoord: RaDec) -> Double {
+    let fromDiskDeg = diskAngleDeg(lst: lstDeg, coord: fromCoord)
+    let toDiskDeg = diskAngleDeg(lst: lstDeg, coord: toCoord)
 
-    var deltaDiskDeg = targetDiskDeg - refDiskDeg
+    var deltaDiskDeg = toDiskDeg - fromDiskDeg
 
     // Take shorter route if |deltaDiskDeg| > 180.0
     if deltaDiskDeg > 180.0 {
@@ -149,17 +144,26 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
     return deltaDiskDeg
   }
+  
+  func anglesReferenceToTarget() -> RaDec {
+    return RaDec(ra: armDeltaDeg(fromDeg: refCoord.ra,
+                                 toDeg: targetCoord.ra),
+                 dec: diskDeltaDeg(fromCoord: refCoord,
+                                   toCoord: targetCoord) )
+  }
+  
+  func anglesCurrentToTarget() -> RaDec {
+    return RaDec(ra: armDeltaDeg(fromDeg: currentPosition.ra,
+                                 toDeg: targetCoord.ra),
+                 dec: diskDeltaDeg(fromCoord: currentPosition,
+                                   toCoord: targetCoord) )
+  }
+
 
   var bleConnected: Bool {
     return statusString == "Connected"
   }
-  
-//  // TODO Declination Flip in here.  Check hemispheres of ref and target.
-//  // Returned values are arm and disk changes required.
-//  func buildOffset() {
-//
-//  }
-  
+    
   /// ========== RA/Dec from References star and Current Date/Time ==========
 
   // Update arm and dec offset constants.
@@ -232,8 +236,14 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       initViewModel()
       initialized = true
     }
-    
-    updateTarget() // TODO - rename, sync with list views, do something better than this
+
+    // Setup initial Reference and Target
+    let refIndex = 0
+    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
+    refName = catalog[refIndex].name
+    let targIndex = 1
+    targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
+    targName = catalog[targIndex].name
 
   }
   
@@ -326,28 +336,32 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func guideCommand(_ writeBlock:GuideCommandBlock) {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
   }
+
   
   // Target Command - Offset from a reference.
   // Mount will Mark Reference then move to offset.
-  func targetRaDec(gdb: GuideDataBlock, armDeltaDeg: Double, diskDeltaDeg: Double) {
-    let targetCommand = GuideCommandBlock(
+  func guideCommandReferenceToTarget(){
+    let armDeg = armDeltaDeg(fromDeg: refCoord.ra, toDeg: targetCoord.ra)
+    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
+    let refToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetTarget.rawValue,
-      armOffset: Int32( Float32(armDeltaDeg) / gdb.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeltaDeg) / gdb.diskDegPerStep)
+      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
+      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
     )
-    guideCommand(targetCommand)
+    guideCommand(refToTargetCommand)
   }
-
+  
   // Offset Command - Relative offset.
   // Mount moves offset amount from current position.
-  // todo - udpate diskOffset(dec) as function of RA and LST - do this in caller, not here
-  func offsetRaDec(gdb: GuideDataBlock, armDeltaDeg: Double, diskDeltaDeg: Double) {
-    let targetCommand = GuideCommandBlock(
+  func guideCommandCurrentToTarget(){
+    let armDeg = armDeltaDeg(fromDeg: currentPosition.ra, toDeg: targetCoord.ra)
+    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
+    let currentToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetOffset.rawValue,
-      armOffset: Int32( Float32(armDeltaDeg) / gdb.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeltaDeg) / gdb.diskDegPerStep)
+      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
+      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
     )
-    guideCommand(targetCommand)
+    guideCommand(currentToTargetCommand)
   }
 
   // Acknolwledge Reference Mark - offset's not used

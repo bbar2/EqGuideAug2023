@@ -11,11 +11,12 @@ import SwiftUI
 struct TargetListView: View {
   var catalog: [Target]
   var targetTapAction: (_: Target)->Void // let caller handle target taps
+  var unitHmsDms: Bool
   
   var body: some View {
     List(catalog){
       let gestureTarget = $0
-      TargetRow(target: $0)
+      TargetRow(target: $0, unitHmsDms: unitHmsDms)
         .gesture(TapGesture().onEnded() { targetTapAction(gestureTarget) } )
     }
   }
@@ -24,15 +25,17 @@ struct TargetListView: View {
 struct ObjectListView_Previews: PreviewProvider {
   @State static var guideModel = GuideModel()
   static func targetTapAction(_ target: Target) {
-    tappedTarget = target
   }
   @State static var tappedTarget = guideModel.catalog[0]
-
+  
   static var previews: some View {
-    VStack {
-      Text(tappedTarget.name)
+    Group {
       TargetListView(catalog: guideModel.catalog,
-                     targetTapAction: targetTapAction)
+                     targetTapAction: targetTapAction,
+                     unitHmsDms: true)
+      TargetListView(catalog: guideModel.catalog,
+                     targetTapAction: targetTapAction,
+                     unitHmsDms: false)
     }
   }
 }

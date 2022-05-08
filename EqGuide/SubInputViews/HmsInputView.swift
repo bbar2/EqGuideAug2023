@@ -85,7 +85,7 @@ struct HmsInputView: View {
 
   // called by onAppear, and onChange when decimalDegrees changed by caller
   func initEditableStrings() {
-    let hms = Hms(deg: decimalDegrees)
+    let hms = Hms(decimalDegrees)
     hourString = String(abs(hms.h))
     minString = String(abs(hms.m))
     secString = String(abs(hms.s))

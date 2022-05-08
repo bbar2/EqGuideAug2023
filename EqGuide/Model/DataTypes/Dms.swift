@@ -22,7 +22,7 @@ struct Dms {
   let MinPerDeg = Double(60.0)
   let SecPerDeg = Double(60.0 * 60.0)
   
-  init(deg: Double) {
+  init(_ deg: Double) {
     _degrees = deg.truncatingRemainder(dividingBy: 360.0)
     mapTo180()
     buildDmsTermsFromDegrees()
@@ -91,13 +91,25 @@ struct Dms {
       return _s
     }
   }
-
+  
+  func string(_ inDms: Bool = true) -> String {
+    if inDms {
+      if degrees >= 0 {
+        return String(format: " %02dº%02d'%02d\"", d, m, s)
+      } else {
+        return String(format: "-%02dº%02d'%02d\"", -d, -m, -s)
+      }
+    } else {
+      return String(format: "%.02fº", degrees)
+    }
+  }
+  
   static func + (left: Dms, right: Dms) -> Dms {
-    return Dms(deg: left.degrees + right.degrees)
+    return Dms(left.degrees + right.degrees)
   }
   
   static func - (left: Dms, right: Dms) -> Dms {
-    return Dms(deg: left.degrees - right.degrees)
+    return Dms(left.degrees - right.degrees)
   }
-
+  
 }

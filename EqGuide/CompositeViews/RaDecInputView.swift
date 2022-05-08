@@ -11,16 +11,16 @@ struct RaDecInputView: View {
   
   var label:String
   @Binding var coord: RaDec
-  @Binding var unitHmsDms: Bool
+  @Binding var name: String
+  var unitHmsDms: Bool
   var catalog : [Target]
 
   @EnvironmentObject var viewOptions: ViewOptions
   @Environment(\.dismiss) private var dismissView
 
-//  @State private var tempRaDec = RaDec()
-  @State private var tempRa = Double(0)
-  @State private var tempDec = Double(0)
-  @State private var targetName = "Manual Entry"
+  @State private var tempCoord = RaDec()
+  @State private var tempName = "Manual Entry"
+  //ToDo - Init view with current name.  Change to Manual Entry, upon editing.
 
   var body: some View {
     
@@ -39,33 +39,40 @@ struct RaDecInputView: View {
 
       VStack {
         Text(label)
-        Text(targetName)
+        Text(tempName)
       }
       .font(.title)
       .padding([.top], 20)
 
       VStack {
         if unitHmsDms {
-          HmsInputView(decimalDegrees: $tempRa, prefix: "RA")
-          DmsInputView(decimalDegrees: $tempDec, prefix: "DEC")
+          HmsInputView(decimalDegrees: $tempCoord.ra, prefix: "RA")
+          DmsInputView(decimalDegrees: $tempCoord.dec, prefix: "DEC")
         } else {
-          FloatInputView(doubleValue: $tempRa, prefix: "RA")
-          FloatInputView(doubleValue: $tempDec, prefix: "DEC")
+          FloatInputView(doubleValue: $tempCoord.ra, prefix: "RA")
+          FloatInputView(doubleValue: $tempCoord.dec, prefix: "DEC")
         }
       }
       .onAppear() {
-        tempRa = coord.ra
-        tempDec = coord.dec
+        tempCoord.ra = coord.ra
+        tempCoord.dec = coord.dec
+//        tempName = name
       }
+//      .onChange(of: tempRa){ _ in
+//        name = "onChange"
+//      }
       
       BigButton(label:"Apply") {
-        coord.ra = tempRa
-        coord.dec = tempDec
+        coord.ra = tempCoord.ra
+        coord.dec = tempCoord.dec
+        name = tempName
         heavyBump()
         dismissView()
       }
       
-      TargetListView(catalog: catalog, targetTapAction: makeTargetCurrent)
+      TargetListView(catalog: catalog,
+                     targetTapAction: makeTargetCurrent,
+                     unitHmsDms: unitHmsDms)
     }
     .navigationBarBackButtonHidden(true)
     .navigationBarTitle("") // needed for navigationBarHidden to work.
@@ -77,16 +84,16 @@ struct RaDecInputView: View {
   }
 
   func makeTargetCurrent(tappedTarget: Target) {
-    tempRa  = tappedTarget.ra
-    tempDec = tappedTarget.dec
-    targetName = tappedTarget.name
+    tempCoord.ra  = tappedTarget.ra
+    tempCoord.dec = tappedTarget.dec
+    tempName = tappedTarget.name
     softBump()
   }
-
 }
 
 struct RaInputView_Previews: PreviewProvider {
   @State static var testCoord = RaDec(ra: 97.5, dec: 0.25)
+  @State static var name = "TestName"
   @State static var viewOptions = ViewOptions()
   @State static var useHmsDms = true
   @State static var guideModel = GuideModel()
@@ -94,7 +101,8 @@ struct RaInputView_Previews: PreviewProvider {
   static var previews: some View {
     RaDecInputView(label: "Enter RA/DEC Pair",
                    coord: $testCoord,
-                   unitHmsDms: $useHmsDms,
+                   name: $name,
+                   unitHmsDms: useHmsDms,
                    catalog: guideModel.catalog)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)

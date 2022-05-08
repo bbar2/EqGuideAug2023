@@ -27,9 +27,7 @@ struct GuideView: View {
     return(stateString)
   }
   
-  @State var useDirectOffset = false
-  @State var directOffset = RaDec(ra: 0.0, dec: 0.0)
-  @State var junk = true
+  @State var startFromReference = true
   
   var body: some View {
     
@@ -47,22 +45,13 @@ struct GuideView: View {
           }
         }.font(.title)
         HStack {
-          if (appOptions.showDmsHms) {
-            let hms = Hms(deg: guideModel.lstDeg)
-            let dmsString = String(format: "LST: %02dh %02dm %02ds",
-                                   hms.h, hms.m, hms.s)
-            Text(dmsString)
-              .foregroundColor(lstValidColor())
-          } else {
-            AngleDegView(label: "LST: ",
-                         angleDeg: guideModel.lstDeg)
+          Text("LST: " + Hms(guideModel.lstDeg).string(appOptions.showDmsHms))
             .foregroundColor(lstValidColor())
-          }
           Spacer()
           Button() {
             appOptions.showDmsHms = !appOptions.showDmsHms
           } label: {
-            Text(appOptions.showDmsHms ? "Show Degrees" : "Show DMS/HMS")
+            Text(appOptions.showDmsHms ? "Show Decimal Degrees" : "Show DMS/HMS")
           }
         }
       }
@@ -73,64 +62,79 @@ struct GuideView: View {
         VStack{
           RaDecPairView(
             pairTitle: "Current Position",
-            pair: guideModel.currentPosition)
+            pair: guideModel.currentPosition,
+            unitHmsDms: appOptions.showDmsHms)
           .foregroundColor(pointingKnowledgeColor())
           
-          AngleDegView(label: "Arm: ",
-                       angleDeg: guideModel.armCurrentDeg)
-          .foregroundColor(pointingKnowledgeColor())
+          Text("Arm: " + Hms(guideModel.armCurrentDeg).string(false))
+            .foregroundColor(pointingKnowledgeColor())
           
           Divider()
           
-          Picker(selection: $useDirectOffset,
+          Picker(selection: $startFromReference,
                  label: Text("???")) {
-            Text("Offset").tag(true)
-            Text("Ref/Targ").tag(false)
+            Text("Ref/Targ").tag(true)
+            Text("Targ").tag(false)
           }
                  .pickerStyle(.segmented)
                  .padding([.leading, .trailing], 10)
           
           
-          if !useDirectOffset {
+          if startFromReference {
             NavigationLink {
-              RaDecInputView(label: "Enter Reference Coordinates",
+              RaDecInputView(label: "Select Reference",
                              coord: $guideModel.refCoord,
-                             unitHmsDms: $appOptions.showDmsHms,
+                             name: $guideModel.refName,
+                             unitHmsDms: appOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
-              RaDecPairView(pairTitle: "Reference Coordinates",
-                            pair: guideModel.refCoord)
+              RaDecPairView(pairTitle: "Reference: \(guideModel.refName)",
+                            pair: guideModel.refCoord,
+                            unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
             }
             
             NavigationLink {
-              RaDecInputView(label: "Enter Target Coordinates",
+              RaDecInputView(label: "Select Target",
                              coord: $guideModel.targetCoord,
-                             unitHmsDms: $appOptions.showDmsHms,
+                             name: $guideModel.targName,
+                             unitHmsDms: appOptions.showDmsHms,
                              catalog: guideModel.catalog)
               
             } label: {
-              RaDecPairView(pairTitle: "Target Coordinates",
-                            pair: guideModel.targetCoord)
+              RaDecPairView(pairTitle: "Target: \(guideModel.targName)",
+                            pair: guideModel.targetCoord,
+                            unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Offset to Target",
-                          pair: RaDec(ra: guideModel.armDeltaDeg(),
-                                      dec:guideModel.diskDeltaDeg()))
-            
+            RaDecPairView(pairTitle: "Angles Ref to Target",
+                          pair: guideModel.anglesReferenceToTarget(),
+                          unitHmsDms: false,
+                          labelRa: "Arm",
+                          labelDec: "Axis")
+
           } else {
             NavigationLink {
-              RaDecInputView(label: "Enter Direct Offset",
-                             coord: $directOffset,
-                             unitHmsDms: $appOptions.showDmsHms,
+              RaDecInputView(label: "Select Target",
+                             coord: $guideModel.targetCoord,
+                             name: $guideModel.targName,
+                             unitHmsDms: appOptions.showDmsHms,
                              catalog: guideModel.catalog)
               
             } label: {
-              RaDecPairView(pairTitle: "Direct Offset",
-                            pair: directOffset)
+              RaDecPairView(pairTitle: "Target: \(guideModel.targName)",
+                            pair: guideModel.targetCoord,
+                            unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
             }
+            
+            RaDecPairView(pairTitle: "Angles Current to Target",
+                          pair: guideModel.anglesCurrentToTarget(),
+                          unitHmsDms: false,
+                          labelRa: "Arm",
+                          labelDec: "Axis")
+
           }
           
           Divider()
@@ -139,25 +143,16 @@ struct GuideView: View {
           
           HStack {
             BigButton(label:"Swap") {
-              let temp = guideModel.refCoord
-              guideModel.refCoord = guideModel.targetCoord
-              guideModel.targetCoord = temp
+              guideModel.swapRefAndTarg()
             }
-            if useDirectOffset {
-              BigButton(label:" Set Offset  ") {
-                // TODO - build arm and disk deltas in a guideModel func
-                // With LST and estimate of current RA, can build proper deltas.
-                // Otherwise, just make them proportional -- color yellow.
-                guideModel.offsetRaDec(gdb: guideModel.guideDataBlock,
-                                       armDeltaDeg:  directOffset.ra,
-                                       diskDeltaDeg: directOffset.dec)
+            if startFromReference {
+              BigButton(label:" Set Target  \n & Ref") {
+                guideModel.guideCommandReferenceToTarget()
                 heavyBump()
               }
             } else {
               BigButton(label:" Set Target  ") {
-                guideModel.targetRaDec(gdb: guideModel.guideDataBlock,
-                                       armDeltaDeg: guideModel.armDeltaDeg(),
-                                       diskDeltaDeg: guideModel.diskDeltaDeg())
+                guideModel.guideCommandCurrentToTarget()
                 heavyBump()
               }
             }

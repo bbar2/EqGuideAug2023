@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		350E7EDB27EF675300642A2A /* DmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350E7EDA27EF675300642A2A /* DmsView.swift */; };
 		351204AF27F214F5006DF60B /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* FloatInputView.swift */; };
 		352168432814357900C76670 /* ViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168422814357900C76670 /* ViewOptions.swift */; };
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
@@ -26,11 +25,9 @@
 		35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64C28246EBD008EBC8C /* TargetRow.swift */; };
 		35B92FEF280068C800342F7F /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FEE280068C800342F7F /* AppOptions.swift */; };
 		35B92FF12800B86300342F7F /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FF02800B86300342F7F /* FocusView.swift */; };
-		35C9A95327EFA65300BFE4CE /* HmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95227EFA65300BFE4CE /* HmsView.swift */; };
 		35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95427F09D1400BFE4CE /* GuideView.swift */; };
 		35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */; };
 		35DE202827F3D66600D96C68 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202727F3D66600D96C68 /* BigButton.swift */; };
-		35DE202A27F498E600D96C68 /* AngleDegView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202927F498E600D96C68 /* AngleDegView.swift */; };
 		35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202B27F4AD8500D96C68 /* DmsInputView.swift */; };
 		35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202D27F4AEB600D96C68 /* Dms.swift */; };
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
@@ -46,7 +43,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		350E7EDA27EF675300642A2A /* DmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsView.swift; sourceTree = "<group>"; };
 		351204AE27F214F5006DF60B /* FloatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
 		352168422814357900C76670 /* ViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptions.swift; sourceTree = "<group>"; };
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
@@ -65,11 +61,9 @@
 		35A7F64C28246EBD008EBC8C /* TargetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRow.swift; sourceTree = "<group>"; };
 		35B92FEE280068C800342F7F /* AppOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOptions.swift; sourceTree = "<group>"; };
 		35B92FF02800B86300342F7F /* FocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
-		35C9A95227EFA65300BFE4CE /* HmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsView.swift; sourceTree = "<group>"; };
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
 		35DE202727F3D66600D96C68 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
-		35DE202927F498E600D96C68 /* AngleDegView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDegView.swift; sourceTree = "<group>"; };
 		35DE202B27F4AD8500D96C68 /* DmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsInputView.swift; sourceTree = "<group>"; };
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
@@ -174,10 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				358067EB27EF938400CAF595 /* RaDecPairView.swift */,
-				35DE202927F498E600D96C68 /* AngleDegView.swift */,
 				358067ED27EFA0B200CAF595 /* RawDataView.swift */,
-				350E7EDA27EF675300642A2A /* DmsView.swift */,
-				35C9A95227EFA65300BFE4CE /* HmsView.swift */,
 				35A7F64C28246EBD008EBC8C /* TargetRow.swift */,
 			);
 			path = SubDisplayViews;
@@ -311,7 +302,6 @@
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
-				35C9A95327EFA65300BFE4CE /* HmsView.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
@@ -336,8 +326,6 @@
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,
 				352168492814A86D00C76670 /* LocationData.swift in Sources */,
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
-				35DE202A27F498E600D96C68 /* AngleDegView.swift in Sources */,
-				350E7EDB27EF675300642A2A /* DmsView.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

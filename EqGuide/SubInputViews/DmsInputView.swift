@@ -83,7 +83,7 @@ struct DmsInputView: View {
   
   // called by onAppear, and onChange when decimalDegrees changed by caller
   func initEditableStrings() {
-    let dms = Dms(deg: decimalDegrees)
+    let dms = Dms(decimalDegrees)
     degString = String(abs(dms.d))
     minString = String(abs(dms.m))
     secString = String(abs(dms.s))
