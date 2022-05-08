@@ -24,22 +24,25 @@ struct RaDecPairView: View {
       
       Divider()
       
-      Text(pairTitle).font(viewOptions.labelFont)
-      
       HStack {
-        HStack{
-          Text(labelRa)
-          Text(Hms(pair.ra).string(unitHmsDms))
+        Text(pairTitle)
+          .font(viewOptions.labelFont)
+          .multilineTextAlignment(.leading)
+        Spacer()
+        VStack {
+          HStack{
+            Text(labelRa)
+            Text(Hms(pair.ra).string(unitHmsDms))
+          }
+          
+          HStack {
+            Text(labelDec)
+            Text(Dms(pair.dec).string(unitHmsDms))
+          }
         }
         .padding([.trailing], gapPad/2)
-        
-        HStack {
-          Text(labelDec)
-          Text(Dms(pair.dec).string(unitHmsDms))
-        }
-        .padding([.leading], gapPad/2)
+        .font(viewOptions.bigValueFont)
       }
-      .font(viewOptions.bigValueFont)
     }
   }
 }
@@ -57,3 +60,31 @@ struct raDecPairView_Previews: PreviewProvider {
 
   }
 }
+
+
+
+//var body: some View {
+//
+//  VStack{
+//
+//    Divider()
+//
+//    Text(pairTitle).font(viewOptions.labelFont)
+//
+//    HStack {
+//      HStack{
+//        Text(labelRa)
+//        Text(Hms(pair.ra).string(unitHmsDms))
+//      }
+//      .padding([.trailing], gapPad/2)
+//
+//      HStack {
+//        Text(labelDec)
+//        Text(Dms(pair.dec).string(unitHmsDms))
+//      }
+//      .padding([.leading], gapPad/2)
+//    }
+//    .font(viewOptions.bigValueFont)
+//  }
+//}
+//}

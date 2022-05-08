@@ -52,6 +52,7 @@ struct GuideView: View {
             appOptions.showDmsHms = !appOptions.showDmsHms
           } label: {
             Text(appOptions.showDmsHms ? "Show Decimal Degrees" : "Show DMS/HMS")
+              .foregroundColor(viewOptions.appActionColor).bold()
           }
         }
       }
@@ -66,8 +67,11 @@ struct GuideView: View {
             unitHmsDms: appOptions.showDmsHms)
           .foregroundColor(pointingKnowledgeColor())
           
+          HStack {
           Text("Arm: " + Hms(guideModel.armCurrentDeg).string(false))
             .foregroundColor(pointingKnowledgeColor())
+            Spacer()
+          }
           
           Divider()
           
@@ -88,7 +92,7 @@ struct GuideView: View {
                              unitHmsDms: appOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
-              RaDecPairView(pairTitle: "Reference: \(guideModel.refName)",
+              RaDecPairView(pairTitle: "Reference:\n\(guideModel.refName)",
                             pair: guideModel.refCoord,
                             unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
@@ -102,13 +106,13 @@ struct GuideView: View {
                              catalog: guideModel.catalog)
               
             } label: {
-              RaDecPairView(pairTitle: "Target: \(guideModel.targName)",
+              RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
                             unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Angles Ref to Target",
+            RaDecPairView(pairTitle: "Angles:\nRef to Target",
                           pair: guideModel.anglesReferenceToTarget(),
                           unitHmsDms: false,
                           labelRa: "Arm",
@@ -123,13 +127,13 @@ struct GuideView: View {
                              catalog: guideModel.catalog)
               
             } label: {
-              RaDecPairView(pairTitle: "Target: \(guideModel.targName)",
+              RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
                             unitHmsDms: appOptions.showDmsHms)
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Angles Current to Target",
+            RaDecPairView(pairTitle: "Angles:\nCurrent to Target",
                           pair: guideModel.anglesCurrentToTarget(),
                           unitHmsDms: false,
                           labelRa: "Arm",
