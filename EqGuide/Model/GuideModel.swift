@@ -241,10 +241,10 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     }
     
     // Setup initial Reference and Target
-    let refIndex = 0
+    let refIndex = 1
     refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
     refName = catalog[refIndex].name
-    let targIndex = 1
+    let targIndex = 7
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
     
