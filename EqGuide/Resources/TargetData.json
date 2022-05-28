@@ -13,7 +13,7 @@
   },
   {
     "id": 1002,
-    "name": "M81",
+    "name": "M81 Bode's",
     "description": "Bode's galaxy - Spiral galaxy in Ursa Major.",
     "ra": 149.0,
     "dec": 69.0667,
@@ -160,5 +160,35 @@
     "mag": 0.97,
     "category": "Star",
     "constellation": "Virgo"
+  },
+  {
+    "id": 1017,
+    "name": "M44 Behive",
+    "description": "The Behive Open Cluster.",
+    "ra": 130.1,
+    "dec": 19.9833,
+    "mag": 3.7,
+    "category": "MultiStar",
+    "constellation": "Cancer"
+  },
+  {
+    "id": 1018,
+    "name": "M66",
+    "description": "Brightest of the three galxies in the Leo Triplet",
+    "ra": 170.0625,
+    "dec": 12.9917,
+    "mag": 8.9,
+    "category": "Galaxy",
+    "constellation": "Leo"
+  },
+  {
+    "id": 1019,
+    "name": "M51",
+    "description": "Whirlpool Galaxy",
+    "ra": 202.4750,
+    "dec": 47.2,
+    "mag": 8.4,
+    "category": "Galaxy",
+    "constellation": "Canis Venatici"
   }
 ]

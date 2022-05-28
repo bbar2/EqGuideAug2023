@@ -12,7 +12,7 @@ struct RaDecPairView: View {
   var pair: RaDec
   var unitHmsDms: Bool
   var labelRa = "RA"
-  var labelDec = "DEC"
+  var labelDec = "Dec"
   
   var gapPad = 30.0
 

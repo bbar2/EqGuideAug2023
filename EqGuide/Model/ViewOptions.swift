@@ -33,4 +33,22 @@ final class ViewOptions: ObservableObject {
   
   let leadingPad = CGFloat(10)
   let trailingPad = CGFloat(10)
+
+  func setupSegmentControl() {
+    // Set color of "thumb" that selects between items
+    UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(thumbColor)
+    
+    // Set color for whole "bar" background
+    UISegmentedControl.appearance().backgroundColor = UIColor(thumbBarColor)
+    
+    // Set font attributes - call once for each state (.normal, .selected)
+    UISegmentedControl.appearance().setTitleTextAttributes(
+      [.font : UIFont.preferredFont(forTextStyle: .title2),
+       .foregroundColor : UIColor(appActionColor)], for: .normal)
+    
+    UISegmentedControl.appearance().setTitleTextAttributes(
+      [.foregroundColor : UIColor(appActionColor),
+       .font : UIFont.preferredFont(forTextStyle: .title1)], for: .selected)
+  }
+
 }

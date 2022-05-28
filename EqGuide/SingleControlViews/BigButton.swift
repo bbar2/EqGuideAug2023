@@ -21,7 +21,7 @@ struct BigButton: View {
         .font(.title)
         .bold()
     }
-    .frame(height: 75)
+    .frame(minHeight: 75)
     .frame(minWidth: 100)
     .background(viewOptions.thumbColor)
     .foregroundColor(viewOptions.appActionColor)

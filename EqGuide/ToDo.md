@@ -2,6 +2,8 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
+2022-05-21: Add tracking speed control tab with Lunar and Star option.
+2022-05-21: Add numeric speed offset input to tracking speed control tab. 
 2022-05-07: Any edit should change coord name to Manual Entry.
 2022-05-08: Add overylay to RaDecInput view, so tapping outside keyboard will close it. 
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
@@ -15,6 +17,7 @@ Do I get spel checking.  No.
 2022-04-06: Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
 2022-04-06: Include DMS step buttons? - If I do it, put it in a separate View.
 2022-04-06: Create Icon - move to Assets - plan to use FocusControl icon. 
+2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation.
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.

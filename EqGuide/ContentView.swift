@@ -10,10 +10,14 @@ import SwiftUI
 
 struct ContentView: View {
 
+  // Model at App scope.  Pass to Views as needed.
+  @StateObject private var model = GuideModel()
+  
   @EnvironmentObject var viewOptions: ViewOptions
 
   enum Tab {
     case guide
+    case rate
     case focus
     case light
   }
@@ -22,12 +26,18 @@ struct ContentView: View {
   var body: some View {
     
     TabView (selection: $selection) {
-      GuideView()
+      GuideView(guideModel: model)
         .tabItem {
           Label("Guide", systemImage: "arrow.2.squarepath")
         }
         .tag(Tab.guide)
       
+      RaRateView(guideModel: model)
+        .tabItem {
+          Label("Track Rate", systemImage: "cursorarrow.click.badge.clock")
+        }
+        .tag(Tab.rate)
+
       FocusView()
         .tabItem {
           Label("Focus", systemImage: "staroflife.circle")
@@ -52,5 +62,6 @@ struct ContentView_Previews: PreviewProvider {
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
       .previewInterfaceOrientation(.portrait)
       .environmentObject(ViewOptions())
+      .preferredColorScheme(.dark)
   }
 }

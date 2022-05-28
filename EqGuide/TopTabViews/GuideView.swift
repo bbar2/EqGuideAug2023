@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct GuideView: View {
-  
+  @ObservedObject var guideModel: GuideModel
+
   // App level options into Environment
   @StateObject private var appOptions = AppOptions()
-  
-  // Model at App scope.  Pass to Views as needed.
-  @StateObject private var guideModel = GuideModel()
-  
+    
   @EnvironmentObject var viewOptions: ViewOptions
   
   var gdb:GuideDataBlock {
@@ -51,7 +49,7 @@ struct GuideView: View {
           Button() {
             appOptions.showDmsHms = !appOptions.showDmsHms
           } label: {
-            Text(appOptions.showDmsHms ? "Show Decimal Degrees" : "Show DMS/HMS")
+            Text(appOptions.showDmsHms ? "DMS/HMS" : "Degrees")
               .foregroundColor(viewOptions.appActionColor).bold()
           }
         }
@@ -118,8 +116,8 @@ struct GuideView: View {
             RaDecPairView(pairTitle: "Mount Angles:\nRef to Target",
                           pair: guideModel.anglesReferenceToTarget(),
                           unitHmsDms: false,
-                          labelRa: "Arm",
-                          labelDec: "Axis")
+                          labelRa: "RA Arm",
+                          labelDec: "Dec Axis")
 
           } else {
             NavigationLink {
@@ -139,32 +137,37 @@ struct GuideView: View {
             RaDecPairView(pairTitle: "Mount Angles:\nCurrent to Target",
                           pair: guideModel.anglesCurrentToTarget(),
                           unitHmsDms: false,
-                          labelRa: "Arm",
-                          labelDec: "Axis")
+                          labelRa: "RA Arm",
+                          labelDec: "Dec Axis")
 
           }
           
           Divider()
-          
-          Spacer()
-          
-          HStack {
+
+          // Big Button Area
+          VStack {
             Spacer()
-            BigButton(label:"Swap") {
-              guideModel.swapRefAndTarg()
-            }
+            
+            HStack {
               Spacer()
-            if startFromReference {
-              BigButton(label:" Set Target  \n & Ref") {
-                guideModel.guideCommandReferenceToTarget()
-                heavyBump()
+              BigButton(label:"Swap") {
+                guideModel.swapRefAndTarg()
               }
-            } else {
-              BigButton(label:" Set Target  ") {
-                guideModel.guideCommandCurrentToTarget()
-                heavyBump()
+              Spacer()
+              if startFromReference {
+                BigButton(label:" Set Target  \n & Ref") {
+                  guideModel.guideCommandReferenceToTarget()
+                  heavyBump()
+                }
+              } else {
+                BigButton(label:" Set Target  ") {
+                  guideModel.guideCommandCurrentToTarget()
+                  heavyBump()
+                }
               }
+              Spacer()
             }
+            
             Spacer()
           }
           
@@ -221,8 +224,9 @@ struct GuideView: View {
 
 struct GuideView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
+  static let guideModel = GuideModel()
   static var previews: some View {
-    GuideView()
+    GuideView(guideModel: guideModel)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

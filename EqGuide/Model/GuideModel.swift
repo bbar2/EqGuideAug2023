@@ -17,7 +17,7 @@ enum Knowledge {
 }
 
 class GuideModel : BleWizardDelegate, ObservableObject {
-
+  
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
   @Published var guideDataBlock = GuideDataBlock()
@@ -26,20 +26,23 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   @Published var locationData = LocationData() // Should I @Published since elements are @Published elements.
   @Published var refName = ""
   @Published var targName = ""
-
+  
   let catalog: [Target] = loadJson("TargetData.json")
-
+  
   // These offsets, with current counts (in GuideDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetsToReference()
   private var armOffsetDeg = 0.0
   private var diskOffsetDeg = 0.0
-
+  
+  private var lookForRateChange = false
+  private var targetRateDps = Float32(0.0)
+  
   // Mount Angles
   var lstDeg = 0.0
   var armCurrentDeg = 0.0
   var diskCurrentDeg = 0.0
-
+  
   var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
@@ -70,11 +73,11 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func updateMountAngles() {
     
     updateLstDeg() // Function of time (always changing) and longitude
-
+    
     // Positive Count's advance axes CCW, looking to Polaris or top of scope
     armCurrentDeg = guideDataBlock.armCountDeg + armOffsetDeg
     diskCurrentDeg = guideDataBlock.diskCountDeg + diskOffsetDeg
-
+    
     // armAngle is +- ~95 deg in RA.
     // Positive armAngle is in direction of Sky Rotation (CCW).
     // Positive armAngle rotates CCW around north pole
@@ -97,7 +100,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
     }
   }
-    
+  
   // ArmAngleDeg given hemisphere knowledge of LST vs RA
   func armAngleDeg(lst: Double, ra: Double) -> Double {
     if (ra > lst) {
@@ -115,7 +118,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       return 180.0 - coord.dec
     }
   }
-    
+  
   // Uses LST, Reference, and Target to build arm angle change required to move from
   // Reference.ra to Target.ra
   // TODO - what do I do if LST or REF knowledge == .none
@@ -123,7 +126,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let fromArmDeg = armAngleDeg(lst: lstDeg, ra: fromDeg)
     let toArmDeg = armAngleDeg(lst: lstDeg, ra: toDeg)
     let deltaDeg = toArmDeg - fromArmDeg
-
+    
     return deltaDeg
   }
   
@@ -132,9 +135,9 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func diskDeltaDeg(fromCoord: RaDec, toCoord: RaDec) -> Double {
     let fromDiskDeg = diskAngleDeg(lst: lstDeg, coord: fromCoord)
     let toDiskDeg = diskAngleDeg(lst: lstDeg, coord: toCoord)
-
+    
     var deltaDiskDeg = toDiskDeg - fromDiskDeg
-
+    
     // Take shorter route if |deltaDiskDeg| > 180.0
     if deltaDiskDeg > 180.0 {
       deltaDiskDeg = deltaDiskDeg - 360.0 // go -170 instead of +190
@@ -158,14 +161,14 @@ class GuideModel : BleWizardDelegate, ObservableObject {
                  dec: diskDeltaDeg(fromCoord: currentPosition,
                                    toCoord: targetCoord) )
   }
-
-
+  
+  
   var bleConnected: Bool {
     return statusString == "Connected"
   }
-    
+  
   /// ========== RA/Dec from References star and Current Date/Time ==========
-
+  
   // Update arm and dec offset constants.
   // armAngle is +- ~95 deg in RA.
   // Positive armAngle is in direction of Sky Rotation (CCW).
@@ -177,15 +180,15 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
     let refRaDeg = refCoord.ra
     let refDecDeg = refCoord.dec
-
+    
     updateLstDeg()
-
+    
     // When armAngle is +: RA = LST + 90 - armAngle
     // When armAngle is -: RA = LST - 90 - armAngle
     // given: armAngle = (armCount * armDegPerStep + armOffsetDeg)
     // So when armAngle is +: RA = LST + 90 - armCount * armDegPerStep - armOffsetDeg
     // So When armAngle is -: RA = LST - 90 - armCount * armDegPerStep - armOffsetDeg
-
+    
     // When armAngle is unknown, infer it's sign by comparing lst and RefRaDeg.
     // armAngle sign is + if refCoord.ra > lst, else armAngle sign is -
     // Bias toward negative arm angle to init to >|-90| for refRaDeg close to LST.
@@ -214,9 +217,9 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_DATA_BLOCK_UUID = CBUUID(string: "828b0011-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_COMMAND_UUID = CBUUID(string: "828b0012-046a-42c7-9c16-00ca297e95eb")
-
+  
   private let bleWizard: BleWizard  //contain a BleWizard
-
+  
   private var initialized = false
   
   init() {
@@ -224,11 +227,11 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     self.bleWizard = BleWizard(
       serviceUUID: GUIDE_SERVICE_UUID,
       bleDataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
-
+    
     // Force self implement all delegate methods of BleWizardDelegate protocol
     bleWizard.delegate = self
   }
-
+  
   func guideModelInit() {
     if (!initialized) {
       bleWizard.start()
@@ -236,7 +239,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       initViewModel()
       initialized = true
     }
-
+    
     // Setup initial Reference and Target
     let refIndex = 0
     refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
@@ -244,14 +247,14 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let targIndex = 1
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
-
+    
   }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
   func initViewModel() {
     // Init local variables
   }
-
+  
   func reportBleScanning() {
     statusString = "Scanning ..."
   }
@@ -259,24 +262,24 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func reportBleNotAvailable() {
     statusString = "BLE Not Available"
   }
-
+  
   func reportBleServiceFound(){
     statusString = "RocketMount Found"
   }
   
   func reportBleServiceConnected(){
-//    initViewModel()
+    //    initViewModel()
     statusString = "Connected"
   }
   
   func reportBleServiceDisconnected(){
-//    initViewModel()
+    //    initViewModel()
     statusString = "Disconnected"
     readCount = 0;
   }
   
   func reportBleServiceCharaceristicsScanned() {
-
+    
     // Setup notify handler for incomming data from Guide Mount
     bleWizard.setNotify(uuid: GUIDE_DATA_BLOCK_UUID) { [weak self] guideData in
       self?.processDataFromMount(guideData)
@@ -298,12 +301,12 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   
   // This runs (via Notify Handler) every time EqMount sends a new GuideDataBlock (~10Hz)
   func processDataFromMount(_ guideData: GuideDataBlock) {
-
+    
     // Store the new GuideDataBlock
     guideDataBlock = guideData
     readCount += 1
     updateMountAngles()
-
+    
     // Process specific GuideDataBlock commands
     if guideDataBlock.mountState == MountState.PowerUp.rawValue {
       pointingKnowledge = .none
@@ -317,26 +320,30 @@ class GuideModel : BleWizardDelegate, ObservableObject {
         readyForRefMark = false
         updateOffsetsToReference()
         ackReference()
-        print("MarkRefNow")
       } else {
         // Reset on GDB w/o markReferenceNow
         readyForRefMark = true
       }
     }
     
-    // Add code here for next specific GDB command -- ToDo Reverse
+    // Add code here for next specific GDB command
+    if lookForRateChange {
+      if abs(guideDataBlock.raRateOffsetDegPerSec - targetRateDps) < 0.0001 {
+        heavyBump()
+        lookForRateChange = false
+      }
+    }
   }
   
-
+  
   /// ========== Transmit Commands to Mount ==========
   /// Build and transmit GuideCommandBlocks
   /// Convert native iOS app types to Arduino types here - i.e. Doubles to Int32 Counts
   /// No angle conversions or hemisphere awareness at this level.
-
+  
   func guideCommand(_ writeBlock:GuideCommandBlock) {
     bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
   }
-
   
   // Target Command - Offset from a reference.
   // Mount will Mark Reference then move to offset.
@@ -346,7 +353,8 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let refToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetTarget.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
+      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep),
+      raRateOffsetDps: Float32(0.0)
     )
     guideCommand(refToTargetCommand)
   }
@@ -359,11 +367,25 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let currentToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetOffset.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
+      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep),
+      raRateOffsetDps: Float32(0.0)
     )
     guideCommand(currentToTargetCommand)
   }
-
+  
+  // Send track rate adjustment to Mount.
+  func guideCommandSetRaRateOffsetDps(newDps: Double) {
+    let rateCommand = GuideCommandBlock(
+      command: GuideCommand.SetRaOffsetDps.rawValue,
+      armOffset: Int32(0),
+      diskOffset: Int32(0),
+      raRateOffsetDps: Float32(newDps)
+    )
+    targetRateDps = Float32(newDps);
+    lookForRateChange = true;
+    guideCommand(rateCommand)
+  }
+  
   // Acknolwledge Reference Mark - offset's not used
   // Marking the reference, deserved a handshake.
   // Mount holds GuideDataBlock.markRefNowInt != 0 until it receives this CommandBlock.
@@ -371,10 +393,10 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let ackCommand = GuideCommandBlock(
       command: GuideCommand.AckReference.rawValue,
       armOffset: Int32(0),
-      diskOffset: Int32(0)
+      diskOffset: Int32(0),
+      raRateOffsetDps: Float32(0.0)
     )
     guideCommand(ackCommand)
   }
-    
-      
+  
 }

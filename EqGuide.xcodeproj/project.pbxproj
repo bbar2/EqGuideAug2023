@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		351204AF27F214F5006DF60B /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* FloatInputView.swift */; };
+		351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* DoubleInputView.swift */; };
 		352168432814357900C76670 /* ViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168422814357900C76670 /* ViewOptions.swift */; };
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
 		3521684728145C2A00C76670 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521684628145C2A00C76670 /* Haptics.swift */; };
@@ -32,6 +32,7 @@
 		35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202D27F4AEB600D96C68 /* Dms.swift */; };
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
 		35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EE3F9727F6958F007DA575 /* SignButton.swift */; };
+		35F6244C283C04C200762730 /* RaRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F6244B283C04C200762730 /* RaRateView.swift */; };
 		35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0532787963D001EFA53 /* EqGuideApp.swift */; };
 		35FBF0562787963D001EFA53 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0552787963D001EFA53 /* ContentView.swift */; };
 		35FBF05827879640001EFA53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35FBF05727879640001EFA53 /* Assets.xcassets */; };
@@ -43,7 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		351204AE27F214F5006DF60B /* FloatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
+		351204AE27F214F5006DF60B /* DoubleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleInputView.swift; sourceTree = "<group>"; };
 		352168422814357900C76670 /* ViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptions.swift; sourceTree = "<group>"; };
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
 		3521684628145C2A00C76670 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
@@ -68,6 +69,7 @@
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
 		35EE3F9727F6958F007DA575 /* SignButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignButton.swift; sourceTree = "<group>"; };
+		35F6244B283C04C200762730 /* RaRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaRateView.swift; sourceTree = "<group>"; };
 		35FBF0502787963D001EFA53 /* EqGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EqGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35FBF0532787963D001EFA53 /* EqGuideApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqGuideApp.swift; sourceTree = "<group>"; };
 		35FBF0552787963D001EFA53 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -93,7 +95,7 @@
 		3574C9F827F9D7700036CD94 /* SubInputViews */ = {
 			isa = PBXGroup;
 			children = (
-				351204AE27F214F5006DF60B /* FloatInputView.swift */,
+				351204AE27F214F5006DF60B /* DoubleInputView.swift */,
 				35DE202B27F4AD8500D96C68 /* DmsInputView.swift */,
 				356CDF8527FB68B800F44A99 /* HmsInputView.swift */,
 			);
@@ -116,6 +118,7 @@
 		35A7F64228240F1B008EBC8C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 				352168482814A86D00C76670 /* LocationData.swift */,
 				3521684628145C2A00C76670 /* Haptics.swift */,
 				3599A1E7280CB9ED00E1C442 /* Vallado.swift */,
@@ -136,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
+				35F6244B283C04C200762730 /* RaRateView.swift */,
 				35B92FF02800B86300342F7F /* FocusView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
 			);
@@ -159,7 +163,6 @@
 				352168422814357900C76670 /* ViewOptions.swift */,
 				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				35FBF06727888866001EFA53 /* GuideModel.swift */,
-				35FBF065278880E4001EFA53 /* BleWizard.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -319,8 +322,9 @@
 				352168432814357900C76670 /* ViewOptions.swift in Sources */,
 				35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */,
 				35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */,
+				35F6244C283C04C200762730 /* RaRateView.swift in Sources */,
 				359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */,
-				351204AF27F214F5006DF60B /* FloatInputView.swift in Sources */,
+				351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */,
 				35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */,
 				35DE202827F3D66600D96C68 /* BigButton.swift in Sources */,
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,
@@ -465,6 +469,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -496,6 +501,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (

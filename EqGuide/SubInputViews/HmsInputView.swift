@@ -28,6 +28,13 @@ struct HmsInputView: View {
   @State var secString = String(44)
   @State var isPos = true
   
+  enum InputField {
+    case hour
+    case minute
+    case second
+  }
+  @FocusState private var kbFocused: InputField?
+
   var body: some View {
     HStack {
       if prefix != "" {
@@ -42,32 +49,70 @@ struct HmsInputView: View {
       
       HStack {
         TextField("dd", text: $hourString)
+          .focused($kbFocused, equals: .hour)
           .frame(width:60)
           .border(.black)
           .onChange(of: hourString) { _ in
             reBuildFloatInput()
           }
-        Text("h")
+        Text("h").font(viewOptions.labelFont)
 
         Spacer()
         TextField("dd", text: $minString)
+          .focused($kbFocused, equals: .minute)
           .frame(width:50)
           .border(.black)
           .onChange(of: minString) { _ in
             reBuildFloatInput()
           }
-        Text("m")
+        Text("m").font(viewOptions.labelFont)
 
         Spacer()
         TextField("dd", text: $secString)
+          .focused($kbFocused, equals: .second)
           .frame(width:50)
           .border(.black)
           .onChange(of: secString) { _ in
             reBuildFloatInput()
           }
-        Text("s")
+        Text("s").font(viewOptions.labelFont)
 
-        Spacer()
+        // Control to raise or dismiss keyboard.
+        // Cycles with right arrow's, until dismiss after editing seconds
+        if let focus = kbFocused {
+          switch focus {
+            case .hour:
+            Button() {
+              kbFocused = .minute
+              initEditableStrings()
+            } label: {
+              Label("", systemImage: "arrow.right.square")
+            }
+            case .minute:
+            Button() {
+              kbFocused = .second
+              initEditableStrings()
+            } label: {
+              Label("", systemImage: "arrow.right.square")
+            }
+            case .second:
+            Button() {
+              kbFocused = nil
+              initEditableStrings()
+            } label: {
+              Label("", systemImage: "arrow.down.square")
+            }
+
+          }
+          
+        } else { // if nothing focused, button to bring up keyboard
+          Button() {
+            kbFocused = .hour;
+          } label: {
+            Label("", systemImage: "arrow.up.square")
+          }
+        }
+        
       }
       .keyboardType(.numberPad)
       .onAppear() {
@@ -75,8 +120,19 @@ struct HmsInputView: View {
       }
       // This onChange() handles cases where caller makes a change after onAppear
       .onChange(of: decimalDegrees) {_ in
-        initEditableStrings()
+        if kbFocused == nil {
+          initEditableStrings()
+        }
       }
+      // Start Editing with all text selected
+      .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+        if let textField = obj.object as? UITextField {
+          textField.selectedTextRange =
+          textField.textRange(from: textField.beginningOfDocument,
+                              to: textField.endOfDocument)
+        }
+      }
+
     }
     .font(.title)
     .multilineTextAlignment(.trailing)

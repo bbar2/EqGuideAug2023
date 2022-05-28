@@ -18,9 +18,10 @@ struct RaDecInputView: View {
   @EnvironmentObject var viewOptions: ViewOptions
   @Environment(\.dismiss) private var dismissView
 
+  private let ManualEntry = "User Coord"
   @State private var tempCoord = RaDec()
-  @State private var tempName = "Manual Entry"
-  //ToDo - Init view with current name.  Change to Manual Entry, upon editing.
+  @State private var editCoord = RaDec()
+  @State private var tempName = ""
 
   var body: some View {
     
@@ -47,25 +48,16 @@ struct RaDecInputView: View {
 
       VStack {
         if unitHmsDms {
-          HmsInputView(decimalDegrees: $tempCoord.ra, prefix: "RA")
-          DmsInputView(decimalDegrees: $tempCoord.dec, prefix: "DEC")
+          HmsInputView(decimalDegrees: $editCoord.ra, prefix: "RA")
+          DmsInputView(decimalDegrees: $editCoord.dec, prefix: "DEC")
         } else {
-          FloatInputView(doubleValue: $tempCoord.ra, prefix: "RA")
-          FloatInputView(doubleValue: $tempCoord.dec, prefix: "DEC")
+          DoubleInputView(doubleValue: $editCoord.ra, prefix: "RA")
+          DoubleInputView(doubleValue: $editCoord.dec, prefix: "DEC")
         }
       }
-      .onAppear() {
-        tempCoord.ra = coord.ra
-        tempCoord.dec = coord.dec
-//        tempName = name
-      }
-//      .onChange(of: tempRa){ _ in
-//        name = "onChange"
-//      }
-      
+
       BigButton(label:"Apply") {
-        coord.ra = tempCoord.ra
-        coord.dec = tempCoord.dec
+        coord = tempCoord
         name = tempName
         heavyBump()
         dismissView()
@@ -80,13 +72,31 @@ struct RaDecInputView: View {
     .navigationBarHidden(true)
 
     .onAppear() {
+      tempCoord = coord
+      editCoord = coord
+      tempName = name
       softBump()
+    }
+    
+    // Detect manual coordinate edits, and rename the coordinate
+    .onChange(of: editCoord.ra) { newValue in
+      if abs(tempCoord.ra - newValue) > 0.01 { // watch string to double truncation
+        tempName = ManualEntry
+      }
+      tempCoord.ra = newValue
+    }
+    .onChange(of: editCoord.dec) { newValue in
+      if abs(tempCoord.dec - newValue) > 0.01 { // watch string to double truncation
+        tempName = ManualEntry
+      }
+      tempCoord.dec = newValue
     }
   }
 
   func makeTargetCurrent(tappedTarget: Target) {
     tempCoord.ra  = tappedTarget.ra
     tempCoord.dec = tappedTarget.dec
+    editCoord = tempCoord
     tempName = tappedTarget.name
     softBump()
   }
