@@ -14,14 +14,16 @@ enum GuideCommand:Int32 {
   case SetTarget = 2      // Tell mount to Mark a Reference then Move to Offset
   case AckReference = 3   // Acknowledge that MarkReference has been handled by iOS App
   case SetRaOffsetDps = 4 // Tweak RA tracking speed based on observation
-  case NumCommands = 5
+  case PauseTracking = 5  // Stop RA tracking
+  case ResumeTracking = 6 // Resume RA tracking
+  case NumCommands = 7
 }
 
 struct GuideCommandBlock {
-  var command:Int32
-  var armOffset:Int32           // Counts, or micro steps
-  var diskOffset:Int32          // Counts, or micro steps
-  var raRateOffsetDps:Float32   // Rate in Degrees Per Second -- UI IS IN DEG_PER_MIN
+  var command: Int32
+  var armOffset = Int32(0)           // Counts, or micro steps
+  var diskOffset = Int32(0)          // Counts, or micro steps
+  var raRateOffsetDps = Float32(0)   // Rate in Degrees Per Second -- UI IS IN DEG_PER_MIN
 }
 
 

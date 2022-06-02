@@ -41,6 +41,7 @@ struct GuideDataBlock {
   var raRateOffsetDegPerSec: Float32 = 0.0
   var mountState: Int32 = MountState.PowerUp.rawValue
   var markRefNowInt: Int32 = 0
+  var trackingPaused: Int32 = 0
   var mountTimeMs: UInt32 = 0
   var armCount: Int32 = 0
   var diskCount: Int32 = 0

@@ -328,7 +328,8 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
     // Add code here for next specific GDB command
     if lookForRateChange {
-      if abs(guideDataBlock.raRateOffsetDegPerSec - targetRateDps) < 0.0001 {
+      let oneArcSecPerMin = Float32(1.0 / (3600.0 * 60.0))
+      if abs(guideDataBlock.raRateOffsetDegPerSec - targetRateDps) < oneArcSecPerMin {
         heavyBump()
         lookForRateChange = false
       }
@@ -367,8 +368,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     let currentToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetOffset.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep),
-      raRateOffsetDps: Float32(0.0)
+      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
     )
     guideCommand(currentToTargetCommand)
   }
@@ -377,8 +377,6 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func guideCommandSetRaRateOffsetDps(newDps: Double) {
     let rateCommand = GuideCommandBlock(
       command: GuideCommand.SetRaOffsetDps.rawValue,
-      armOffset: Int32(0),
-      diskOffset: Int32(0),
       raRateOffsetDps: Float32(newDps)
     )
     targetRateDps = Float32(newDps);
@@ -386,15 +384,25 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     guideCommand(rateCommand)
   }
   
+  func guideCommandPauseTracking() {
+    let pauseCommand = GuideCommandBlock(
+      command: GuideCommand.PauseTracking.rawValue)
+    guideCommand(pauseCommand)
+  }
+
+  
+  func guideCommandResumeTracking() {
+    let resumeCommand = GuideCommandBlock(
+      command: GuideCommand.ResumeTracking.rawValue)
+    guideCommand(resumeCommand)
+  }
+  
   // Acknolwledge Reference Mark - offset's not used
   // Marking the reference, deserved a handshake.
   // Mount holds GuideDataBlock.markRefNowInt != 0 until it receives this CommandBlock.
   func ackReference() {
     let ackCommand = GuideCommandBlock(
-      command: GuideCommand.AckReference.rawValue,
-      armOffset: Int32(0),
-      diskOffset: Int32(0),
-      raRateOffsetDps: Float32(0.0)
+      command: GuideCommand.AckReference.rawValue
     )
     guideCommand(ackCommand)
   }

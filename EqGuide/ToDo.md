@@ -2,10 +2,7 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
-2022-05-21: Add tracking speed control tab with Lunar and Star option.
-2022-05-21: Add numeric speed offset input to tracking speed control tab. 
-2022-05-07: Any edit should change coord name to Manual Entry.
-2022-05-08: Add overylay to RaDecInput view, so tapping outside keyboard will close it. 
+2022-05-29: Add Tracking on/off switch
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
 2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
@@ -21,6 +18,12 @@ Do I get spel checking.  No.
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.
+2022-05-29: Done - Add Latiude someplace, to aid in wedge angle setup
+2022-05-29: Done - Switch speed adjustment from milli Deg / min, to arc sec / min
+2022-05-27: Done - Add tracking speed control tab with Lunar and Star option.
+2022-05-27: Done - Add numeric speed offset input to tracking speed control tab. 
+2022-05-27: Done - Any edit should change coord name to Manual Entry.
+2022-05-27: Done with raise/lower/next arrow button - Add overylay to RaDecInput view, so tapping outside keyboard will close it. 
 2022-05-07: Done by changing DirectOffset to CurrentToTarget - Either a "Current To Ref Pos" Button, or add a "GoTo Target from Current"   
 2022-05-07: Done - Update GuideView's OffsetToTarget View to show ArmAngle and DiskAngle
 2022-05-06: Done - Create and read json file with target offsets. Update UI to set reference and target from json based list. 

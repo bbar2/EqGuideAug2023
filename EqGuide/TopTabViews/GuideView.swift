@@ -70,8 +70,11 @@ struct GuideView: View {
             let armString = "Arm: " + Hms(guideModel.armCurrentDeg).string(false)
             Text(armString).foregroundColor(pointingKnowledgeColor())
             Spacer()
+            let latString = Dms(guideModel.locationData.latitudeDeg ?? 0).string(appOptions.showDmsHms)
+            Text("Lat:" + latString).foregroundColor(lstValidColor())
+            Spacer()
             let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(appOptions.showDmsHms)
-             Text("Long:" + longString).foregroundColor(lstValidColor())
+            Text("Long:" + longString).foregroundColor(lstValidColor())
           }.font(viewOptions.smallValueFont)
           
           Divider()

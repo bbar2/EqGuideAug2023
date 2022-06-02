@@ -35,13 +35,13 @@ struct DoubleInputView: View {
           reBuildDoubleValue()
         }
       
-      TextField("xx.yy", text: $doubleString)
+      TextField(numDigits != 0 ? "xxx.yy" : "xx", text: $doubleString)
         .focused($kbFocused)
         .frame(width:125)
         .multilineTextAlignment(.leading)
         .border(.black)
         .foregroundColor(viewOptions.appActionColor)
-        .keyboardType(.decimalPad)
+        .keyboardType(numDigits != 0 ? .decimalPad : .numberPad)
         .onChange(of: doubleString) { _ in
           reBuildDoubleValue()
         }

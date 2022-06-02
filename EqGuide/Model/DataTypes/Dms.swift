@@ -103,7 +103,7 @@ struct Dms {
       return String(format: "%.02fº", degrees)
     }
   }
-  
+
   static func + (left: Dms, right: Dms) -> Dms {
     return Dms(left.degrees + right.degrees)
   }

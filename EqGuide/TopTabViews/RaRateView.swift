@@ -12,7 +12,8 @@ struct RaRateView: View {
   
   @EnvironmentObject var viewOptions: ViewOptions
   
-  @State private var newMilliDegPerMin = Double(0.0)
+  @State private var newOffsetArcSecPerMin = Double(0.0)
+  @State private var trackingIsPaused = false
 
   enum TrackMode {
     case star
@@ -43,34 +44,45 @@ struct RaRateView: View {
           case .star:
             Text("Star Track Mode").font(viewOptions.labelFont)
           case .lunar:
-            Text("Use -8.9 milliº / min").font(viewOptions.labelFont)
+            Text("Use -32 arcSec / min").font(viewOptions.labelFont)
         }
 
-        let currentMilliDegPerMin = 60.0 * 1000.0 * guideModel.guideDataBlock.raRateOffsetDegPerSec
-        Text(String(format: "Current Offset: %.1f milliº/min", currentMilliDegPerMin))
+        let currentArcSecPerMin = 3600.0 * 60.0 * guideModel.guideDataBlock.raRateOffsetDegPerSec
+        Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
       }
-      .padding([.bottom], 30)
+      .padding([.bottom], 20)
 
       VStack{
-        Text("Fine Tuning Offset").font(viewOptions.appHeaderFont)
-        Text("(milliº / min)").font(viewOptions.labelFont)
+        Text("New Fine Tune Offset").font(viewOptions.appHeaderFont)
+        Text("(arcSec / min)").font(viewOptions.labelFont)
         HStack {
           Spacer()
-          DoubleInputView(doubleValue: $newMilliDegPerMin,
+          DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
                           prefix: "",
-                          numDigits: 1).padding([.top], -10)
+                          numDigits: 0).padding([.top], -10)
         }
         
       }
 
-      BigButton(label: "Update\nFine Tunning\n Offset") {
-        let newDps = newMilliDegPerMin / (1000.0 * 60.0);
-        guideModel.guideCommandSetRaRateOffsetDps(newDps: newDps)
-      }
-      .padding([.top], 30)
+      BigButton(label: "Update\nFine Tune\n Offset", minWidth: 200) {
+        let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
+        guideModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
+      }.padding([.bottom], 50)
 
-      Spacer()
+      
+      if (trackingIsPaused) {
+        BigButton(label: "Resume Tracking", minWidth: 250) {
+          trackingIsPaused = false;
+          guideModel.guideCommandResumeTracking()
+        }
+      } else {
+        BigButton(label: "Pause Tracking", minWidth: 250) {
+          trackingIsPaused = true
+          guideModel.guideCommandPauseTracking()
+        }
+      }
+      
     }
     .foregroundColor(viewOptions.appRedColor)
     .onAppear{
