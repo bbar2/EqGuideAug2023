@@ -42,11 +42,12 @@ struct RaDec {
     }
   }
   
-  // Use inverted RA/DEC with DEC > 90, if RA is unachievable by mount
-  mutating func raInvert() {
-    _ra = _ra + 180.0
-    _dec = mapTo180(180.0 - _dec);
-  }
+//  // Removed - do this to arm and disk angles, not RA and DEC
+//  // Use inverted RA/DEC with DEC > 90, if RA is unachievable by mount
+//  mutating func raInvert() {
+//    _ra = _ra + 180.0
+//    _dec = mapTo180(180.0 - _dec);
+//  }
   
   static func + (left: RaDec, right: RaDec) -> RaDec {
     return RaDec(ra: left._ra + right._ra, dec: left._dec + right._dec)

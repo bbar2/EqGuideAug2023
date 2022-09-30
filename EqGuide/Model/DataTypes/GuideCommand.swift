@@ -23,7 +23,7 @@ struct GuideCommandBlock {
   var command: Int32
   var armOffset = Int32(0)           // Counts, or micro steps
   var diskOffset = Int32(0)          // Counts, or micro steps
-  var raRateOffsetDps = Float32(0)   // Rate in Degrees Per Second -- UI IS IN DEG_PER_MIN
+  var raRateOffsetDps = Float32(0)   // Offset in Deg Per Sec -- UI is ArcSec per Min
 }
 
 

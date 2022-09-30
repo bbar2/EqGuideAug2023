@@ -6,16 +6,6 @@
 //
 //  Structure received from Mount microcontroller via Bluetooth receive operation.
 //  Ensure 32 bit sized words to match 32 bit microcontroller.
-//
-//  The mount arm rotates in Right Ascension.
-//  The mount disk rotates in Declination.
-//  The relationship is dependent on arm hemisphere determined by RA vs LST
-//    If RA >= LST (Local Sidereal Time)
-//      armAngle = LST + 90 - RA
-//      diskAngle = DEC
-//    Else If RA <= LST
-//      armAngle = LST - 90 - RA
-//      diskAngle = -DEC
 
 import Foundation
 

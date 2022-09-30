@@ -200,5 +200,15 @@
     "mag": 8.4,
     "category": "Galaxy",
     "constellation": "Canis Venatici"
+  },
+  {
+    "id": 1021,
+    "name": "M31",
+    "description": "Andromeda Galaxy",
+    "ra": 10.68,
+    "dec": 41.27,
+    "mag": 3.4,
+    "category": "Galaxy",
+    "constellation": "Andromeda"
   }
 ]

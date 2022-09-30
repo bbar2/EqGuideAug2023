@@ -55,14 +55,13 @@ struct RaRateView: View {
 
       VStack{
         Text("New Fine Tune Offset").font(viewOptions.appHeaderFont)
-        Text("(arcSec / min)").font(viewOptions.labelFont)
+        Text("arcSec / min (+ccw)").font(viewOptions.labelFont)
         HStack {
           Spacer()
           DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
                           prefix: "",
                           numDigits: 0).padding([.top], -10)
         }
-        
       }
 
       BigButton(label: "Update\nFine Tune\n Offset", minWidth: 200) {
