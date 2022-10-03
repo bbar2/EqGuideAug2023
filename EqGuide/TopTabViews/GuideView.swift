@@ -43,8 +43,6 @@ struct GuideView: View {
           }
         }.font(.title)
         HStack {
-          Text("LST: " + Hms(guideModel.lstDeg).string(appOptions.showDmsHms))
-            .foregroundColor(lstValidColor())
           Spacer()
           Button() {
             appOptions.showDmsHms = !appOptions.showDmsHms
@@ -59,22 +57,26 @@ struct GuideView: View {
         
         VStack{
           RaDecPairView(
-            pairTitle: "Current Position",
+            pairTitle: "Current\nPosition",
             pair: guideModel.currentPosition,
-            unitHmsDms: appOptions.showDmsHms)
+            unitHmsDms: appOptions.showDmsHms,
+            armDeg: guideModel.armCurrentDeg,
+            dskDeg: guideModel.dskCurrentDeg
+          )
           .foregroundColor(pointingKnowledgeColor())
-
-          Divider()
+          .padding([.bottom], 1)
 
           HStack {
-            let armString = "Arm: " + Hms(guideModel.armCurrentDeg).string(false)
-            Text(armString).foregroundColor(pointingKnowledgeColor())
+            Text("LST: " + Hms(guideModel.lstDeg).string(appOptions.showDmsHms))
+              .foregroundColor(lstValidColor())
+//            let armString = "Arm: " + Hms(guideModel.armCurrentDeg).string(false)
+//            Text(armString).foregroundColor(pointingKnowledgeColor())
             Spacer()
             let latString = Dms(guideModel.locationData.latitudeDeg ?? 0).string(appOptions.showDmsHms)
             Text("Lat:" + latString).foregroundColor(lstValidColor())
             Spacer()
             let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(appOptions.showDmsHms)
-            Text("Long:" + longString).foregroundColor(lstValidColor())
+            Text("Lng:" + longString).foregroundColor(lstValidColor())
           }.font(viewOptions.smallValueFont)
           
           Divider()
@@ -87,7 +89,6 @@ struct GuideView: View {
                  .pickerStyle(.segmented)
                  .padding([.leading, .trailing], 10)
           
-          
           if startFromReference {
             NavigationLink {
               RaDecInputView(label: "Select Reference",
@@ -96,9 +97,12 @@ struct GuideView: View {
                              unitHmsDms: appOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
+              let (refArmDeg, refDskDeg, _) = guideModel.mountAnglesForRaDec(lst: guideModel.lstDeg, coord: guideModel.refCoord)
               RaDecPairView(pairTitle: "Reference:\n\(guideModel.refName)",
                             pair: guideModel.refCoord,
-                            unitHmsDms: appOptions.showDmsHms)
+                            unitHmsDms: appOptions.showDmsHms,
+                            armDeg: refArmDeg,
+                            dskDeg: refDskDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
@@ -110,19 +114,21 @@ struct GuideView: View {
                              catalog: guideModel.catalog)
               
             } label: {
+              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(lst: guideModel.lstDeg, coord: guideModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
-                            unitHmsDms: appOptions.showDmsHms)
+                            unitHmsDms: appOptions.showDmsHms,
+                            armDeg: targetArmDeg,
+                            dskDeg: targetDskDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Mount Angles:\nRef to Target",
-                          pair: guideModel.anglesReferenceToTarget(),
-                          unitHmsDms: false,
-                          labelRa: "RA Arm",
-                          labelDec: "Dec Axis")
+            MountChangeView(title: "Mount Movement:\nRef to Target",
+                            armMoveDeg: guideModel.anglesReferenceToTarget().ra,
+                            dskMoveDeg: guideModel.anglesReferenceToTarget().dec)
+            
 
-          } else {
+          } else {  // start from current
             NavigationLink {
               RaDecInputView(label: "Select Target",
                              coord: $guideModel.targetCoord,
@@ -137,11 +143,9 @@ struct GuideView: View {
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            RaDecPairView(pairTitle: "Mount Angles:\nCurrent to Target",
-                          pair: guideModel.anglesCurrentToTarget(),
-                          unitHmsDms: false,
-                          labelRa: "RA Arm",
-                          labelDec: "Dec Axis")
+            MountChangeView(title: "Mount Movement:\nCurrent to Target",
+                            armMoveDeg: guideModel.anglesCurrentToTarget().ra,
+                            dskMoveDeg: guideModel.anglesCurrentToTarget().dec)
 
           }
           

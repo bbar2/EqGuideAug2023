@@ -10,9 +10,10 @@ import SwiftUI
 
 struct ContentView: View {
 
-  // Model at App scope.  Pass to Views as needed.
+  // Model at Local scope.  Pass to Views as needed.
   @StateObject private var model = GuideModel()
   
+  // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions
 
   enum Tab {
@@ -59,7 +60,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView()
-      .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
       .previewInterfaceOrientation(.portrait)
       .environmentObject(ViewOptions())
       .preferredColorScheme(.dark)

@@ -15,6 +15,7 @@ struct EqGuideApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView()
+        .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
         .preferredColorScheme(.dark)
         .foregroundColor(viewOptions.appRedColor)
         .environmentObject(viewOptions)

@@ -2,6 +2,7 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
+2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.
 2022-05-29: Add Tracking on/off switch
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.

@@ -22,7 +22,7 @@ enum GuideCommand:Int32 {
 struct GuideCommandBlock {
   var command: Int32
   var armOffset = Int32(0)           // Counts, or micro steps
-  var diskOffset = Int32(0)          // Counts, or micro steps
+  var dskOffset = Int32(0)          // Counts, or micro steps
   var raRateOffsetDps = Float32(0)   // Offset in Deg Per Sec -- UI is ArcSec per Min
 }
 

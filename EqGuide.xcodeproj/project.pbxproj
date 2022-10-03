@@ -32,6 +32,7 @@
 		35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202B27F4AD8500D96C68 /* DmsInputView.swift */; };
 		35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202D27F4AEB600D96C68 /* Dms.swift */; };
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
+		35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */; };
 		35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EE3F9727F6958F007DA575 /* SignButton.swift */; };
 		35F6244C283C04C200762730 /* RaRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F6244B283C04C200762730 /* RaRateView.swift */; };
 		35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0532787963D001EFA53 /* EqGuideApp.swift */; };
@@ -70,6 +71,7 @@
 		35DE202B27F4AD8500D96C68 /* DmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsInputView.swift; sourceTree = "<group>"; };
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
+		35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountChangeView.swift; sourceTree = "<group>"; };
 		35EE3F9727F6958F007DA575 /* SignButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignButton.swift; sourceTree = "<group>"; };
 		35F6244B283C04C200762730 /* RaRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaRateView.swift; sourceTree = "<group>"; };
 		35FBF0502787963D001EFA53 /* EqGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EqGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				358067EB27EF938400CAF595 /* RaDecPairView.swift */,
+				35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */,
 				358067ED27EFA0B200CAF595 /* RawDataView.swift */,
 				35A7F64C28246EBD008EBC8C /* TargetRow.swift */,
 			);
@@ -308,6 +311,7 @@
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
+				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,

@@ -28,7 +28,7 @@ struct RawDataView: View {
         Spacer()
         Text("RA: \(gdb.armCount)")
         Spacer()
-        Text("Dec: \(gdb.diskCount)")
+        Text("Dec: \(gdb.dskCount)")
       }
 
       HStack {
@@ -56,5 +56,7 @@ struct RawDataView: View {
 struct rawDataView_Previews: PreviewProvider {
   static var previews: some View {
     RawDataView(gdb: GuideDataBlock())
+      .preferredColorScheme(.dark)
   }
+
 }

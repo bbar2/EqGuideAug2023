@@ -27,14 +27,14 @@ enum MountState:Int32 {
 
 struct GuideDataBlock {
   var armDegPerStep: Float32 = 1.0    // really, Degrees per MicroStep
-  var diskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
+  var dskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
   var raRateOffsetDegPerSec: Float32 = 0.0
   var mountState: Int32 = MountState.PowerUp.rawValue
   var markRefNowInt: Int32 = 0
   var trackingPaused: Int32 = 0
   var mountTimeMs: UInt32 = 0
   var armCount: Int32 = 0
-  var diskCount: Int32 = 0
+  var dskCount: Int32 = 0
 
   // Conversions from BLE Communication driven types to iOS Application native types
   var markReferenceNow: Bool {
@@ -45,8 +45,8 @@ struct GuideDataBlock {
       return Double(armCount) * Double(armDegPerStep)
   }
   
-  var diskCountDeg: Double {
-    return Double(diskCount) * Double(diskDegPerStep)
+  var dskCountDeg: Double {
+    return Double(dskCount) * Double(dskDegPerStep)
   }
   
 }

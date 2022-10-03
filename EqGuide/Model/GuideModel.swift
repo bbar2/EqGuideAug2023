@@ -4,19 +4,23 @@
 //
 //  Created by Barry Bryant on 1/7/22.
 //
-//  The mount arm rotates in Right Ascension.  + is CCW looking at North pole.
+//  The mount Arm Angle rotates in Right Ascension.
+//  + is CCW looking at North pole, is direction of sky rotation.
 //  Arm angle is:
 //    90 when arm is horizontal on west side
 //   -90 when arm is horizontal on east side
 //     0 when arm is vertical
+//  Arm Angle range of motion is +- ~95 deg in RA.
 //
-//  The mount disk rotates in Declination. + is CCW looking up from bottom of disk.
+//  The mount Disk Angle (aka dsk) rotates in Declination.
+//  + is CCW looking up from bottom of disk.
 //  Disk angle is:
 //    90 pointing at north pole
 //   -90 at south pole
 //     0 at equatorial plane
 //
-//  The RA/DEC to arm/disk relationship depends on arm hemisphere determined by RA vs LST
+//  The RA/DEC to arm/disk relationship depends on wich side of pier the target is on,
+//  or arm hemisphere determined by RA vs LST
 //    If RA >= LST (Local Sidereal Time)
 //      armAngle = LST + 90 - RA
 //      diskAngle = DEC
@@ -29,11 +33,9 @@
 //  starting near +-95 degrees.
 //  To look into this wedge, flip both armAngle and diskAngle by 180 degrees.
 //  - When calculating angles from RaDec, ArmFlip if armAngle exceeds hardware limits.
-//  - When calculating RaDec from angles, detect ArmFlip if diskAngle > 90
-//  Choose to flip for anything beyond 90.0 degrees.
-//  TODO: What is impact of ~2 degree pad on pier hemisphere flip.
-//  TODO: what is fundamental difference between the two types of flips?
-//  TODO: I think it's the declination > 90.
+//  - When calculating RaDec from angles, detect ArmFlip if |DEC| > 90
+
+//  TODO: What is impact of ~2 degree padding on pier hemisphere flip.
 
 
 import SwiftUI
@@ -64,7 +66,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetsToReference()
   private var armOffsetDeg = 0.0
-  private var diskOffsetDeg = 0.0
+  private var dskOffsetDeg = 0.0
   
   private var lookForRateChange = false
   private var targetRateDps = Float32(0.0)
@@ -72,7 +74,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // Mount Angles
   var lstDeg = 0.0
   var armCurrentDeg = 0.0
-  var diskCurrentDeg = 0.0
+  var dskCurrentDeg = 0.0
   
   var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
@@ -94,7 +96,8 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
-      lstDeg = 289.0 //lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
+      lstDeg = lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
+//      lstDeg = 282.0 // Staunton River, Sep 14, 8:30PM
     } else {
       lstValid = false
       lstDeg = 0.0
@@ -121,28 +124,23 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
     // Positive Count's advance axes CCW, looking to Polaris or top of scope
     armCurrentDeg = guideDataBlock.armCountDeg + armOffsetDeg
-    diskCurrentDeg = guideDataBlock.diskCountDeg + diskOffsetDeg
+    dskCurrentDeg = guideDataBlock.dskCountDeg + dskOffsetDeg
     
-    // armAngle is +- ~95 deg in RA.
-    // Positive armAngle is in direction of Sky Rotation (CCW).
-    // Positive armAngle rotates CCW around north pole
-    // When armAngle is pos: RA = LST + 90 - armCurrentDeg; DEC = diskCurrentDeg
-    // When armAngle is neg: RA = LST - 90 - armCurrentDeg; DEC = -diskCurrentDeg
-    // Durring tracking, LST advancement is negated by armAngle tracking
+    // Side of Pier determination
     if lstValid && (pointingKnowledge != Knowledge.none) {
-      if (armCurrentDeg > 0) {
+      if (armCurrentDeg > 0) { // pointing toward east side of pier
         currentPosition.ra = lstDeg + 90.0 - armCurrentDeg
-        currentPosition.dec = diskCurrentDeg
-      } else {
+        currentPosition.dec = dskCurrentDeg
+      } else { // pointing to west side of pier
         currentPosition.ra = lstDeg - 90.0 - armCurrentDeg
-        currentPosition.dec = 180.0 - diskCurrentDeg
+        currentPosition.dec = 180.0 - dskCurrentDeg
       }
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
       
-      currentPosition.ra = lstDeg - armCurrentDeg // RA unknown without pointing knowledge
-      currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
+      currentPosition.ra = armCurrentDeg  // RA unknown without pointing knowledge
+      currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
     }
     
     // TODO:  Test this azimuth flip detection
@@ -163,79 +161,64 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
   } // end updateMountAngles
   
-  // ArmAngleDeg from RA, given hemisphere knowledge of LST vs RA
-  func armAngleDeg(lst: Double, coord: RaDec) -> Double {
+  // Mount Angles from RaDec given hemisphere knowledge of LST vs RA
+  func mountAnglesForRaDec(lst: Double, coord: RaDec) ->
+  (armDeg: Double, dskDeg:Double, isFlipped:Bool) {
     var armDeg = 0.0
+    var dskDeg = 0.0
+    var isFlipped = false
+
+    // Side of pier consideration
     if (coord.ra > lst) {
       armDeg = lst + 90.0 - coord.ra
+      dskDeg = coord.dec
     } else  {
       armDeg = lst - 90.0 - coord.ra
+      dskDeg = 180.0 - coord.dec
     }
-    
-    // TODO: If arm angle unreachable, set angle for azimuth flip
-    
-    return armDeg
-  }
-  
-  // DiskAngleDeg from Dec, given hemisphere knowledge of LST vs RA
-  func diskAngleDeg(lst: Double, coord: RaDec) -> Double {
-    var diskDeg = 0.0
-    if (coord.ra > lst) {
-      diskDeg = coord.dec
-    } else  {
-      diskDeg = 180.0 - coord.dec
-    }
-    
-    // TODO: If arm required a azimuth flip, flip the disk
-    
-    return diskDeg
-  }
-  
-  //////////////////////////////////
-  /// TODO:  Avoid impossible arm angles by moving to other side of LST and flipping DEC.
-  //////////////////////////////////
 
-  // Uses LST, Reference, and Target to build arm angle change required to move from
-  // Reference.ra to Target.ra
-  // TODO - what do I do if LST or REF knowledge == .none
-  func armDeltaDeg(fromCoord: RaDec, toCoord: RaDec) -> Double {
-    let fromArmDeg = armAngleDeg(lst: lstDeg, coord: fromCoord)
-    let toArmDeg = armAngleDeg(lst: lstDeg, coord: toCoord)
-    let deltaDeg = toArmDeg - fromArmDeg
+    // If arm angle unreachable, flip both axis by 180
+    if fabs(armDeg) > 90.0 {
+      armDeg = armDeg > 0.0 ? armDeg - 180.0 : armDeg + 180.0
+      dskDeg = dskDeg > 0.0 ? dskDeg - 180.0 : dskDeg + 180.0
+      isFlipped = true
+    }
     
-    return deltaDeg
+    return (armDeg, dskDeg, isFlipped)
   }
   
-  // Uses LST, Reference, and Target to build disk angle change required to move from
-  // Reference.dec to Target.dec
-  func diskDeltaDeg(fromCoord: RaDec, toCoord: RaDec) -> Double {
-    let fromDiskDeg = diskAngleDeg(lst: lstDeg, coord: fromCoord)
-    let toDiskDeg = diskAngleDeg(lst: lstDeg, coord: toCoord)
-    
-    var deltaDiskDeg = toDiskDeg - fromDiskDeg
+  // Uses LST, to build mount angle changes required to move fromCoord toCoord
+  // TODO - what do I do if LST or REF knowledge == .none
+  func mountAngleChange(fromCoord: RaDec, toCoord: RaDec) ->
+  (armAngle: Double, diskAngle: Double) {
+    let (fromArmDeg, fromDskDeg, _) = mountAnglesForRaDec(lst: lstDeg, coord: fromCoord)
+    let (toArmDeg, toDskDeg, _) = mountAnglesForRaDec(lst: lstDeg, coord: toCoord)
+
+    let deltaArmDeg = toArmDeg - fromArmDeg
+    var deltaDskDeg = toDskDeg - fromDskDeg
     
     // Take shorter route if |deltaDiskDeg| > 180.0
-    if deltaDiskDeg > 180.0 {
-      deltaDiskDeg = deltaDiskDeg - 360.0 // go -170 instead of +190
-    } else if deltaDiskDeg < -180.0 {
-      deltaDiskDeg = deltaDiskDeg + 360.0 // go 170 instead of -190
+    if deltaDskDeg > 180.0 {
+      deltaDskDeg = deltaDskDeg - 360.0 // go -170 instead of +190
+    } else if deltaDskDeg < -180.0 {
+      deltaDskDeg = deltaDskDeg + 360.0 // go 170 instead of -190
     }
     
-    return deltaDiskDeg
+    return (deltaArmDeg, deltaDskDeg)
   }
   
   func anglesReferenceToTarget() -> RaDec {
-    return RaDec(ra: armDeltaDeg(fromCoord: refCoord,
-                                 toCoord: targetCoord),
-                 dec: diskDeltaDeg(fromCoord: refCoord,
-                                   toCoord: targetCoord) )
+    var armDeg = 0.0
+    var diskDeg = 0.0
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+    return RaDec(ra:armDeg, dec: diskDeg)
   }
   
   func anglesCurrentToTarget() -> RaDec {
-    return RaDec(ra: armDeltaDeg(fromCoord: currentPosition,
-                                 toCoord: targetCoord),
-                 dec: diskDeltaDeg(fromCoord: currentPosition,
-                                   toCoord: targetCoord) )
+    var armDeg = 0.0
+    var diskDeg = 0.0
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: currentPosition, toCoord: targetCoord)
+    return RaDec(ra:armDeg, dec: diskDeg)
   }
   
   /// ========== RA/Dec from References star and Current Date/Time ==========
@@ -250,7 +233,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // The current LST increases with UTC, as increasing RA moves overhead.
   func updateOffsetsToReference() {
     let armCountDeg = guideDataBlock.armCountDeg
-    let diskCountDeg = guideDataBlock.diskCountDeg
+    let dskCountDeg = guideDataBlock.dskCountDeg
     
     let refRaDeg = refCoord.ra
     let refDecDeg = refCoord.dec
@@ -270,21 +253,21 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     if refRaDeg >= (lstDeg + bias) {
       // When armAngle is +:
       //  RA = LST + 90 - armCountDeg - armOffsetDeg
-      //  DEC = diskCountDeg + diskOffset
+      //  DEC = dskCountDeg + diskOffset
       armOffsetDeg = lstDeg + 90.0 - armCountDeg - refRaDeg
-      diskOffsetDeg = refDecDeg - diskCountDeg
+      dskOffsetDeg = refDecDeg - dskCountDeg
     } else {
       // When amrAngle is -:
       //   RA = LST - 90 - armCountDeg - armOffsetDeg
-      //   DEC = 180.0 - (diskCountDeg + diskOffset)
+      //   DEC = 180.0 - (dskCountDeg + diskOffset)
       armOffsetDeg = lstDeg - 90.0 - armCountDeg - refRaDeg
-      diskOffsetDeg = 180.0 - diskCountDeg - refDecDeg
+      dskOffsetDeg = 180.0 - dskCountDeg - refDecDeg
     }
     
     // Used for color coding values that depend on references
     pointingKnowledge = lstValid ? .marked : .none
     print("armOffsetDeg = \(armOffsetDeg)")
-    print("decOffsetDeg = \(diskOffsetDeg)")
+    print("decOffsetDeg = \(dskOffsetDeg)")
 
   }  // end updateOffsetsToReference
   
@@ -414,12 +397,16 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // Target Command - Offset from a reference.
   // Mount will Mark Reference then move to offset.
   func guideCommandReferenceToTarget(){
-    let armDeg = armDeltaDeg(fromDeg: refCoord.ra, toDeg: targetCoord.ra)
-    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
+    var armDeg = 0.0
+    var diskDeg = 0.0
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+
+//    let armDeg = armDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
+//    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
     let refToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetTarget.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep),
+      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep),
       raRateOffsetDps: Float32(0.0)
     )
     guideCommand(refToTargetCommand)
@@ -428,12 +415,16 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // Offset Command - Relative offset.
   // Mount moves offset amount from current position.
   func guideCommandCurrentToTarget(){
-    let armDeg = armDeltaDeg(fromDeg: currentPosition.ra, toDeg: targetCoord.ra)
-    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
+    var armDeg = 0.0
+    var diskDeg = 0.0
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+    
+//    let armDeg = armDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
+//    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
     let currentToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetOffset.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
+      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep)
     )
     guideCommand(currentToTargetCommand)
   }
