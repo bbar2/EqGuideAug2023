@@ -9,9 +9,6 @@ import SwiftUI
 
 struct GuideView: View {
   @ObservedObject var guideModel: GuideModel
-
-  // App level options into Environment
-  @StateObject private var appOptions = AppOptions()
     
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -45,9 +42,9 @@ struct GuideView: View {
         HStack {
           Spacer()
           Button() {
-            appOptions.showDmsHms = !appOptions.showDmsHms
+            viewOptions.showDmsHms = !viewOptions.showDmsHms
           } label: {
-            Text(appOptions.showDmsHms ? "DMS/HMS" : "Degrees")
+            Text(viewOptions.showDmsHms ? "DMS/HMS" : "Degrees")
               .foregroundColor(viewOptions.appActionColor).bold()
           }
         }
@@ -56,10 +53,11 @@ struct GuideView: View {
       NavigationView {
         
         VStack{
+          let pairTitle = guideModel.armFlipped ? "Flipped\nPosition" : "Current\nPosition"
           RaDecPairView(
-            pairTitle: "Current\nPosition",
+            pairTitle: pairTitle,
             pair: guideModel.currentPosition,
-            unitHmsDms: appOptions.showDmsHms,
+            showDmsHms: viewOptions.showDmsHms,
             armDeg: guideModel.armCurrentDeg,
             dskDeg: guideModel.dskCurrentDeg
           )
@@ -67,15 +65,13 @@ struct GuideView: View {
           .padding([.bottom], 1)
 
           HStack {
-            Text("LST: " + Hms(guideModel.lstDeg).string(appOptions.showDmsHms))
+            Text("LST: " + Hms(guideModel.lstDeg).string(viewOptions.showDmsHms))
               .foregroundColor(lstValidColor())
-//            let armString = "Arm: " + Hms(guideModel.armCurrentDeg).string(false)
-//            Text(armString).foregroundColor(pointingKnowledgeColor())
             Spacer()
-            let latString = Dms(guideModel.locationData.latitudeDeg ?? 0).string(appOptions.showDmsHms)
+            let latString = Dms(guideModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
             Text("Lat:" + latString).foregroundColor(lstValidColor())
             Spacer()
-            let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(appOptions.showDmsHms)
+            let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
             Text("Lng:" + longString).foregroundColor(lstValidColor())
           }.font(viewOptions.smallValueFont)
           
@@ -94,13 +90,13 @@ struct GuideView: View {
               RaDecInputView(label: "Select Reference",
                              coord: $guideModel.refCoord,
                              name: $guideModel.refName,
-                             unitHmsDms: appOptions.showDmsHms,
+                             unitHmsDms: viewOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
-              let (refArmDeg, refDskDeg, _) = guideModel.mountAnglesForRaDec(lst: guideModel.lstDeg, coord: guideModel.refCoord)
+              let (refArmDeg, refDskDeg, _) = guideModel.mountAnglesForRaDec( guideModel.refCoord)
               RaDecPairView(pairTitle: "Reference:\n\(guideModel.refName)",
                             pair: guideModel.refCoord,
-                            unitHmsDms: appOptions.showDmsHms,
+                            showDmsHms: viewOptions.showDmsHms,
                             armDeg: refArmDeg,
                             dskDeg: refDskDeg)
               .foregroundColor(viewOptions.appActionColor)
@@ -110,14 +106,14 @@ struct GuideView: View {
               RaDecInputView(label: "Select Target",
                              coord: $guideModel.targetCoord,
                              name: $guideModel.targName,
-                             unitHmsDms: appOptions.showDmsHms,
+                             unitHmsDms: viewOptions.showDmsHms,
                              catalog: guideModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(lst: guideModel.lstDeg, coord: guideModel.targetCoord)
+              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
-                            unitHmsDms: appOptions.showDmsHms,
+                            showDmsHms: viewOptions.showDmsHms,
                             armDeg: targetArmDeg,
                             dskDeg: targetDskDeg)
               .foregroundColor(viewOptions.appActionColor)
@@ -133,13 +129,16 @@ struct GuideView: View {
               RaDecInputView(label: "Select Target",
                              coord: $guideModel.targetCoord,
                              name: $guideModel.targName,
-                             unitHmsDms: appOptions.showDmsHms,
+                             unitHmsDms: viewOptions.showDmsHms,
                              catalog: guideModel.catalog)
               
             } label: {
+              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
-                            unitHmsDms: appOptions.showDmsHms)
+                            showDmsHms: viewOptions.showDmsHms,
+                            armDeg: targetArmDeg,
+                            dskDeg: targetDskDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             

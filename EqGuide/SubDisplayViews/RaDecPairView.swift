@@ -10,7 +10,7 @@ import SwiftUI
 struct RaDecPairView: View {
   var pairTitle: String
   var pair: RaDec
-  var unitHmsDms: Bool
+  var showDmsHms: Bool = false
   var armDeg: Double = 0.0
   var dskDeg: Double = 0.0
   
@@ -36,8 +36,8 @@ struct RaDecPairView: View {
         .font(viewOptions.smallValueFont)
 
         VStack (alignment: .trailing){
-          Text(Hms(pair.ra).string(unitHmsDms))
-          Text(Dms(pair.dec).string(unitHmsDms))
+          Text(Hms(pair.ra).string(showDmsHms))
+          Text(Dms(pair.dec).string(showDmsHms))
         }
         .font(viewOptions.smallValueFont)
 
@@ -62,10 +62,7 @@ struct raDecPairView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
   static let pair = RaDec(ra:3.33, dec:2.22)
   static var previews: some View {
-    Group {
-      RaDecPairView(pairTitle: "Title: \nextraText", pair: pair, unitHmsDms: true)
-      RaDecPairView(pairTitle: "Title", pair: pair, unitHmsDms: false)
-    }
+    RaDecPairView(pairTitle: "Title: \nextraText", pair: pair)
     .environmentObject(viewOptions)
     .previewLayout(.fixed(width: 400, height: 150))
     .preferredColorScheme(.dark)

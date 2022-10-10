@@ -12,6 +12,10 @@ struct EqGuideApp: App {
   // viewOptions shared across all top level tabs
   @StateObject var viewOptions = ViewOptions()
   
+  // App level options into Environment
+  @StateObject private var appOptions = AppOptions()
+
+  
   var body: some Scene {
     WindowGroup {
       ContentView()

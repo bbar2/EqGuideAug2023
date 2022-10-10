@@ -75,6 +75,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   var lstDeg = 0.0
   var armCurrentDeg = 0.0
   var dskCurrentDeg = 0.0
+  var armFlipped = false
   
   var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
@@ -93,11 +94,27 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   
   private var initialized = false
   
+  private var fpic = true
+  private var lstOffset = 0.0
+
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
       lstDeg = lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
-//      lstDeg = 282.0 // Staunton River, Sep 14, 8:30PM
+
+      if fpic {
+        // gen offset so LST advances from debug value
+        lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
+        lstOffset = 90.0 - lstDeg // match figure
+      }
+      lstDeg += lstOffset
+      
+      if fpic {
+        refCoord = RaDec(ra: lstDeg - 89.995, dec: 89.995)
+        refName = "Pole Align"
+        fpic = false
+      }
+
     } else {
       lstValid = false
       lstDeg = 0.0
@@ -120,7 +137,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // Call this everytime a new GuideDataBlock arrives from Mount
   func updateMountAngles() {
     
-    updateLstDeg() // Function of time (always changing) and longitude
+    updateLstDeg() // LST is function of time and longitude
     
     // Positive Count's advance axes CCW, looking to Polaris or top of scope
     armCurrentDeg = guideDataBlock.armCountDeg + armOffsetDeg
@@ -143,9 +160,9 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
     }
     
-    // TODO:  Test this azimuth flip detection
-    // Check for azimuth flip; aka unreachable arm angle (not side of pier flip)
-    if fabs(currentPosition.dec) > 90.0 { // in an azimuth flip.
+    // Azimuth flip if unreachable arm angle (This is not the side of pier flip)
+    armFlipped = fabs(currentPosition.dec) > 90.0
+    if armFlipped { 
       if currentPosition.ra > 180.0 {
         currentPosition.ra -= 180.0
       } else {
@@ -153,28 +170,59 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       }
       
       if currentPosition.dec > 90.0 {
-        currentPosition.dec -= 180.0
+        currentPosition.dec = 180.0 - currentPosition.dec
       } else {
-        currentPosition.dec += 180.0
+        currentPosition.dec = -180.0 - currentPosition.dec
       }
     }
     
   } // end updateMountAngles
   
-  // Mount Angles from RaDec given hemisphere knowledge of LST vs RA
-  func mountAnglesForRaDec(lst: Double, coord: RaDec) ->
+  // 360.0 <= lst and ra <= 0.0
+  func isEastPier(lstDeg: Double, raDeg: Double) -> Bool {
+    var deltaDeg = raDeg - lstDeg
+    
+    // Map to +- 180.0
+    if deltaDeg < -180.0 {
+      deltaDeg += 360.0
+    } else if deltaDeg > 180.0 {
+      deltaDeg -= 360.0
+    }
+    
+    return deltaDeg <= 0.0
+    
+    if deltaDeg >= 0.0 && deltaDeg < 90.0 {
+      // Quad 1 - East above ecliptic. Pier on west. No Az Flip
+      return false
+
+    } else if deltaDeg >= 90.0 && deltaDeg < 180.0 {
+      // Quad 4 - East below ecliptic. Pier on east. Azimuth Flip
+      return true
+      
+    } else if deltaDeg < 0 && deltaDeg > -90.0 {
+      // Quad 2 - West above ecliptic. Pier on east. No Az Flip
+      return true
+
+    } else {
+      // Quad 3 - West below ecliptic. Pier on west. Azimuth Flip
+      return false
+    }
+  }
+  
+  // Mount Angles from RaDec given model knowledge of LST and given RA
+  func mountAnglesForRaDec(_ coord: RaDec) ->
   (armDeg: Double, dskDeg:Double, isFlipped:Bool) {
     var armDeg = 0.0
     var dskDeg = 0.0
     var isFlipped = false
 
     // Side of pier consideration
-    if (coord.ra > lst) {
-      armDeg = lst + 90.0 - coord.ra
+    if (isEastPier(lstDeg: lstDeg, raDeg: coord.ra)) {
+      armDeg = lstDeg + 90.0 - coord.ra
       dskDeg = coord.dec
-    } else  {
-      armDeg = lst - 90.0 - coord.ra
-      dskDeg = 180.0 - coord.dec
+    } else  { // west pier
+      armDeg = lstDeg - 90.0 - coord.ra
+      dskDeg = +(180.0 - coord.dec)
     }
 
     // If arm angle unreachable, flip both axis by 180
@@ -191,8 +239,8 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   // TODO - what do I do if LST or REF knowledge == .none
   func mountAngleChange(fromCoord: RaDec, toCoord: RaDec) ->
   (armAngle: Double, diskAngle: Double) {
-    let (fromArmDeg, fromDskDeg, _) = mountAnglesForRaDec(lst: lstDeg, coord: fromCoord)
-    let (toArmDeg, toDskDeg, _) = mountAnglesForRaDec(lst: lstDeg, coord: toCoord)
+    let (fromArmDeg, fromDskDeg, _) = mountAnglesForRaDec(fromCoord)
+    let (toArmDeg, toDskDeg, _) = mountAnglesForRaDec(toCoord)
 
     let deltaArmDeg = toArmDeg - fromArmDeg
     var deltaDskDeg = toDskDeg - fromDskDeg
@@ -290,10 +338,10 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     }
     
     // Setup initial Reference and Target
-    let refIndex = 1
-    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
-    refName = catalog[refIndex].name
-    let targIndex = 20
+//    let refIndex = 0
+//    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
+//    refName = catalog[refIndex].name
+    let targIndex = 3
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
     

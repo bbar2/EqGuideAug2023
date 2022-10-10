@@ -3,6 +3,7 @@ Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
 2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.
+2022-10-03: Consider easy reference of NPole (LST-90, DEC = 90) to initialize arm=0 and dsk=90 angles. 
 2022-05-29: Add Tracking on/off switch
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
