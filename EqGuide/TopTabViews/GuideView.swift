@@ -53,9 +53,8 @@ struct GuideView: View {
       NavigationView {
         
         VStack{
-          let pairTitle = guideModel.armFlipped ? "Flipped\nPosition" : "Current\nPosition"
           RaDecPairView(
-            pairTitle: pairTitle,
+            pairTitle: "Current\nPosition",
             pair: guideModel.currentPosition,
             showDmsHms: viewOptions.showDmsHms,
             armDeg: guideModel.armCurrentDeg,
@@ -93,7 +92,7 @@ struct GuideView: View {
                              unitHmsDms: viewOptions.showDmsHms,
                              catalog: guideModel.catalog)
             } label: {
-              let (refArmDeg, refDskDeg, _) = guideModel.mountAnglesForRaDec( guideModel.refCoord)
+              let (refArmDeg, refDskDeg) = guideModel.mountAnglesForRaDec( guideModel.refCoord)
               RaDecPairView(pairTitle: "Reference:\n\(guideModel.refName)",
                             pair: guideModel.refCoord,
                             showDmsHms: viewOptions.showDmsHms,
@@ -110,7 +109,7 @@ struct GuideView: View {
                              catalog: guideModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
+              let (targetArmDeg, targetDskDeg) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,
@@ -133,7 +132,7 @@ struct GuideView: View {
                              catalog: guideModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg, _) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
+              let (targetArmDeg, targetDskDeg) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
                             pair: guideModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,

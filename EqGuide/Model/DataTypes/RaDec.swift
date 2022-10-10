@@ -5,7 +5,7 @@
 //  Object to hold the two angles required to point to an object.
 //  Operators for calculating offsets between objects.
 //  ra = Right Ascension.  0 to 360 degrees when specified in decimal degrees.
-//  dec = Declination.  -180 to 180 degrees when speciried in decimal degrees.
+//  dec = Declination.  -180 to 180 degrees when specified in decimal degrees.
 //    Although typical usage is -90 <= dec <= 90
 //    Can use |dec| > 90 if ra and LST, cause armAngle to exceed its limit of about +-95
 //    Tranform (RA, DEC) to (RA+180º, 180º-DEC) or (RA+12H, 180º-DEC)

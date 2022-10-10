@@ -75,7 +75,6 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   var lstDeg = 0.0
   var armCurrentDeg = 0.0
   var dskCurrentDeg = 0.0
-  var armFlipped = false
   
   var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
@@ -145,102 +144,58 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     
     // Side of Pier determination
     if lstValid && (pointingKnowledge != Knowledge.none) {
-      if (armCurrentDeg > 0) { // pointing toward east side of pier
+      if (dskCurrentDeg <= 0) { // lens is looking to east side of pier
         currentPosition.ra = lstDeg + 90.0 - armCurrentDeg
-        currentPosition.dec = dskCurrentDeg
+        currentPosition.dec = dskCurrentDeg + 90.0
       } else { // pointing to west side of pier
-        currentPosition.ra = lstDeg - 90.0 - armCurrentDeg
-        currentPosition.dec = 180.0 - dskCurrentDeg
+        currentPosition.ra = lstDeg + 270.0 - armCurrentDeg
+        currentPosition.dec = 90.0 - dskCurrentDeg
       }
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
-      
+      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
+
       currentPosition.ra = armCurrentDeg  // RA unknown without pointing knowledge
       currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
     }
     
-    // Azimuth flip if unreachable arm angle (This is not the side of pier flip)
-    armFlipped = fabs(currentPosition.dec) > 90.0
-    if armFlipped { 
-      if currentPosition.ra > 180.0 {
-        currentPosition.ra -= 180.0
-      } else {
-        currentPosition.ra += 180.0
-      }
-      
-      if currentPosition.dec > 90.0 {
-        currentPosition.dec = 180.0 - currentPosition.dec
-      } else {
-        currentPosition.dec = -180.0 - currentPosition.dec
-      }
-    }
-    
   } // end updateMountAngles
-  
-  // 360.0 <= lst and ra <= 0.0
-  func isEastPier(lstDeg: Double, raDeg: Double) -> Bool {
-    var deltaDeg = raDeg - lstDeg
-    
-    // Map to +- 180.0
-    if deltaDeg < -180.0 {
-      deltaDeg += 360.0
-    } else if deltaDeg > 180.0 {
-      deltaDeg -= 360.0
-    }
-    
-    return deltaDeg <= 0.0
-    
-    if deltaDeg >= 0.0 && deltaDeg < 90.0 {
-      // Quad 1 - East above ecliptic. Pier on west. No Az Flip
-      return false
-
-    } else if deltaDeg >= 90.0 && deltaDeg < 180.0 {
-      // Quad 4 - East below ecliptic. Pier on east. Azimuth Flip
-      return true
-      
-    } else if deltaDeg < 0 && deltaDeg > -90.0 {
-      // Quad 2 - West above ecliptic. Pier on east. No Az Flip
-      return true
-
-    } else {
-      // Quad 3 - West below ecliptic. Pier on west. Azimuth Flip
-      return false
-    }
-  }
   
   // Mount Angles from RaDec given model knowledge of LST and given RA
   func mountAnglesForRaDec(_ coord: RaDec) ->
-  (armDeg: Double, dskDeg:Double, isFlipped:Bool) {
+  (armDeg: Double, dskDeg:Double) {
     var armDeg = 0.0
     var dskDeg = 0.0
-    var isFlipped = false
 
-    // Side of pier consideration
-    if (isEastPier(lstDeg: lstDeg, raDeg: coord.ra)) {
-      armDeg = lstDeg + 90.0 - coord.ra
-      dskDeg = coord.dec
-    } else  { // west pier
-      armDeg = lstDeg - 90.0 - coord.ra
-      dskDeg = +(180.0 - coord.dec)
+    // Find angle between LST and RA
+    var raLst = coord.ra - lstDeg;
+
+    // Map to 0.0 <= raLst < 360.0
+    if raLst < 0.0 {
+      raLst += 360.0
+    } else if raLst >= 360 {
+      raLst -= 360.0
+    }
+  
+    // Select arm and dsk angles based on target side of lst
+    if raLst > 180.0 {
+      armDeg = 270.0 - raLst
+      dskDeg = 90.0 - coord.dec
+    } else {
+      armDeg = 90.0 - raLst
+      dskDeg = coord.dec - 90.0
     }
 
-    // If arm angle unreachable, flip both axis by 180
-    if fabs(armDeg) > 90.0 {
-      armDeg = armDeg > 0.0 ? armDeg - 180.0 : armDeg + 180.0
-      dskDeg = dskDeg > 0.0 ? dskDeg - 180.0 : dskDeg + 180.0
-      isFlipped = true
-    }
-    
-    return (armDeg, dskDeg, isFlipped)
+    return (armDeg, dskDeg)
   }
   
   // Uses LST, to build mount angle changes required to move fromCoord toCoord
   // TODO - what do I do if LST or REF knowledge == .none
   func mountAngleChange(fromCoord: RaDec, toCoord: RaDec) ->
   (armAngle: Double, diskAngle: Double) {
-    let (fromArmDeg, fromDskDeg, _) = mountAnglesForRaDec(fromCoord)
-    let (toArmDeg, toDskDeg, _) = mountAnglesForRaDec(toCoord)
+    let (fromArmDeg, fromDskDeg) = mountAnglesForRaDec(fromCoord)
+    let (toArmDeg, toDskDeg) = mountAnglesForRaDec(toCoord)
 
     let deltaArmDeg = toArmDeg - fromArmDeg
     var deltaDskDeg = toDskDeg - fromDskDeg
@@ -271,51 +226,22 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   
   /// ========== RA/Dec from References star and Current Date/Time ==========
   
-  //////////////////////////////////
-  /// DIFFERENT FIX NEEDED in updateOffsetsToReference() - must integrate the unreachable RA flip.
-  //////////////////////////////////
-  // Update arm and dec offset constants.
-  // armAngle is +- ~95 deg in RA.
-  // Positive armAngle is in direction of Sky Rotation (CCW).
-  // Positive armAngle rotates CCW around north pole
-  // The current LST increases with UTC, as increasing RA moves overhead.
+  // Given knowledge of current RA/DEC, and the current arm and dsk counts,
+  // calculate the offsets.
   func updateOffsetsToReference() {
-    let armCountDeg = guideDataBlock.armCountDeg
-    let dskCountDeg = guideDataBlock.dskCountDeg
-    
-    let refRaDeg = refCoord.ra
-    let refDecDeg = refCoord.dec
-    
+        
     updateLstDeg()
+
+    let (refArmAngle, refDskAngle) = mountAnglesForRaDec(refCoord)
     
-    // For pos armAngle: RA = LST + 90 - armAngle
-    // For neg armAngle: RA = LST - 90 - armAngle
-    // given: armAngle = (armCount * armDegPerStep + armOffsetDeg)
-    // So for pos armAngle: RA = LST + 90 - armCount * armDegPerStep - armOffsetDeg
-    // So for neg armAngle: RA = LST - 90 - armCount * armDegPerStep - armOffsetDeg
-    
-    // When armAngle is unknown, infer its sign by comparing LST and RefRaDeg.
-    // armAngle sign is + if refCoord.ra > LST, else armAngle sign is -
-    // Bias toward negative arm angle to init to >|-90| for refRaDeg close to LST.
-    let bias = 2.0 // This can be up to |NegArmLimitDeg| - 90.0 = ~ 5.0 deg
-    if refRaDeg >= (lstDeg + bias) {
-      // When armAngle is +:
-      //  RA = LST + 90 - armCountDeg - armOffsetDeg
-      //  DEC = dskCountDeg + diskOffset
-      armOffsetDeg = lstDeg + 90.0 - armCountDeg - refRaDeg
-      dskOffsetDeg = refDecDeg - dskCountDeg
-    } else {
-      // When amrAngle is -:
-      //   RA = LST - 90 - armCountDeg - armOffsetDeg
-      //   DEC = 180.0 - (dskCountDeg + diskOffset)
-      armOffsetDeg = lstDeg - 90.0 - armCountDeg - refRaDeg
-      dskOffsetDeg = 180.0 - dskCountDeg - refDecDeg
-    }
-    
+    // given:
+    //  armAngle = guideDataBlock.armCountDeg + armOffsetDeg
+    //  dskAngle = guideDataBlock.dskCountDeg + dskOffsetDeg
+    armOffsetDeg = refArmAngle - guideDataBlock.armCountDeg
+    dskOffsetDeg = refDskAngle - guideDataBlock.dskCountDeg
+
     // Used for color coding values that depend on references
     pointingKnowledge = lstValid ? .marked : .none
-    print("armOffsetDeg = \(armOffsetDeg)")
-    print("decOffsetDeg = \(dskOffsetDeg)")
 
   }  // end updateOffsetsToReference
   
