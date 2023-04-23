@@ -20,6 +20,8 @@
 		358B108728492AB0002AD52C /* BitVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358B108628492AB0002AD52C /* BitVector.swift */; };
 		3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3599A1E7280CB9ED00E1C442 /* Vallado.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
+		359E419629F5741600664AFC /* MyPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359E419429F5741600664AFC /* MyPeripheral.swift */; };
+		359E419729F5741600664AFC /* MyCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359E419529F5741600664AFC /* MyCentralManager.swift */; };
 		35A7F6442824103F008EBC8C /* Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F6432824103F008EBC8C /* Target.swift */; };
 		35A7F646282417E0008EBC8C /* TargetData.json in Resources */ = {isa = PBXBuildFile; fileRef = 35A7F645282417E0008EBC8C /* TargetData.json */; };
 		35A7F64928242638008EBC8C /* LoadJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64828242638008EBC8C /* LoadJson.swift */; };
@@ -41,7 +43,6 @@
 		35FBF05B27879640001EFA53 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35FBF05A27879640001EFA53 /* Preview Assets.xcassets */; };
 		35FBF0622787AF52001EFA53 /* TargetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0612787AF52001EFA53 /* TargetListView.swift */; };
 		35FBF0642787AF67001EFA53 /* ToDo.md in Resources */ = {isa = PBXBuildFile; fileRef = 35FBF0632787AF67001EFA53 /* ToDo.md */; };
-		35FBF066278880E4001EFA53 /* BleWizard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF065278880E4001EFA53 /* BleWizard.swift */; };
 		35FBF06827888866001EFA53 /* GuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF06727888866001EFA53 /* GuideModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,8 @@
 		358B108628492AB0002AD52C /* BitVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitVector.swift; sourceTree = "<group>"; };
 		3599A1E7280CB9ED00E1C442 /* Vallado.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vallado.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
+		359E419429F5741600664AFC /* MyPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPeripheral.swift; sourceTree = "<group>"; };
+		359E419529F5741600664AFC /* MyCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCentralManager.swift; sourceTree = "<group>"; };
 		35A7F6432824103F008EBC8C /* Target.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Target.swift; sourceTree = "<group>"; };
 		35A7F645282417E0008EBC8C /* TargetData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TargetData.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.json; };
 		35A7F64828242638008EBC8C /* LoadJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadJson.swift; sourceTree = "<group>"; };
@@ -81,7 +84,6 @@
 		35FBF05A27879640001EFA53 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		35FBF0612787AF52001EFA53 /* TargetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetListView.swift; sourceTree = "<group>"; };
 		35FBF0632787AF67001EFA53 /* ToDo.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ToDo.md; sourceTree = "<group>"; };
-		35FBF065278880E4001EFA53 /* BleWizard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BleWizard.swift; sourceTree = "<group>"; };
 		35FBF06727888866001EFA53 /* GuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,7 +125,8 @@
 		35A7F64228240F1B008EBC8C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				35FBF065278880E4001EFA53 /* BleWizard.swift */,
+				359E419529F5741600664AFC /* MyCentralManager.swift */,
+				359E419429F5741600664AFC /* MyPeripheral.swift */,
 				352168482814A86D00C76670 /* LocationData.swift */,
 				3521684628145C2A00C76670 /* Haptics.swift */,
 				3599A1E7280CB9ED00E1C442 /* Vallado.swift */,
@@ -308,10 +311,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				35A7F6442824103F008EBC8C /* Target.swift in Sources */,
+				359E419729F5741600664AFC /* MyCentralManager.swift in Sources */,
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
 				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
+				359E419629F5741600664AFC /* MyPeripheral.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
@@ -324,7 +329,6 @@
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
 				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
 				35FBF06827888866001EFA53 /* GuideModel.swift in Sources */,
-				35FBF066278880E4001EFA53 /* BleWizard.swift in Sources */,
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
 				356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */,
 				352168432814357900C76670 /* ViewOptions.swift in Sources */,

@@ -2,11 +2,11 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
-2023-04-23: Make sure I'm on Main branch.
 2022-04-06: Get two BLE links running.  One to Mount, one to Focus.
 2022-04-06: After two BLE links, Integrate FocusControl as a separate Top level tab.
 2022-04-06: After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
 2022-04-06: Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
+2023-04-23: When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
 2022-10-12: Add a way to select the fixed angle refArmVert/East/West reference points. 
 2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.
 2022-05-29: Add Tracking on/off switch

@@ -49,7 +49,7 @@ enum Knowledge {
   case marked
 }
 
-class GuideModel : BleWizardDelegate, ObservableObject {
+class GuideModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
@@ -91,17 +91,19 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   }
   
   // All UUID strings must match the Arduino C++ RocketMount UUID strings
+  private let GUIDE_DEVICE_NAME = "EqMountGuideService"
   private let GUIDE_SERVICE_UUID = CBUUID(string: "828b0010-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_DATA_BLOCK_UUID = CBUUID(string: "828b0011-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_COMMAND_UUID = CBUUID(string: "828b0012-046a-42c7-9c16-00ca297e95eb")
   
-  private let bleWizard: BleWizard  //contain a BleWizard
+  private let rocketMount: MyPeripheral
   
   private var initialized = false
   
   private var fpic = true
   private var lstOffset = 0.0
 
+  
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
@@ -268,17 +270,18 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   
   init() {
     
-    self.bleWizard = BleWizard(
+    self.rocketMount = MyPeripheral(
+      deviceName: GUIDE_DEVICE_NAME,
       serviceUUID: GUIDE_SERVICE_UUID,
-      bleDataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
+      dataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
     
     // Force self implement all delegate methods of BleWizardDelegate protocol
-    bleWizard.delegate = self
+    rocketMount.mpDelegate = self
   }
   
   func guideModelInit() {
     if (!initialized) {
-      bleWizard.start()
+      rocketMount.startBleConnection()
       statusString = "Searching for RocketMount ..."
       initViewModel()
       initialized = true
@@ -299,40 +302,10 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     // Init local variables
   }
   
-  func reportBleScanning() {
-    statusString = "Scanning ..."
-  }
-  
-  func reportBleNotAvailable() {
-    statusString = "BLE Not Available"
-  }
-  
-  func reportBleServiceFound(){
-    statusString = "RocketMount Found"
-  }
-  
-  func reportBleServiceConnected(){
-    //    initViewModel()
-    statusString = "Connected"
-  }
-  
-  func reportBleServiceDisconnected(){
-    //    initViewModel()
-    statusString = "Disconnected"
-    readCount = 0;
-  }
-  
-  func reportBleServiceCharaceristicsScanned() {
-    // Setup notify handler for incomming data from Guide Mount
-    bleWizard.setNotify(uuid: GUIDE_DATA_BLOCK_UUID) { [weak self] guideData in
-      self?.processDataFromMount(guideData)
-    }
-  }
-  
   /// ========== Read Data From Mount ==========
   //  func readVar1()  {
   //    do {
-  //      try bleWizard.bleRead(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
+  //      try rocketMount.bleRead(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
   //        self?.var1 = resultInt
   //        self?.readCount += 1
   //        self?.readVar1()
@@ -386,7 +359,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   /// No angle conversions or hemisphere awareness at this level.
   
   func guideCommand(_ writeBlock:GuideCommandBlock) {
-    bleWizard.bleWrite(GUIDE_COMMAND_UUID, writeBlock: writeBlock)
+    rocketMount.bleWrite(GUIDE_COMMAND_UUID, writeData: writeBlock)
   }
   
   // Target Command - Offset from a reference.
@@ -456,5 +429,47 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     )
     guideCommand(ackCommand)
   }
+
+
+  //MARK: === Begin MyPeripheral Delegate Methods ===
+  func onBleRunning(){
+    statusString = "Connecting"
+    rocketMount.startBleConnection()
+  }
+
+  func onBleNotAvailable(){
+    statusString = "BLE Not Available"
+  }
+
+  func onFound(){
+    statusString = "RocketMount Found"
+  }
+
+  func onConnected(){
+    statusString = "Connected"
+  }
+
+  func onDisconnected(){
+    statusString = "Disconnected"
+    readCount = 0;
+  }
+
+  func onReady(){
+    rocketMount.setNotify(GUIDE_DATA_BLOCK_UUID) { [weak self] (buffer:Data)->Void in
+
+      // Copy the Data to a local GuideDataBlock structure
+      let numBytes = min(buffer.count,
+                         MemoryLayout.size(ofValue: self!.guideDataBlock))
+      withUnsafeMutableBytes(of: &self!.guideDataBlock) { pointer in
+        _ = buffer.copyBytes(to:pointer, from:0..<numBytes)
+      }
+      
+      // Process the received GuideDataBlock
+      self?.processDataFromMount(self!.guideDataBlock)
+    }
+    
+  }
   
+  //MARK: === End MyPeripheral Delegate Methods ===
+
 }
