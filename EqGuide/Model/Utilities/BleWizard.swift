@@ -71,7 +71,7 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
   }
 
-  // Step 2 - Once SERVICE found found, stop scanning and connect Peripheral
+  // Step 2 - Once SERVICE found, stop scanning and connect Peripheral
   func centralManager(_ central: CBCentralManager,
                       didDiscover peripheral: CBPeripheral,
                       advertisementData: [String : Any],
@@ -97,7 +97,7 @@ class BleWizard: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
   
 
   
-  // If disconnected - resume  scanning for Focus Motor peripheral
+  // If disconnected - resume scanning for Focus Motor peripheral
   func centralManager(_ central: CBCentralManager,
                       didDisconnectPeripheral peripheral: CBPeripheral,
                       error: Error?)

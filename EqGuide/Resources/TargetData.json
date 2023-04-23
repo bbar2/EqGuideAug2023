@@ -21,6 +21,26 @@
   },
   {
     "id": 1002,
+    "name": "Alpheratz",
+    "description": "⍺ Andromeda multistar at CCW end of Andromeda Constellation.",
+    "ra": 2.0958,
+    "dec": 29.0906,
+    "mag": 2.0,
+    "category": "MultiStar",
+    "constellation": "Andromeda"
+  },
+  {
+    "id": 1003,
+    "name": "Mirach",
+    "description": "β Andromeda. Star in center of Andromeda East/West line.",
+    "ra": 17.4333,
+    "dec": 35.6206,
+    "mag": 2.05,
+    "category": "Star",
+    "constellation": "Andromeda"
+  },
+  {
+    "id": 1004,
     "name": "Alkaid",
     "description": "First star of Big Dipper handle, before Mizar.",
     "ra": 206.8833,
@@ -30,7 +50,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1003,
+    "id": 1005,
     "name": "Mizar",
     "description": "Double star at bend of Big Dipper Handle.  Companion star is Alcor, mag 4.0.",
     "ra": 201.25,
@@ -42,7 +62,7 @@
     "but": "every field of data struct must be in JSON file"
   },
   {
-    "id": 1004,
+    "id": 1006,
     "name": "Alioth",
     "description": "Third star in Big Dipper handle, after Mizar, and brightest star in Ursa Major",
     "ra": 193.5083,
@@ -52,7 +72,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1005,
+    "id": 1007,
     "name": "Megrez",
     "description": "Handle side of Big Dipper bucket, and dimmest star in Big Dipper",
     "ra": 183.8583,
@@ -62,7 +82,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1006,
+    "id": 1008,
     "name": "Phad",
     "description": "Lower left star in bowl of Big Dipper.",
     "ra": 178.4583,
@@ -72,7 +92,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1007,
+    "id": 1009,
     "name": "Merak",
     "description": "Lower right star in bowl of Big Dipper.  First star of pointer, thru Dubhe (upper right of bucket) to Polaris.",
     "ra": 165.4583,
@@ -82,7 +102,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1008,
+    "id": 1010,
     "name": "Dubhe",
     "description": "Upper right star in bowl of Big Dipper.  Second star of pointer, from Merak (lower right of bucket) to Polaris.",
     "ra": 165.9333,
@@ -92,7 +112,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1009,
+    "id": 1011,
     "name": "M81 Bode's",
     "description": "Bode's galaxy - Spiral galaxy in Ursa Major.",
     "ra": 149.0,
@@ -102,7 +122,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1010,
+    "id": 1012,
     "name": "M82",
     "description": "The Cigar galaxy.  need description",
     "ra": 149.0,
@@ -112,7 +132,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1011,
+    "id": 1013,
     "name": "M101",
     "description": "Pinwheel Galaxy.  Face on Spiral.  About half the size of full moon.",
     "ra": 210.8042,
@@ -122,7 +142,7 @@
     "constellation": "Ursa Major"
   },
   {
-    "id": 1012,
+    "id": 1014,
     "name": "Arcturus",
     "description": "Brightest star in northern celestial hemisphere.  4th brightest in night sky.",
     "ra": 213.9154,
@@ -132,7 +152,7 @@
     "constellation": "Bootes"
   },
   {
-    "id": 1013,
+    "id": 1015,
     "name": "Sirius",
     "description": "Brightest star in night sky.  Really binary of Sirius A and B.",
     "ra": 101.2875,
@@ -142,7 +162,7 @@
     "constellation": "Canis Major"
   },
   {
-    "id": 1014,
+    "id": 1016,
     "name": "β Cassiopeia",
     "description": "Caph - Upper Right star of W glyph (Min RA).",
     "ra": 2.2958,
@@ -152,7 +172,7 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1015,
+    "id": 1017,
     "name": "⍺ Cassiopeia",
     "description": "Cassiopeia's southern knee.",
     "ra": 10.1250,
@@ -162,7 +182,7 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1016,
+    "id": 1018,
     "name": "η Cassiopeia",
     "description": "Eta Cassiopeia - Binary star located north of Cassiopeia's southern knee.",
     "ra": 12.2750,
@@ -172,7 +192,7 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1017,
+    "id": 1019,
     "name": "ɣ Cassiopeia",
     "description": "Gamma Cassiopeia - Top, Middle of W.",
     "ra": 14.1792,
@@ -182,7 +202,7 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1018,
+    "id": 1020,
     "name": "𝝳 Cassiopeia",
     "description": "Delta Cassiopeia - Eclipsing binary star located at Cassiopeia's first northern knee.",
     "ra": 21.4542,
@@ -192,17 +212,7 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1019,
-    "name": "M103",
-    "description": "Open cluster near Delta Cassiopeia.",
-    "ra": 23.3,
-    "dec": 60.7,
-    "mag": 7.4,
-    "category": "Cluster",
-    "constellation": "Cassiopeia"
-  },
-  {
-    "id": 1020,
+    "id": 1021,
     "name": "ε Cassiopeia",
     "description": "Epsilon Cassiopeia.  Northern star, left end of W.",
     "ra": 28.6000,
@@ -212,7 +222,47 @@
     "constellation": "Cassiopeia"
   },
   {
-    "id": 1021,
+    "id": 1022,
+    "name": "M103",
+    "description": "Open cluster near 𝝳 Cassiopeia.",
+    "ra": 23.3,
+    "dec": 60.7,
+    "mag": 7.4,
+    "category": "Cluster",
+    "constellation": "Cassiopeia"
+  },
+  {
+    "id": 1023,
+    "name": "NGC 457",
+    "description": "Open Cluster lower Dec than 𝝳 Cassiopeia ",
+    "ra": 19.8875,
+    "dec": 58.2908,
+    "mag": 6.4,
+    "category": "Cluster",
+    "constellation": "Cassiopeia"
+  },
+  {
+    "id": 1024,
+    "name": "NGC 869",
+    "description": "Right of double cluster in Perseus.  Near Cassiopeia",
+    "ra": 34.7750,
+    "dec": 57.1500,
+    "mag": 3.7,
+    "category": "Cluster",
+    "constellation": "Perseus"
+  },
+  {
+    "id": 1025,
+    "name": "NGC 884",
+    "description": "Left of double cluster in Perseus.  Near Cassiopeia",
+    "ra": 35.5000,
+    "dec": 57.1333,
+    "mag": 3.8,
+    "category": "Cluster",
+    "constellation": "Perseus"
+  },
+  {
+    "id": 1026,
     "name": "Alderamin",
     "description": "⍺ Cephei.  Southern (Min RA) corner star in Cepheus.",
     "ra": 319.6458,
@@ -222,7 +272,7 @@
     "constellation": "Cepheus"
   },
   {
-    "id": 1022,
+    "id": 1027,
     "name": "M104",
     "description": "Sombrero Galaxy.  One of brightest glaxyies in sky.",
     "ra": 189.9958,
@@ -232,7 +282,7 @@
     "constellation": "Virgo"
   },
   {
-    "id": 1023,
+    "id": 1028,
     "name": "Spica",
     "description": "Brightest object in Virgo.  Spectroscopic binary.",
     "ra": 201.3,
@@ -242,7 +292,7 @@
     "constellation": "Virgo"
   },
   {
-    "id": 1024,
+    "id": 1029,
     "name": "M44 Behive",
     "description": "The Behive Open Cluster.",
     "ra": 130.1,
@@ -252,7 +302,7 @@
     "constellation": "Cancer"
   },
   {
-    "id": 1025,
+    "id": 1030,
     "name": "M66",
     "description": "Brightest of the three galxies in the Leo Triplet",
     "ra": 170.0625,
@@ -262,7 +312,7 @@
     "constellation": "Leo"
   },
   {
-    "id": 1026,
+    "id": 1031,
     "name": "M51",
     "description": "Whirlpool Galaxy",
     "ra": 202.4750,
@@ -270,5 +320,46 @@
     "mag": 8.4,
     "category": "Galaxy",
     "constellation": "Canis Venatici"
+  },
+  {
+    "id": 1032,
+    "name": "M42",
+    "description": "Orion's Great Nebula and Trapezium cluster",
+    "ra": 83.75,
+    "dec": -5.45,
+    "mag": 4.0,
+    "category": "Nebula",
+    "constellation": "Orion"
+  },
+  {
+    "id": 1033,
+    "name": "Betelgeuse",
+    "description": "⍺ Orionis, red supergiant",
+    "ra": 88.7917,
+    "dec": 7.4069,
+    "mag": 0.5,
+    "category": "Star",
+    "constellation": "Orion"
+  },
+  {
+    "id": 1034,
+    "name": "Rigel",
+    "description": "β Orionis, blue/white brightest Orion star",
+    "ra": 78.6333,
+    "dec": -8.2017,
+    "mag": 0.13,
+    "category": "Star",
+    "constellation": "Orion"
+  },
+  {
+    "id": 1035,
+    "name": "Horsehead Nebula",
+    "description": "Bottom left corner of Orion nebula",
+    "ra": 85.2458,
+    "dec": -2.4583,
+    "mag": 6.8,
+    "category": "Nebula",
+    "constellation": "Orion"
   }
+
 ]

@@ -56,7 +56,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   @Published var guideDataBlock = GuideDataBlock()
   @Published var refCoord = RaDec(ra: 0, dec: 0)
   @Published var targetCoord = RaDec(ra: 0, dec: 0)
-  @Published var locationData = LocationData() // Should I @Published since elements are @Published elements.
+  @Published var locationData = LocationData() // Should I @Published since elements are @Published elements?
   @Published var refName = ""
   @Published var targName = ""
   
@@ -79,6 +79,12 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   var currentPosition = RaDec()
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
+  
+  // These fixed arm reference positions must advance with lst.
+  // update in updateMountAngles()
+  private var refArmVert = RaDec()
+  private var refArmEast = RaDec()
+  private var refArmWest = RaDec()
   
   var bleConnected: Bool {
     return statusString == "Connected"
@@ -103,14 +109,20 @@ class GuideModel : BleWizardDelegate, ObservableObject {
 
       if fpic {
         // gen offset so LST advances from debug value
-        lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
-        lstOffset = 90.0 - lstDeg // match figure
+        lstOffset = 0.0 // leave this only for normal operation.
+        //lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
+        //lstOffset = 90.0 - lstDeg // match figure
       }
       lstDeg += lstOffset
       
       if fpic {
-        refCoord = RaDec(ra: lstDeg - 89.995, dec: 89.995)
-        refName = "Pole Align"
+        // keep in mind that dec=90 corresponds to dsk=0, which counts as east looking
+        //refCoord = RaDec(ra: lstDeg - 90.0, dec: 90.0) // vertical align
+        //refName = "Vert Pier"
+        refCoord = RaDec(ra: lstDeg, dec: 90.0) // pier east align
+        refName = "East Pier"
+        //refCoord = RaDec(ra: lstDeg + 180.1, dec: 90.0) // pier west align
+        //refName = "West Pier"
         fpic = false
       }
 
@@ -142,12 +154,12 @@ class GuideModel : BleWizardDelegate, ObservableObject {
     armCurrentDeg = guideDataBlock.armCountDeg + armOffsetDeg
     dskCurrentDeg = guideDataBlock.dskCountDeg + dskOffsetDeg
     
-    // Side of Pier determination
+    // Looking to which side of pier (dsk<=0 looks east; dsk>0 looks west)
     if lstValid && (pointingKnowledge != Knowledge.none) {
       if (dskCurrentDeg <= 0) { // lens is looking to east side of pier
         currentPosition.ra = lstDeg + 90.0 - armCurrentDeg
         currentPosition.dec = dskCurrentDeg + 90.0
-      } else { // pointing to west side of pier
+      } else { // looking to west side of pier
         currentPosition.ra = lstDeg + 270.0 - armCurrentDeg
         currentPosition.dec = 90.0 - dskCurrentDeg
       }
@@ -160,9 +172,15 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
     }
     
+    // update fixed reference positions based on current lst
+    // NOT USING YET - hardwired in updateLstDeg() fpic for now
+    refArmVert = RaDec(ra: lstDeg - 90.0, dec: 90.0)  // pier vertical align
+    refArmEast = RaDec(ra: lstDeg, dec: 90.0)         // pier east align
+    refArmWest = RaDec(ra: lstDeg + 180.1, dec: 90.0) // pier west align
+    
   } // end updateMountAngles
   
-  // Mount Angles from RaDec given model knowledge of LST and given RA
+  // Raw Mount Angles from coord of observed target and LST
   func mountAnglesForRaDec(_ coord: RaDec) ->
   (armDeg: Double, dskDeg:Double) {
     var armDeg = 0.0
@@ -178,8 +196,11 @@ class GuideModel : BleWizardDelegate, ObservableObject {
       raLst -= 360.0
     }
   
-    // Select arm and dsk angles based on target side of lst
-    if raLst > 180.0 {
+    // Select arm and dsk angles based on target side of lst (raLst = ra-lst)
+    // For 0 <= raLst < 360:  (360.0 maps to 0.0)
+    // looking east:  0<= raLst < 180.0  (define 0 as looking east)
+    // Looking west: 180.0 <= raLst < 360.0 (define 180 as looking west)
+    if raLst >= 180.0 {
       armDeg = 270.0 - raLst
       dskDeg = 90.0 - coord.dec
     } else {
@@ -227,7 +248,7 @@ class GuideModel : BleWizardDelegate, ObservableObject {
   /// ========== RA/Dec from References star and Current Date/Time ==========
   
   // Given knowledge of current RA/DEC, and the current arm and dsk counts,
-  // calculate the offsets.
+  // calculate the offsets.  Do this when looking at a reference coordinate.
   func updateOffsetsToReference() {
         
     updateLstDeg()
