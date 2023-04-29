@@ -103,7 +103,53 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
   private var fpic = true
   private var lstOffset = 0.0
 
+  init() {
+    
+    self.rocketMount = MyPeripheral(
+      deviceName: GUIDE_DEVICE_NAME,
+      serviceUUID: GUIDE_SERVICE_UUID,
+      dataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
+    
+    // Force self implement all delegate methods of BleWizardDelegate protocol
+    rocketMount.mpDelegate = self
+  }
   
+  func guideModelInit() {
+    if (!initialized) {
+      // DON"T REALLY NEED startBleConnection() here.
+      // if this is first peripheralManager, then need to start CM, and only startBleConnection (really it's findPeripheral) once CM started.
+      // If subsequent peripheralManager, it's OK to start CM here.
+      // Need code approach that works for either case.
+      // Probably save the findPeripheral() call in an optional closure that's
+      // called by someones either myPeripheral's onCentralManagerStarted() method,
+      // or less likely, the peripherals delegate's onBleRunning method.  I like
+      // that less because then each Peripheral's code would have to duplicate
+      // that functionality, when I think it's OK to do it behind the curtain in
+      // MyPeripheral
+      // Once done, remove startBleConnection from local onBleRunning.
+      rocketMount.startBleConnection()
+      statusString = "Searching for RocketMount ..."
+      initViewModel()
+      initialized = true
+    }
+    
+    // Setup initial Reference and Target
+//    let refIndex = 0
+//    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
+//    refName = catalog[refIndex].name
+    let targIndex = 3
+    targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
+    targName = catalog[targIndex].name
+    
+  }
+  
+  // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
+  func initViewModel() {
+    // Init local variables
+  }
+  
+  //MARK: === Angle Processing ===
+
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
@@ -268,40 +314,7 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
 
   }  // end updateOffsetsToReference
   
-  init() {
-    
-    self.rocketMount = MyPeripheral(
-      deviceName: GUIDE_DEVICE_NAME,
-      serviceUUID: GUIDE_SERVICE_UUID,
-      dataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
-    
-    // Force self implement all delegate methods of BleWizardDelegate protocol
-    rocketMount.mpDelegate = self
-  }
-  
-  func guideModelInit() {
-    if (!initialized) {
-      rocketMount.startBleConnection()
-      statusString = "Searching for RocketMount ..."
-      initViewModel()
-      initialized = true
-    }
-    
-    // Setup initial Reference and Target
-//    let refIndex = 0
-//    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
-//    refName = catalog[refIndex].name
-    let targIndex = 3
-    targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
-    targName = catalog[targIndex].name
-    
-  }
-  
-  // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
-  func initViewModel() {
-    // Init local variables
-  }
-  
+
   /// ========== Read Data From Mount ==========
   //  func readVar1()  {
   //    do {
@@ -352,7 +365,8 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     }
   }
   
-  
+  //MARK: === Command Processing ===
+
   /// ========== Transmit Commands to Mount ==========
   /// Build and transmit GuideCommandBlocks
   /// Convert native iOS app types to Arduino types here - i.e. Doubles to Int32 Counts
@@ -430,11 +444,10 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     guideCommand(ackCommand)
   }
 
-
   //MARK: === Begin MyPeripheral Delegate Methods ===
   func onBleRunning(){
-    statusString = "Connecting"
     rocketMount.startBleConnection()
+    statusString = "Connecting"
   }
 
   func onBleNotAvailable(){
@@ -452,6 +465,9 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
   func onDisconnected(){
     statusString = "Disconnected"
     readCount = 0;
+    
+    // attmempt to restart the connection
+    rocketMount.startBleConnection()  // restart after connection lost
   }
 
   func onReady(){
@@ -470,6 +486,4 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     
   }
   
-  //MARK: === End MyPeripheral Delegate Methods ===
-
 }
