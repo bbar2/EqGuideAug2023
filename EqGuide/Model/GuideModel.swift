@@ -214,7 +214,7 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
-      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
+//      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
 
       currentPosition.ra = armCurrentDeg  // RA unknown without pointing knowledge
       currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
@@ -445,14 +445,15 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
   }
 
   //MARK: === Begin MyPeripheral Delegate Methods ===
-  func onBleRunning(){
-    rocketMount.startBleConnection()
-    statusString = "Connecting"
-  }
-
-  func onBleNotAvailable(){
-    statusString = "BLE Not Available"
-  }
+//  func onBleRunning(){
+//    // DONT USE THIS - ONLY FIRST PERIPHERAL CAN USE.  PLAN TO REMOVE
+////    rocketMount.startBleConnection()
+////    statusString = "Connecting"
+//  }
+//
+//  func onBleNotAvailable(){
+//    statusString = "BLE Not Available"
+//  }
 
   func onFound(){
     statusString = "RocketMount Found"
