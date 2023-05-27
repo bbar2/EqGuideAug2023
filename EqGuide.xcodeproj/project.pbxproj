@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* DoubleInputView.swift */; };
-		351A40D229FF0A33003B9A0F /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D129FF0A33003B9A0F /* FocusView.swift */; };
 		351A40D429FF0A7C003B9A0F /* FocusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */; };
 		351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D529FF0A9E003B9A0F /* OnShake.swift */; };
 		352168432814357900C76670 /* ViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168422814357900C76670 /* ViewOptions.swift */; };
@@ -38,6 +37,7 @@
 		35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202D27F4AEB600D96C68 /* Dms.swift */; };
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
 		35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */; };
+		35E3D7B72A2277BF002D1BFE /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3D7B62A2277BF002D1BFE /* FocusView.swift */; };
 		35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EE3F9727F6958F007DA575 /* SignButton.swift */; };
 		35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F5B1B32A223FF100630459 /* Transform3x3.swift */; };
 		35F6244C283C04C200762730 /* RaRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F6244B283C04C200762730 /* RaRateView.swift */; };
@@ -52,7 +52,6 @@
 
 /* Begin PBXFileReference section */
 		351204AE27F214F5006DF60B /* DoubleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleInputView.swift; sourceTree = "<group>"; };
-		351A40D129FF0A33003B9A0F /* FocusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusView.swift; path = ../../../FocusControl/FocusControl/FocusView.swift; sourceTree = "<group>"; };
 		351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusViewModel.swift; sourceTree = "<group>"; };
 		351A40D529FF0A9E003B9A0F /* OnShake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnShake.swift; sourceTree = "<group>"; };
 		352168422814357900C76670 /* ViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptions.swift; sourceTree = "<group>"; };
@@ -82,6 +81,7 @@
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
 		35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountChangeView.swift; sourceTree = "<group>"; };
+		35E3D7B62A2277BF002D1BFE /* FocusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
 		35EE3F9727F6958F007DA575 /* SignButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignButton.swift; sourceTree = "<group>"; };
 		35F5B1B32A223FF100630459 /* Transform3x3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform3x3.swift; sourceTree = "<group>"; };
 		35F6244B283C04C200762730 /* RaRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaRateView.swift; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 		35B92FF22800B89400342F7F /* TopTabViews */ = {
 			isa = PBXGroup;
 			children = (
-				351A40D129FF0A33003B9A0F /* FocusView.swift */,
+				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
@@ -339,7 +339,6 @@
 				35FBF0622787AF52001EFA53 /* TargetListView.swift in Sources */,
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358B108728492AB0002AD52C /* BitVector.swift in Sources */,
-				351A40D229FF0A33003B9A0F /* FocusView.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
 				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
@@ -356,6 +355,7 @@
 				35DE202827F3D66600D96C68 /* BigButton.swift in Sources */,
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,
 				352168492814A86D00C76670 /* LocationData.swift in Sources */,
+				35E3D7B72A2277BF002D1BFE /* FocusView.swift in Sources */,
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
 				35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */,
