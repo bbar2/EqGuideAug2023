@@ -35,6 +35,8 @@ class ArmAccelModel : MyPeripheralDelegate,
 
   private var rawArmXlData = XlData(x: 0.0, y: 0.0, z: 0.0)    // is left handed
   var rhsArmXlData = XlData(x: 0.0, y: 0.0, z: 0.0)    // mapped to RHS
+  
+  private var alignArmAccelTransform = matrix_identity_float3x3
 
   func toDeg(_ rad:Float) -> Float {
     return rad * 180 / PI
@@ -50,6 +52,9 @@ class ArmAccelModel : MyPeripheralDelegate,
                               dataUUIDs: [ARM_ACCEL_XYZ_UUID])
     armAccel.mpDelegate = self
     armAccel.startBleConnection()
+    
+    // only need to do this once
+    alignArmAccelTransform = buildCalTform()
   }
 
   //MARK: MyPeripheralDelegate
@@ -98,15 +103,26 @@ class ArmAccelModel : MyPeripheralDelegate,
     let armAy = rhsArmXlData.y / mag
     let armAz = rhsArmXlData.z / mag
 
-    // align accelerometer so X axis does not move as psi rotates from 90E to 90W
+    // align accelerometer with Telescope Frame - corrects mounting errors
+    let unAlignedAccel = simd_float3(armAx, armAy, armAz)
+    let correctedAccel = alignArmAccelTransform * unAlignedAccel
+        
+    // From algebra of inverse transform mapping [0 0 -1] gravity to Telescope frame
+    // based on Rx' * Ry' and fixed psi.
+    armTheta = asin(-correctedAccel[X])
+    armPhi = asin(correctedAccel[Y] / cos(armTheta))
+  }
+  
+  // Tranform aligns accelerometer so X axis does not move as psi rotates from 90E to 90W
+  func buildCalTform() -> simd_float3x3 {
     
     // Two calibration points measured before applying correction, to estimate Z rotation
     // correction to center up theta at psi=90E and psi=90W readings
-    let theta90EDeg = Float(-23.4)
-    let theta90WDeg = Float(-27.3)
+    let theta90EDeg = Float(-23.4)  // Theta reported while arm East by bubble level
+    let theta90WDeg = Float(-27.3)  // Theta reported while arm West by bubble level
     let zCorrection = (toRad(-(theta90EDeg - theta90WDeg)/2))
     
-    // take out Z mounting rotations
+    // Rotation required to cancel out Z mounting rotational offset
     let zRotation = zRot3x3(psiRad: zCorrection)   // offset in rads to make theta90E = -theta90W
     
     // Use theta at psi=0 (measured after Z correction alone) to correct y pointing
@@ -120,14 +136,10 @@ class ArmAccelModel : MyPeripheralDelegate,
     let xCorrection = psi0  // rotate theta to zero psi
     let xRotation = xRot3x3(thetaRad: xCorrection)
 
-    let basis = simd_float3(armAx, armAy, armAz)
-    let correctedAccel = xRotation * yRotation * zRotation * basis
-        
-    // From algebra of inverse transform mapping [0 0 -1] gravity to Telescope frame
-    // based on Rx' * Ry' and fixed psi.
-    armTheta = asin(-correctedAccel[X])
-    armPhi = asin(correctedAccel[Y] / cos(armTheta))
+    // PreMultiplyt to Concatinate transforms
+    let accelAlign = xRotation * yRotation * zRotation
+
+    return accelAlign
   }
-  
 
 }
