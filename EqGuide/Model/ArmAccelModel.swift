@@ -113,7 +113,29 @@ class ArmAccelModel : MyPeripheralDelegate,
     armPhi = asin(correctedAccel[Y] / cos(armTheta))
   }
   
-  // Tranform aligns accelerometer so X axis does not move as psi rotates from 90E to 90W
+  // Build calibration transform to aligns the arm accelerometer so it's X axis
+  // is aligned with the ideal telescope frame of reference. With this calibration
+  // applied, the x axis of the accelerations reported will not does not move as psi
+  // rotates from 90E to 90W, and psi = 0 will be established.  There may still be
+  // psi offsets at psi = +- 90 degrees.
+  //
+  // Any movement of declination motor control box may necessitate re measuring
+  // these four calibration points.
+  // - With identity calibration measure:
+  //   1. theta with arm at 90E, determined with bubble level
+  //   2. theta with arm at 90W, determined with bubble level
+  // - Build and apply zRotation based on 1 and 2.
+  // - theta90W should now = -theta90E
+  // - Get 3rd calibration point:
+  //   3. theta with arm vertical (at 0), determined by bubble level
+  // - Build and apply yRotation*zRotation
+  // - X axis is now aligned, and theta should not change as function of roll().
+  // - Measure:
+  //   4. psi at arm at 0 (vertical), determined by bubble level
+  // - Build and apply xRotation to zero psi
+  // This procedure alligns x axis and zero's roll.
+  // It does not calibrate the accelerations, so there may be noticable (1 to 2 deg)
+  // offsets at psi = +-90 degrees of roll around X.
   func buildCalTform() -> simd_float3x3 {
     
     // Two calibration points measured before applying correction, to estimate Z rotation
