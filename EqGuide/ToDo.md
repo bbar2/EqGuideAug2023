@@ -2,26 +2,40 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
-2022-04-06: Get two BLE links running.  One to Mount, one to Focus.
-2022-04-06: After two BLE links, Integrate FocusControl as a separate Top level tab.
-2022-04-06: After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
-2022-04-06: Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
+2022-05-27: Hardware page showing raw accel, aligned accel, maybe unaligned accel for guide mount accel, arm accel and focus accel.  If space, add guide mount counts and time. Include enough info to support generating alignmnet angles, and accel calibrations.  
+2022-05-27: GUI reconfigure - No functional change to GuideMount
+  New main Guide with: 
+    BLE Link indication for all three BLE devices - for status display
+    Current RA/DEC (Yellow from angle, Red from Ref)
+    East/West Pier, 
+    LST, Lat, Long
+    Target RA/DEC - select and swap controls
+    Ref RA/DEC - select control
+    East/West Pier indicator, 
+    AZ/EL conversion
+    Pause Guiding Control.
+    Swap and Set Target and Ref Control which transmits to mount
+2022-05-27: Functional change - Pause Tracking, leaves RA/DEC joystick control enabled
+2022-05-27: Add joystick capability to Guide App.  Include DMS step buttons? - If I do it, put it in a separate View.
+2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation. Not necessarily after adding joystick capability.  
 2023-04-23: When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
 2022-10-12: Add a way to select the fixed angle refArmVert/East/West reference points. 
 2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.
-2022-05-29: Add Tracking on/off switch
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
 2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
 2022-04-09: Why do I get one MarkRefNow on EqGuide reset. 
-2022-04-08: Make UI view font sizes and colors consistent by storing in Environmnet Object. 
-2022-04-06: Include DMS step buttons? - If I do it, put it in a separate View.
 2022-10-10: Add time varying coordinates for Planets - or just enter them manually at show time. 
-2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation.
+
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.
-2022-10-00: Create Icon - move to Assets - plan to use FocusControl icon. 
+2023-05-25: Done - Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
+2022-05-15: Done - After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
+2023-05-15: Done - After two BLE links, Integrate FocusControl as a separate Top level tab.
+2023-05-01: Done - Get two BLE links running.  One to Mount, one to Focus.
+2022-10-00: Done - Create Icon - move to Assets - plan to use FocusControl icon.
+2022-05-29: Done - Add Tracking on/off switch
 2022-05-29: Done - Add Latiude someplace, to aid in wedge angle setup
 2022-05-29: Done - Switch speed adjustment from milli Deg / min, to arc sec / min
 2022-05-27: Done - Add tracking speed control tab with Lunar and Star option.
@@ -39,6 +53,7 @@ Do I get spel checking.  No.
 2022-04-20: Done - Siderial location of Arm from current siderial time and Arm Angle.  
 2022-04-20: Done - Current time and date to Siderial time straight above.
 2022-04-09: Done, added to Title line - Add MountState indicator to GUideDataBlock and EqGuide Guide View. 
+2022-04-08: Done - Make UI view font sizes and colors consistent by storing in Environmnet Object. 
 2022-04-08: Done - Stub in tab view with dummy focus page, to aid in top level UI layout.
 2022-04-08: Done - Get RocketMount and EqGuide working with Direct offset or TargetOffset modes.
 2022-04-06: Decide on file format for angles.  DMS, Float, or Double.

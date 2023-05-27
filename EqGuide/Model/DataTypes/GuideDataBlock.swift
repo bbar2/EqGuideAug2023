@@ -29,6 +29,9 @@ struct GuideDataBlock {
   var armDegPerStep: Float32 = 1.0    // really, Degrees per MicroStep
   var dskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
   var raRateOffsetDegPerSec: Float32 = 0.0
+  var accel_x: Float32 = 0.0
+  var accel_y: Float32 = 0.0
+  var accel_z: Float32 = 0.0
   var mountState: Int32 = MountState.PowerUp.rawValue
   var markRefNowInt: Int32 = 0
   var trackingPaused: Int32 = 0

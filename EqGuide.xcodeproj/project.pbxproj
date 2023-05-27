@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* DoubleInputView.swift */; };
+		351A40D229FF0A33003B9A0F /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D129FF0A33003B9A0F /* FocusView.swift */; };
+		351A40D429FF0A7C003B9A0F /* FocusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */; };
+		351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D529FF0A9E003B9A0F /* OnShake.swift */; };
 		352168432814357900C76670 /* ViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168422814357900C76670 /* ViewOptions.swift */; };
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
 		3521684728145C2A00C76670 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521684628145C2A00C76670 /* Haptics.swift */; };
@@ -17,6 +20,7 @@
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
+		358516FE2A1EB653009C505D /* ArmAccelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* ArmAccelModel.swift */; };
 		358B108728492AB0002AD52C /* BitVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358B108628492AB0002AD52C /* BitVector.swift */; };
 		3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3599A1E7280CB9ED00E1C442 /* Vallado.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
@@ -27,7 +31,6 @@
 		35A7F64928242638008EBC8C /* LoadJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64828242638008EBC8C /* LoadJson.swift */; };
 		35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64C28246EBD008EBC8C /* TargetRow.swift */; };
 		35B92FEF280068C800342F7F /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FEE280068C800342F7F /* AppOptions.swift */; };
-		35B92FF12800B86300342F7F /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FF02800B86300342F7F /* FocusView.swift */; };
 		35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95427F09D1400BFE4CE /* GuideView.swift */; };
 		35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */; };
 		35DE202827F3D66600D96C68 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202727F3D66600D96C68 /* BigButton.swift */; };
@@ -36,6 +39,7 @@
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
 		35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */; };
 		35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EE3F9727F6958F007DA575 /* SignButton.swift */; };
+		35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F5B1B32A223FF100630459 /* Transform3x3.swift */; };
 		35F6244C283C04C200762730 /* RaRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F6244B283C04C200762730 /* RaRateView.swift */; };
 		35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0532787963D001EFA53 /* EqGuideApp.swift */; };
 		35FBF0562787963D001EFA53 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0552787963D001EFA53 /* ContentView.swift */; };
@@ -48,6 +52,9 @@
 
 /* Begin PBXFileReference section */
 		351204AE27F214F5006DF60B /* DoubleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleInputView.swift; sourceTree = "<group>"; };
+		351A40D129FF0A33003B9A0F /* FocusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusView.swift; path = ../../../FocusControl/FocusControl/FocusView.swift; sourceTree = "<group>"; };
+		351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusViewModel.swift; sourceTree = "<group>"; };
+		351A40D529FF0A9E003B9A0F /* OnShake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnShake.swift; sourceTree = "<group>"; };
 		352168422814357900C76670 /* ViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptions.swift; sourceTree = "<group>"; };
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
 		3521684628145C2A00C76670 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
@@ -57,6 +64,7 @@
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
+		358516FD2A1EB653009C505D /* ArmAccelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArmAccelModel.swift; sourceTree = "<group>"; };
 		358B108628492AB0002AD52C /* BitVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitVector.swift; sourceTree = "<group>"; };
 		3599A1E7280CB9ED00E1C442 /* Vallado.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vallado.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
@@ -67,7 +75,6 @@
 		35A7F64828242638008EBC8C /* LoadJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadJson.swift; sourceTree = "<group>"; };
 		35A7F64C28246EBD008EBC8C /* TargetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRow.swift; sourceTree = "<group>"; };
 		35B92FEE280068C800342F7F /* AppOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOptions.swift; sourceTree = "<group>"; };
-		35B92FF02800B86300342F7F /* FocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
 		35DE202727F3D66600D96C68 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -76,6 +83,7 @@
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
 		35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountChangeView.swift; sourceTree = "<group>"; };
 		35EE3F9727F6958F007DA575 /* SignButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignButton.swift; sourceTree = "<group>"; };
+		35F5B1B32A223FF100630459 /* Transform3x3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform3x3.swift; sourceTree = "<group>"; };
 		35F6244B283C04C200762730 /* RaRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaRateView.swift; sourceTree = "<group>"; };
 		35FBF0502787963D001EFA53 /* EqGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EqGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35FBF0532787963D001EFA53 /* EqGuideApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqGuideApp.swift; sourceTree = "<group>"; };
@@ -125,6 +133,8 @@
 		35A7F64228240F1B008EBC8C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				35F5B1B32A223FF100630459 /* Transform3x3.swift */,
+				351A40D529FF0A9E003B9A0F /* OnShake.swift */,
 				359E419529F5741600664AFC /* MyCentralManager.swift */,
 				359E419429F5741600664AFC /* MyPeripheral.swift */,
 				352168482814A86D00C76670 /* LocationData.swift */,
@@ -146,9 +156,9 @@
 		35B92FF22800B89400342F7F /* TopTabViews */ = {
 			isa = PBXGroup;
 			children = (
+				351A40D129FF0A33003B9A0F /* FocusView.swift */,
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
-				35B92FF02800B86300342F7F /* FocusView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
 			);
 			path = TopTabViews;
@@ -166,7 +176,9 @@
 		35C9A95727F09EAA00BFE4CE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */,
 				35FBF06727888866001EFA53 /* GuideModel.swift */,
+				358516FD2A1EB653009C505D /* ArmAccelModel.swift */,
 				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				352168422814357900C76670 /* ViewOptions.swift */,
 				35A7F64228240F1B008EBC8C /* Utilities */,
@@ -311,20 +323,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				35A7F6442824103F008EBC8C /* Target.swift in Sources */,
+				351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */,
 				359E419729F5741600664AFC /* MyCentralManager.swift in Sources */,
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
 				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
 				359E419629F5741600664AFC /* MyPeripheral.swift in Sources */,
+				351A40D429FF0A7C003B9A0F /* FocusViewModel.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
+				358516FE2A1EB653009C505D /* ArmAccelModel.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
-				35B92FF12800B86300342F7F /* FocusView.swift in Sources */,
 				35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */,
 				35FBF0622787AF52001EFA53 /* TargetListView.swift in Sources */,
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358B108728492AB0002AD52C /* BitVector.swift in Sources */,
+				351A40D229FF0A33003B9A0F /* FocusView.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
 				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
@@ -343,6 +358,7 @@
 				352168492814A86D00C76670 /* LocationData.swift in Sources */,
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
+				35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,7 +401,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTABILITY = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -444,7 +460,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -458,10 +474,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
+				VALIDATE_PRODUCT = NO;
 			};
 			name = Release;
 		};
@@ -478,12 +495,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Mother May I Use BlueTooth, to communicate with Mount hardware?";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Mother May I Use Location Data, to calculate LST?";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -510,12 +528,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Mother May I Use BlueTooth, to communicate with Mount hardware?";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Mother May I Use Location Data, to calculate LST?";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -10,8 +10,9 @@ import SwiftUI
 
 struct ContentView: View {
 
-  // Model at Local scope.  Pass to Views as needed.
+  // Models at Local scope.  Pass to Views as needed.
   @StateObject private var model = GuideModel()
+  @StateObject private var armAccelModel = ArmAccelModel()
   
   // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions
@@ -39,7 +40,7 @@ struct ContentView: View {
         }
         .tag(Tab.rate)
 
-      FocusView()
+      FocusView(armModel: armAccelModel)
         .tabItem {
           Label("Focus", systemImage: "staroflife.circle")
         }

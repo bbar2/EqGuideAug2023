@@ -14,7 +14,6 @@ struct EqGuideApp: App {
   
   // App level options into Environment
   @StateObject private var appOptions = AppOptions()
-
   
   var body: some Scene {
     WindowGroup {
