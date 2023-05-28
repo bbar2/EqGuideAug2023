@@ -4,15 +4,22 @@
 //  Pre multiply transforms
 //  To apply T1 then T2 to oldPoints, newPoints = T2 * T1 * oldPoints
 //
+//  Use Float, since accelerations used originate in Floats
+//
 //  Created by Barry Bryant on 5/27/23.
 //
 
 import simd
 
-// constants for indexing 3D vectors
-let X = 0
-let Y = 1
-let Z = 2
+private let PI = Float(3.1415927)
+
+func toDeg(_ rad:Float) -> Float {
+  return rad * 180 / PI
+}
+
+func toRad(_ deg:Float) -> Float {
+  return deg * PI / 180
+}
 
 func zRot3x3(psiRad :Float) -> simd_float3x3 {
   var tform = matrix_identity_float3x3

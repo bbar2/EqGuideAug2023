@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RaRateView: View {
-  @ObservedObject var guideModel: GuideModel
+  @ObservedObject var mountModel: MountPeripheralModel
   
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -47,7 +47,7 @@ struct RaRateView: View {
             Text("Use -32 arcSec / min").font(viewOptions.labelFont)
         }
 
-        let currentArcSecPerMin = 3600.0 * 60.0 * guideModel.guideDataBlock.raRateOffsetDegPerSec
+        let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.guideDataBlock.raRateOffsetDegPerSec
         Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
       }
@@ -66,19 +66,19 @@ struct RaRateView: View {
 
       BigButton(label: "Update\nFine Tune\n Offset", minWidth: 200) {
         let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
-        guideModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
+        mountModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
       }.padding([.bottom], 50)
 
       
       if (trackingIsPaused) {
         BigButton(label: "Resume Tracking", minWidth: 250) {
           trackingIsPaused = false;
-          guideModel.guideCommandResumeTracking()
+          mountModel.guideCommandResumeTracking()
         }
       } else {
         BigButton(label: "Pause Tracking", minWidth: 250) {
           trackingIsPaused = true
-          guideModel.guideCommandPauseTracking()
+          mountModel.guideCommandPauseTracking()
         }
       }
       
@@ -92,11 +92,11 @@ struct RaRateView: View {
 }
 
 struct RaRateView_Previews: PreviewProvider {
-  static let model = GuideModel()
+  static let model = MountPeripheralModel()
   static let viewOptions = ViewOptions()
   
   static var previews: some View {
-    RaRateView(guideModel: model)
+    RaRateView(mountModel: model)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* DoubleInputView.swift */; };
-		351A40D429FF0A7C003B9A0F /* FocusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */; };
+		351A40D429FF0A7C003B9A0F /* FocusPeripheralModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D329FF0A7C003B9A0F /* FocusPeripheralModel.swift */; };
 		351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D529FF0A9E003B9A0F /* OnShake.swift */; };
 		352168432814357900C76670 /* ViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168422814357900C76670 /* ViewOptions.swift */; };
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
@@ -19,7 +19,7 @@
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
-		358516FE2A1EB653009C505D /* ArmAccelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* ArmAccelModel.swift */; };
+		358516FE2A1EB653009C505D /* ArmPeripheralModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* ArmPeripheralModel.swift */; };
 		358B108728492AB0002AD52C /* BitVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358B108628492AB0002AD52C /* BitVector.swift */; };
 		3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3599A1E7280CB9ED00E1C442 /* Vallado.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
@@ -38,6 +38,8 @@
 		35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DF7EC827F4B1DB008E925A /* Hms.swift */; };
 		35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */; };
 		35E3D7B72A2277BF002D1BFE /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3D7B62A2277BF002D1BFE /* FocusView.swift */; };
+		35E3D7B92A2278BD002D1BFE /* HardwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3D7B82A2278BD002D1BFE /* HardwareView.swift */; };
+		35E3D7BD2A229884002D1BFE /* BleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E3D7BC2A229884002D1BFE /* BleStatusView.swift */; };
 		35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EE3F9727F6958F007DA575 /* SignButton.swift */; };
 		35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F5B1B32A223FF100630459 /* Transform3x3.swift */; };
 		35F6244C283C04C200762730 /* RaRateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F6244B283C04C200762730 /* RaRateView.swift */; };
@@ -47,12 +49,12 @@
 		35FBF05B27879640001EFA53 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35FBF05A27879640001EFA53 /* Preview Assets.xcassets */; };
 		35FBF0622787AF52001EFA53 /* TargetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF0612787AF52001EFA53 /* TargetListView.swift */; };
 		35FBF0642787AF67001EFA53 /* ToDo.md in Resources */ = {isa = PBXBuildFile; fileRef = 35FBF0632787AF67001EFA53 /* ToDo.md */; };
-		35FBF06827888866001EFA53 /* GuideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF06727888866001EFA53 /* GuideModel.swift */; };
+		35FBF06827888866001EFA53 /* MountPeripheralModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FBF06727888866001EFA53 /* MountPeripheralModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		351204AE27F214F5006DF60B /* DoubleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleInputView.swift; sourceTree = "<group>"; };
-		351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusViewModel.swift; sourceTree = "<group>"; };
+		351A40D329FF0A7C003B9A0F /* FocusPeripheralModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusPeripheralModel.swift; sourceTree = "<group>"; };
 		351A40D529FF0A9E003B9A0F /* OnShake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnShake.swift; sourceTree = "<group>"; };
 		352168422814357900C76670 /* ViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptions.swift; sourceTree = "<group>"; };
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
@@ -63,7 +65,7 @@
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
-		358516FD2A1EB653009C505D /* ArmAccelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArmAccelModel.swift; sourceTree = "<group>"; };
+		358516FD2A1EB653009C505D /* ArmPeripheralModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArmPeripheralModel.swift; sourceTree = "<group>"; };
 		358B108628492AB0002AD52C /* BitVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitVector.swift; sourceTree = "<group>"; };
 		3599A1E7280CB9ED00E1C442 /* Vallado.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vallado.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
@@ -82,6 +84,8 @@
 		35DF7EC827F4B1DB008E925A /* Hms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hms.swift; sourceTree = "<group>"; };
 		35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountChangeView.swift; sourceTree = "<group>"; };
 		35E3D7B62A2277BF002D1BFE /* FocusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
+		35E3D7B82A2278BD002D1BFE /* HardwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareView.swift; sourceTree = "<group>"; };
+		35E3D7BC2A229884002D1BFE /* BleStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleStatusView.swift; sourceTree = "<group>"; };
 		35EE3F9727F6958F007DA575 /* SignButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignButton.swift; sourceTree = "<group>"; };
 		35F5B1B32A223FF100630459 /* Transform3x3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform3x3.swift; sourceTree = "<group>"; };
 		35F6244B283C04C200762730 /* RaRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaRateView.swift; sourceTree = "<group>"; };
@@ -92,7 +96,7 @@
 		35FBF05A27879640001EFA53 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		35FBF0612787AF52001EFA53 /* TargetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetListView.swift; sourceTree = "<group>"; };
 		35FBF0632787AF67001EFA53 /* ToDo.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ToDo.md; sourceTree = "<group>"; };
-		35FBF06727888866001EFA53 /* GuideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideModel.swift; sourceTree = "<group>"; };
+		35FBF06727888866001EFA53 /* MountPeripheralModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPeripheralModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,10 +160,11 @@
 		35B92FF22800B89400342F7F /* TopTabViews */ = {
 			isa = PBXGroup;
 			children = (
-				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
+				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
+				35E3D7B82A2278BD002D1BFE /* HardwareView.swift */,
 			);
 			path = TopTabViews;
 			sourceTree = "<group>";
@@ -169,6 +174,7 @@
 			children = (
 				35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */,
 				35FBF0612787AF52001EFA53 /* TargetListView.swift */,
+				35E3D7BC2A229884002D1BFE /* BleStatusView.swift */,
 			);
 			path = CompositeViews;
 			sourceTree = "<group>";
@@ -176,9 +182,9 @@
 		35C9A95727F09EAA00BFE4CE /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				351A40D329FF0A7C003B9A0F /* FocusViewModel.swift */,
-				35FBF06727888866001EFA53 /* GuideModel.swift */,
-				358516FD2A1EB653009C505D /* ArmAccelModel.swift */,
+				35FBF06727888866001EFA53 /* MountPeripheralModel.swift */,
+				351A40D329FF0A7C003B9A0F /* FocusPeripheralModel.swift */,
+				358516FD2A1EB653009C505D /* ArmPeripheralModel.swift */,
 				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				352168422814357900C76670 /* ViewOptions.swift */,
 				35A7F64228240F1B008EBC8C /* Utilities */,
@@ -278,7 +284,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					35FBF04F2787963D001EFA53 = {
 						CreatedOnToolsVersion = 13.2.1;
@@ -330,19 +336,21 @@
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
 				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
 				359E419629F5741600664AFC /* MyPeripheral.swift in Sources */,
-				351A40D429FF0A7C003B9A0F /* FocusViewModel.swift in Sources */,
+				351A40D429FF0A7C003B9A0F /* FocusPeripheralModel.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
-				358516FE2A1EB653009C505D /* ArmAccelModel.swift in Sources */,
+				35E3D7B92A2278BD002D1BFE /* HardwareView.swift in Sources */,
+				358516FE2A1EB653009C505D /* ArmPeripheralModel.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
 				35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */,
+				35E3D7BD2A229884002D1BFE /* BleStatusView.swift in Sources */,
 				35FBF0622787AF52001EFA53 /* TargetListView.swift in Sources */,
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358B108728492AB0002AD52C /* BitVector.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
 				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
-				35FBF06827888866001EFA53 /* GuideModel.swift in Sources */,
+				35FBF06827888866001EFA53 /* MountPeripheralModel.swift in Sources */,
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
 				356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */,
 				352168432814357900C76670 /* ViewOptions.swift in Sources */,

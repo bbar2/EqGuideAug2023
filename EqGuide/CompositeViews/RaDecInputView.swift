@@ -107,7 +107,7 @@ struct RaInputView_Previews: PreviewProvider {
   @State static var name = "TestName"
   @State static var viewOptions = ViewOptions()
   @State static var useHmsDms = true
-  @State static var guideModel = GuideModel()
+  @State static var guideModel = MountPeripheralModel()
   
   static var previews: some View {
     RaDecInputView(label: "Enter RA/DEC Pair",

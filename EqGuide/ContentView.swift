@@ -10,10 +10,13 @@ import SwiftUI
 
 struct ContentView: View {
 
-  // Models at Local scope.  Pass to Views as needed.
-  @StateObject private var model = GuideModel()
-  @StateObject private var armAccelModel = ArmAccelModel()
-  
+  // Models at Local scope.
+  // Each model is associated with a different BLE Peripheral device
+  // Pass to Views as needed.
+  @StateObject private var mountDeviceModel = MountPeripheralModel()
+  @StateObject private var focusDeviceModel = FocusPeripheralModel()
+  @StateObject private var armDeviceModel = ArmPeripheralModel()
+
   // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions
 
@@ -21,6 +24,7 @@ struct ContentView: View {
     case guide
     case rate
     case focus
+    case hardware
     case light
   }
   
@@ -28,24 +32,32 @@ struct ContentView: View {
   var body: some View {
     
     TabView (selection: $selection) {
-      GuideView(guideModel: model)
+      GuideView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Guide", systemImage: "arrow.2.squarepath")
         }
         .tag(Tab.guide)
       
-      RaRateView(guideModel: model)
+      RaRateView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Track Rate", systemImage: "cursorarrow.click.badge.clock")
         }
         .tag(Tab.rate)
 
-      FocusView(armModel: armAccelModel)
+      FocusView(focusModel: focusDeviceModel, armModel: armDeviceModel)
         .tabItem {
           Label("Focus", systemImage: "staroflife.circle")
         }
         .tag(Tab.focus)
- 
+      
+      HardwareView(mountModel: mountDeviceModel,
+                   focusModel: focusDeviceModel,
+                   armModel: armDeviceModel)
+        .tabItem {
+          Label("Hardware", systemImage: "angle")
+        }
+        .tag(Tab.hardware)
+
       LightView()
         .tabItem {
           Label("Light", systemImage: "flashlight.off.fill")

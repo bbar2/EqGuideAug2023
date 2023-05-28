@@ -37,11 +37,11 @@
 
 //  TODO: What is impact of ~2 degree padding on pier hemisphere flip.
 
-
 import SwiftUI
 import CoreBluetooth
 import Combine
 import CoreLocation
+import simd
 
 enum Knowledge {
   case none
@@ -49,7 +49,7 @@ enum Knowledge {
   case marked
 }
 
-class GuideModel : MyPeripheralDelegate, ObservableObject {
+class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
@@ -80,13 +80,15 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
   
-  // These fixed arm reference positions must advance with lst.
+  var rhsMountXlData = simd_float3(x: 0, y: 0, z: 0)
+  
+  // ToDo: These fixed arm reference positions must advance with lst.
   // update in updateMountAngles()
   private var refArmVert = RaDec()
   private var refArmEast = RaDec()
   private var refArmWest = RaDec()
   
-  var bleConnected: Bool {
+  func bleConnected() -> Bool {
     return statusString == "Connected"
   }
   
@@ -114,7 +116,7 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     rocketMount.mpDelegate = self
   }
   
-  func guideModelInit() {
+  func mountModelInit() {
     if (!initialized) {
       // DON"T REALLY NEED startBleConnection() here.
       // if this is first peripheralManager, then need to start CM, and only startBleConnection (really it's findPeripheral) once CM started.
@@ -129,7 +131,7 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
       // Once done, remove startBleConnection from local onBleRunning.
       rocketMount.startBleConnection()
       statusString = "Searching for RocketMount ..."
-      initViewModel()
+      initLocalMembers()
       initialized = true
     }
     
@@ -144,7 +146,7 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
   }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
-  func initViewModel() {
+  func initLocalMembers() {
     // Init local variables
   }
   
@@ -335,6 +337,14 @@ class GuideModel : MyPeripheralDelegate, ObservableObject {
     guideDataBlock = guideData
     readCount += 1
     updateMountAngles()
+    
+    // Telescope Reference Frame is +Z down, +X forward (north), +Y right (east)
+    // Mount Accel is mounted with +Z up, +X forward and +Y to Right
+    // Map Left Handed accelerometer to Right Handed Telescope Frame by:
+    // Flipping +Z to down
+    rhsMountXlData.x = guideDataBlock.accel_x
+    rhsMountXlData.y = guideDataBlock.accel_y
+    rhsMountXlData.z = -guideDataBlock.accel_z
     
     // Process specific GuideDataBlock commands
     if guideDataBlock.mountState == MountState.PowerUp.rawValue {

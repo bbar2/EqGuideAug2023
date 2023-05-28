@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct GuideView: View {
-  @ObservedObject var guideModel: GuideModel
+  @ObservedObject var mountModel: MountPeripheralModel
     
   @EnvironmentObject var viewOptions: ViewOptions
   
   var gdb:GuideDataBlock {
-    guideModel.guideDataBlock
+    mountModel.guideDataBlock
   }
   
   var mountStateString:String {
@@ -30,9 +30,9 @@ struct GuideView: View {
       
       VStack {
         HStack{
-          if !guideModel.bleConnected {
+          if !mountModel.bleConnected() {
             Text("Status: ")
-            Text(guideModel.statusString)
+            Text(mountModel.statusString)
           } else {
             Text("EqMount: ")
             let stateEnum = MountState(rawValue: gdb.mountState)
@@ -55,22 +55,22 @@ struct GuideView: View {
         VStack{
           RaDecPairView(
             pairTitle: "Current\nPosition",
-            pair: guideModel.currentPosition,
+            pair: mountModel.currentPosition,
             showDmsHms: viewOptions.showDmsHms,
-            armDeg: guideModel.armCurrentDeg,
-            dskDeg: guideModel.dskCurrentDeg
+            armDeg: mountModel.armCurrentDeg,
+            dskDeg: mountModel.dskCurrentDeg
           )
           .foregroundColor(pointingKnowledgeColor())
           .padding([.bottom], 1)
 
           HStack {
-            Text("LST: " + Hms(guideModel.lstDeg).string(viewOptions.showDmsHms))
+            Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
               .foregroundColor(lstValidColor())
             Spacer()
-            let latString = Dms(guideModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
+            let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
             Text("Lat:" + latString).foregroundColor(lstValidColor())
             Spacer()
-            let longString = Dms(guideModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
+            let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
             Text("Lng:" + longString).foregroundColor(lstValidColor())
           }.font(viewOptions.smallValueFont)
           
@@ -87,14 +87,14 @@ struct GuideView: View {
           if startFromReference {
             NavigationLink {
               RaDecInputView(label: "Select Reference",
-                             coord: $guideModel.refCoord,
-                             name: $guideModel.refName,
+                             coord: $mountModel.refCoord,
+                             name: $mountModel.refName,
                              unitHmsDms: viewOptions.showDmsHms,
-                             catalog: guideModel.catalog)
+                             catalog: mountModel.catalog)
             } label: {
-              let (refArmDeg, refDskDeg) = guideModel.mountAnglesForRaDec( guideModel.refCoord)
-              RaDecPairView(pairTitle: "Reference:\n\(guideModel.refName)",
-                            pair: guideModel.refCoord,
+              let (refArmDeg, refDskDeg) = mountModel.mountAnglesForRaDec( mountModel.refCoord)
+              RaDecPairView(pairTitle: "Reference:\n\(mountModel.refName)",
+                            pair: mountModel.refCoord,
                             showDmsHms: viewOptions.showDmsHms,
                             armDeg: refArmDeg,
                             dskDeg: refDskDeg)
@@ -103,15 +103,15 @@ struct GuideView: View {
             
             NavigationLink {
               RaDecInputView(label: "Select Target",
-                             coord: $guideModel.targetCoord,
-                             name: $guideModel.targName,
+                             coord: $mountModel.targetCoord,
+                             name: $mountModel.targName,
                              unitHmsDms: viewOptions.showDmsHms,
-                             catalog: guideModel.catalog)
+                             catalog: mountModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
-              RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
-                            pair: guideModel.targetCoord,
+              let (targetArmDeg, targetDskDeg) = mountModel.mountAnglesForRaDec(mountModel.targetCoord)
+              RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
+                            pair: mountModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,
                             armDeg: targetArmDeg,
                             dskDeg: targetDskDeg)
@@ -119,22 +119,22 @@ struct GuideView: View {
             }
             
             MountChangeView(title: "Mount Movement:\nRef to Target",
-                            armMoveDeg: guideModel.anglesReferenceToTarget().ra,
-                            dskMoveDeg: guideModel.anglesReferenceToTarget().dec)
+                            armMoveDeg: mountModel.anglesReferenceToTarget().ra,
+                            dskMoveDeg: mountModel.anglesReferenceToTarget().dec)
             
 
           } else {  // start from current
             NavigationLink {
               RaDecInputView(label: "Select Target",
-                             coord: $guideModel.targetCoord,
-                             name: $guideModel.targName,
+                             coord: $mountModel.targetCoord,
+                             name: $mountModel.targName,
                              unitHmsDms: viewOptions.showDmsHms,
-                             catalog: guideModel.catalog)
+                             catalog: mountModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg) = guideModel.mountAnglesForRaDec(guideModel.targetCoord)
-              RaDecPairView(pairTitle: "Target:\n\(guideModel.targName)",
-                            pair: guideModel.targetCoord,
+              let (targetArmDeg, targetDskDeg) = mountModel.mountAnglesForRaDec(mountModel.targetCoord)
+              RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
+                            pair: mountModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,
                             armDeg: targetArmDeg,
                             dskDeg: targetDskDeg)
@@ -142,8 +142,8 @@ struct GuideView: View {
             }
             
             MountChangeView(title: "Mount Movement:\nCurrent to Target",
-                            armMoveDeg: guideModel.anglesCurrentToTarget().ra,
-                            dskMoveDeg: guideModel.anglesCurrentToTarget().dec)
+                            armMoveDeg: mountModel.anglesCurrentToTarget().ra,
+                            dskMoveDeg: mountModel.anglesCurrentToTarget().dec)
 
           }
           
@@ -156,17 +156,17 @@ struct GuideView: View {
             HStack {
               Spacer()
               BigButton(label:"Swap") {
-                guideModel.swapRefAndTarg()
+                mountModel.swapRefAndTarg()
               }
               Spacer()
               if startFromReference {
                 BigButton(label:" Set Target  \n & Ref") {
-                  guideModel.guideCommandReferenceToTarget()
+                  mountModel.guideCommandReferenceToTarget()
                   heavyBump()
                 }
               } else {
                 BigButton(label:" Set Target  ") {
-                  guideModel.guideCommandCurrentToTarget()
+                  mountModel.guideCommandCurrentToTarget()
                   heavyBump()
                 }
               }
@@ -177,7 +177,7 @@ struct GuideView: View {
           }
           
           RawDataView(gdb: gdb)
-            .foregroundColor((guideModel.bleConnected ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
+            .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         } // VStack in NavigationView
         .navigationBarTitle("") // needed for navigationBarHidden to work.
         .navigationBarHidden(true)
@@ -186,14 +186,14 @@ struct GuideView: View {
       
     } // Top Level VStack
     .onAppear{
-      guideModel.guideModelInit()
+      mountModel.mountModelInit()
       setupSegmentControl()
       softBump()
     } // body: some View
   }
   
   func pointingKnowledgeColor() -> Color {
-    switch (guideModel.pointingKnowledge)
+    switch (mountModel.pointingKnowledge)
     {
       case .none:
         return viewOptions.confNoneColor
@@ -205,7 +205,7 @@ struct GuideView: View {
   }
   
   func lstValidColor() -> Color {
-    return guideModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
+    return mountModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
   }
   
   func setupSegmentControl() {
@@ -229,9 +229,9 @@ struct GuideView: View {
 
 struct GuideView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
-  static let guideModel = GuideModel()
+  static let guideModel = MountPeripheralModel()
   static var previews: some View {
-    GuideView(guideModel: guideModel)
+    GuideView(mountModel: guideModel)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

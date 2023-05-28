@@ -15,9 +15,11 @@ Do I get spel checking.  No.
     AZ/EL conversion
     Pause Guiding Control.
     Swap and Set Target and Ref Control which transmits to mount
+2023-05-27: Targ mode not working as expected. Ref/Targ mode works well.
 2022-05-27: Functional change - Pause Tracking, leaves RA/DEC joystick control enabled
 2022-05-27: Add joystick capability to Guide App.  Include DMS step buttons? - If I do it, put it in a separate View.
 2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation. Not necessarily after adding joystick capability.  
+2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
 2023-04-23: When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
 2022-10-12: Add a way to select the fixed angle refArmVert/East/West reference points. 
 2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.

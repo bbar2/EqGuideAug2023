@@ -23,7 +23,7 @@ struct TargetListView: View {
 }
 
 struct ObjectListView_Previews: PreviewProvider {
-  @State static var guideModel = GuideModel()
+  @State static var guideModel = MountPeripheralModel()
   static func targetTapAction(_ target: Target) {
   }
   @State static var tappedTarget = guideModel.catalog[0]

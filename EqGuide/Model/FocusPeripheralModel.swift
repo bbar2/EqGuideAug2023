@@ -36,6 +36,7 @@
 
 import SwiftUI
 import CoreBluetooth
+import simd
 
 // Define the number of focus motor micro steps for each FocusMode
 // Raw values = motor steps and should match FocusMotor project FocusMsg.h
@@ -45,22 +46,17 @@ enum FocusMode:Int32 {
   case fine   = 2
 }
 
-class FocusViewModel : MyPeripheralDelegate,
-                       ObservableObject  {
+class FocusPeripheralModel : MyPeripheralDelegate,
+                             ObservableObject  {
   
-  enum BleCentralState {
+  enum BleState {
     case disconnected
     case connecting
     case ready
   }
-  var armAccelModel: ArmAccelModel?
-  
-  // Acceleration Structure received from Focus Motor
-  struct XlData {
-    var x: Float32
-    var y: Float32
-    var z: Float32
-  }
+  private var bleState = BleState.disconnected
+
+  var armAccelModel: ArmPeripheralModel?
   
   // Command structure sent to FocusMotor
   private struct RocketFocusMsg {
@@ -88,8 +84,8 @@ class FocusViewModel : MyPeripheralDelegate,
   @Published var roll: Float = 0.0
   @Published var yaw: Float = 0.0
 
-  var rawXlData = XlData(x: 0.0, y: 0.0, z: 0.0) // is left handed
-  var rhsXlData = XlData(x: 0.0, y: 0.0, z: 0.0) // mapped to RH Tele Frame
+  var rawXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0) // is left handed
+  var rhsXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0) // mapped to RH Tele Frame
   
   // Focus Service provides focus motor control and focus motor accelerations
   private let FOCUS_DEVICE_NAMED = "FocusMotor"
@@ -99,7 +95,6 @@ class FocusViewModel : MyPeripheralDelegate,
   private let FOCUS_MSG_UUID = CBUUID(string: "828b0001-046a-42c7-9c16-00ca297e95eb")
   private let ACCEL_XYZ_UUID = CBUUID(string: "828b0005-046a-42c7-9c16-00ca297e95eb")
   
-  private var bleState = BleCentralState.disconnected
   private let focusMotor: MyPeripheral
   private var uponBleReadyAction : (()->Void)?
   
@@ -107,16 +102,6 @@ class FocusViewModel : MyPeripheralDelegate,
   private let TIMER_DISCONNECT_SEC = 10
   private var connectionTimer = Timer()
   
-  private let PI = Float(3.1415927)
-
-  func toDeg(_ rad:Float) -> Float {
-    return rad * 180 / PI
-  }
-
-  func toRad(_ deg:Float) -> Float {
-    return deg * PI / 180
-  }
-
     
   // This runs everytime an FocusAccel data struct arrives via BLE.  Nominally at 5Hz.
   // Called by setNotify Closure
@@ -167,13 +152,13 @@ class FocusViewModel : MyPeripheralDelegate,
   }
   
   // Called once by ViewController
-  func viewModelInit(linkToArmAccelModel: ArmAccelModel) {
+  func viewModelInit(linkToArmAccelModel: ArmPeripheralModel) {
     armAccelModel = linkToArmAccelModel
     statusString = "Searching for Focus-Motor ..."
   }
   
-  // used by FocusView for UI color control
-  func bleIsReady() -> Bool {
+  // used by Views for UI color control and pointing knowledge
+  func bleConnected() -> Bool {
     return bleState == .ready
   }
   
