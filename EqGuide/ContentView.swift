@@ -13,9 +13,9 @@ struct ContentView: View {
   // Models at Local scope.
   // Each model is associated with a different BLE Peripheral device
   // Pass to Views as needed.
-  @StateObject private var mountDeviceModel = MountPeripheralModel()
-  @StateObject private var focusDeviceModel = FocusPeripheralModel()
-  @StateObject private var armDeviceModel = ArmPeripheralModel()
+  @StateObject private var mountDeviceModel = MountBleModel()
+  @StateObject private var focusDeviceModel = FocusBleModel()
+  @StateObject private var armDeviceModel = ArmBleModel()
 
   // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions

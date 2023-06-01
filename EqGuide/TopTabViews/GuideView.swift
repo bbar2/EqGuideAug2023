@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GuideView: View {
-  @ObservedObject var mountModel: MountPeripheralModel
+  @ObservedObject var mountModel: MountBleModel
     
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -80,9 +80,8 @@ struct GuideView: View {
                  label: Text("???")) {
             Text("Ref/Targ").tag(true)
             Text("Targ").tag(false)
-          }
-                 .pickerStyle(.segmented)
-                 .padding([.leading, .trailing], 10)
+          }.pickerStyle(.segmented)
+           .padding([.leading, .trailing], 10)
           
           if startFromReference {
             NavigationLink {
@@ -229,7 +228,7 @@ struct GuideView: View {
 
 struct GuideView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
-  static let guideModel = MountPeripheralModel()
+  static let guideModel = MountBleModel()
   static var previews: some View {
     GuideView(mountModel: guideModel)
       .environmentObject(viewOptions)

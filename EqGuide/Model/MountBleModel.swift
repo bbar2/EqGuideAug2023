@@ -49,7 +49,7 @@ enum Knowledge {
   case marked
 }
 
-class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
+class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
@@ -80,7 +80,8 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   @Published var pointingKnowledge = Knowledge.none
   @Published var lstValid = false
   
-  var rhsMountXlData = simd_float3(x: 0, y: 0, z: 0)
+  var xlAligned = simd_float3(x: 0, y: 0, z: 0)
+  var theta = Float(0.0)  // mount rotation around y
   
   // ToDo: These fixed arm reference positions must advance with lst.
   // update in updateMountAngles()
@@ -104,7 +105,7 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   
   private var fpic = true
   private var lstOffset = 0.0
-
+  
   init() {
     
     self.rocketMount = MyPeripheral(
@@ -136,9 +137,9 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     }
     
     // Setup initial Reference and Target
-//    let refIndex = 0
-//    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
-//    refName = catalog[refIndex].name
+    //    let refIndex = 0
+    //    refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
+    //    refName = catalog[refIndex].name
     let targIndex = 3
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
@@ -151,17 +152,17 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   }
   
   //MARK: === Angle Processing ===
-
+  
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
       lstDeg = lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
-
+      
       if fpic {
         // gen offset so LST advances from debug value
         lstOffset = 0.0 // leave this only for normal operation.
-        //lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
-        //lstOffset = 90.0 - lstDeg // match figure
+                        //lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
+                        //lstOffset = 90.0 - lstDeg // match figure
       }
       lstDeg += lstOffset
       
@@ -175,7 +176,7 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
         //refName = "West Pier"
         fpic = false
       }
-
+      
     } else {
       lstValid = false
       lstDeg = 0.0
@@ -216,8 +217,8 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     } else {
       // TODO - add elseif block for intertial calcualtion, with confidence .estimated
       // TBD: Do inertial calc now?  Every time?
-//      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
-
+      //      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
+      
       currentPosition.ra = armCurrentDeg  // RA unknown without pointing knowledge
       currentPosition.dec = dskCurrentDeg // DEC unknown without pointing knowledge
     }
@@ -235,17 +236,17 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   (armDeg: Double, dskDeg:Double) {
     var armDeg = 0.0
     var dskDeg = 0.0
-
+    
     // Find angle between LST and RA
     var raLst = coord.ra - lstDeg;
-
+    
     // Map to 0.0 <= raLst < 360.0
     if raLst < 0.0 {
       raLst += 360.0
     } else if raLst >= 360 {
       raLst -= 360.0
     }
-  
+    
     // Select arm and dsk angles based on target side of lst (raLst = ra-lst)
     // For 0 <= raLst < 360:  (360.0 maps to 0.0)
     // looking east:  0<= raLst < 180.0  (define 0 as looking east)
@@ -257,7 +258,7 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
       armDeg = 90.0 - raLst
       dskDeg = coord.dec - 90.0
     }
-
+    
     return (armDeg, dskDeg)
   }
   
@@ -267,7 +268,7 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   (armAngle: Double, diskAngle: Double) {
     let (fromArmDeg, fromDskDeg) = mountAnglesForRaDec(fromCoord)
     let (toArmDeg, toDskDeg) = mountAnglesForRaDec(toCoord)
-
+    
     let deltaArmDeg = toArmDeg - fromArmDeg
     var deltaDskDeg = toDskDeg - fromDskDeg
     
@@ -300,9 +301,9 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   // Given knowledge of current RA/DEC, and the current arm and dsk counts,
   // calculate the offsets.  Do this when looking at a reference coordinate.
   func updateOffsetsToReference() {
-        
+    
     updateLstDeg()
-
+    
     let (refArmAngle, refDskAngle) = mountAnglesForRaDec(refCoord)
     
     // given:
@@ -310,26 +311,14 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     //  dskAngle = guideDataBlock.dskCountDeg + dskOffsetDeg
     armOffsetDeg = refArmAngle - guideDataBlock.armCountDeg
     dskOffsetDeg = refDskAngle - guideDataBlock.dskCountDeg
-
+    
     // Used for color coding values that depend on references
     pointingKnowledge = lstValid ? .marked : .none
-
+    
   }  // end updateOffsetsToReference
   
-
-  /// ========== Read Data From Mount ==========
-  //  func readVar1()  {
-  //    do {
-  //      try rocketMount.bleRead(uuid: GUIDE_VAR1_UUID) { [weak self] resultInt in
-  //        self?.var1 = resultInt
-  //        self?.readCount += 1
-  //        self?.readVar1()
-  //      }
-  //    } catch {
-  //      print(error)
-  //    }
-  //  }
   
+  /// ========== Read Data From Mount ==========
   // This runs (via Notify Handler) every time EqMount sends a new GuideDataBlock (~10Hz)
   func processDataFromMount(_ guideData: GuideDataBlock) {
     
@@ -342,9 +331,20 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     // Mount Accel is mounted with +Z up, +X forward and +Y to Right
     // Map Left Handed accelerometer to Right Handed Telescope Frame by:
     // Flipping +Z to down
-    rhsMountXlData.x = guideDataBlock.accel_x
-    rhsMountXlData.y = guideDataBlock.accel_y
-    rhsMountXlData.z = -guideDataBlock.accel_z
+    let rhsMountXl = simd_float3(guideDataBlock.accel_x,
+                                 guideDataBlock.accel_y,
+                                -guideDataBlock.accel_z)
+    
+    let rhsNormMountXl = simd_normalize(rhsMountXl)
+    
+    // align accelerometer so y component is zero
+    let offset = rhsNormMountXl.y
+    let xCorrection = rhsNormMountXl.y  // rotate theta to zero psi
+    let xRotation = xRot3x3(thetaRad: xCorrection)
+    xlAligned = xRotation * rhsNormMountXl
+
+    // This is the only angle of with any meaming on the mount.
+    theta = atan2(xlAligned.x, xlAligned.z) - PI // *BB* WHY PI (180) here
     
     // Process specific GuideDataBlock commands
     if guideDataBlock.mountState == MountState.PowerUp.rawValue {
@@ -376,7 +376,7 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
   }
   
   //MARK: === Command Processing ===
-
+  
   /// ========== Transmit Commands to Mount ==========
   /// Build and transmit GuideCommandBlocks
   /// Convert native iOS app types to Arduino types here - i.e. Doubles to Int32 Counts
@@ -392,9 +392,9 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     var armDeg = 0.0
     var diskDeg = 0.0
     (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
-
-//    let armDeg = armDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
-//    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
+    
+    //    let armDeg = armDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
+    //    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
     let refToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetTarget.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
@@ -411,8 +411,8 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     var diskDeg = 0.0
     (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
     
-//    let armDeg = armDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
-//    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
+    //    let armDeg = armDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
+    //    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
     let currentToTargetCommand = GuideCommandBlock(
       command: GuideCommand.SetOffset.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
@@ -453,26 +453,26 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     )
     guideCommand(ackCommand)
   }
-
+  
   //MARK: === Begin MyPeripheral Delegate Methods ===
-//  func onBleRunning(){
-//    // DONT USE THIS - ONLY FIRST PERIPHERAL CAN USE.  PLAN TO REMOVE
-////    rocketMount.startBleConnection()
-////    statusString = "Connecting"
-//  }
-//
-//  func onBleNotAvailable(){
-//    statusString = "BLE Not Available"
-//  }
-
+  //  func onBleRunning(){
+  //    // DONT USE THIS - ONLY FIRST PERIPHERAL CAN USE.  PLAN TO REMOVE
+  ////    rocketMount.startBleConnection()
+  ////    statusString = "Connecting"
+  //  }
+  //
+  //  func onBleNotAvailable(){
+  //    statusString = "BLE Not Available"
+  //  }
+  
   func onFound(){
     statusString = "RocketMount Found"
   }
-
+  
   func onConnected(){
     statusString = "Connected"
   }
-
+  
   func onDisconnected(){
     statusString = "Disconnected"
     readCount = 0;
@@ -480,10 +480,10 @@ class MountPeripheralModel : MyPeripheralDelegate, ObservableObject {
     // attmempt to restart the connection
     rocketMount.startBleConnection()  // restart after connection lost
   }
-
+  
   func onReady(){
     rocketMount.setNotify(GUIDE_DATA_BLOCK_UUID) { [weak self] (buffer:Data)->Void in
-
+      
       // Copy the Data to a local GuideDataBlock structure
       let numBytes = min(buffer.count,
                          MemoryLayout.size(ofValue: self!.guideDataBlock))

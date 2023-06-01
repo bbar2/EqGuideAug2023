@@ -18,8 +18,8 @@
 import SwiftUI
 
 struct FocusView: View {
-  @ObservedObject var focusModel: FocusPeripheralModel
-  @ObservedObject var armModel: ArmPeripheralModel
+  @ObservedObject var focusModel: FocusBleModel
+  @ObservedObject var armModel: ArmBleModel
       
   @Environment(\.scenePhase) var scenePhase
   
@@ -74,17 +74,14 @@ struct FocusView: View {
         VStack{
           Text("XL Data").bold()
           Text(String(format: "Pitch: %+7.2fº %+5.2f",
-                      focusModel.pitch,
-                      focusModel.rhsXlData.x))
+                      toDeg(focusModel.theta),
+                      focusModel.xlAligned.x))
           Text(String(format: "Roll: %+7.2fº %+5.2f",
-                      focusModel.roll,
-                      focusModel.rhsXlData.y))
+                      toDeg(focusModel.phi),
+                      focusModel.xlAligned.y))
           Text(String(format: "Yaw: %+7.2fº %+5.2f",
-                      focusModel.yaw,
-                      focusModel.rhsXlData.z))
-//          Text(String(format: "Ay: %+5.2f", viewModel.xlData.y))
-//          Text(String(format: "Ax: %+5.2f", viewModel.xlData.x))
-//          Text(String(format: "Az: %+5.2f", viewModel.xlData.z))
+                      toDeg(focusModel.psi),
+                      focusModel.xlAligned.z))
           HStack{
             Button("Update"){
               softBump()
@@ -186,8 +183,8 @@ struct FocusView: View {
 }
 
 struct MainView_Previews: PreviewProvider {
-  static let previewFocusModel = FocusPeripheralModel()
-  static let previewArmModel = ArmPeripheralModel()
+  static let previewFocusModel = FocusBleModel()
+  static let previewArmModel = ArmBleModel()
   static var previews: some View {
     FocusView(focusModel: previewFocusModel, armModel: previewArmModel)
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))

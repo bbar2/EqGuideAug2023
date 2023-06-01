@@ -46,17 +46,18 @@ enum FocusMode:Int32 {
   case fine   = 2
 }
 
-class FocusPeripheralModel : MyPeripheralDelegate,
-                             ObservableObject  {
+class FocusBleModel : MyPeripheralDelegate,
+                      ObservableObject  {
   
   enum BleState {
     case disconnected
     case connecting
     case ready
   }
+  
   private var bleState = BleState.disconnected
-
-  var armAccelModel: ArmPeripheralModel?
+  
+  var armAccelModel: ArmBleModel?
   
   // Command structure sent to FocusMotor
   private struct RocketFocusMsg {
@@ -80,12 +81,12 @@ class FocusPeripheralModel : MyPeripheralDelegate,
   @Published var focusMode = FocusMode.medium
   @Published var connectionLock = false // true to prevent connection timeout
   @Published var timerValue: Int = 0
-  @Published var pitch: Float = 0.0
-  @Published var roll: Float = 0.0
-  @Published var yaw: Float = 0.0
-
-  var rawXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0) // is left handed
-  var rhsXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0) // mapped to RH Tele Frame
+  
+  private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // is left handed
+  @Published var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)
+  @Published var theta = Float(0.0)
+  @Published var phi = Float(0.0)
+  @Published var psi = Float(0.0)
   
   // Focus Service provides focus motor control and focus motor accelerations
   private let FOCUS_DEVICE_NAMED = "FocusMotor"
@@ -102,7 +103,7 @@ class FocusPeripheralModel : MyPeripheralDelegate,
   private let TIMER_DISCONNECT_SEC = 10
   private var connectionTimer = Timer()
   
-    
+  
   // This runs everytime an FocusAccel data struct arrives via BLE.  Nominally at 5Hz.
   // Called by setNotify Closure
   func focusCalcAngles() {
@@ -112,34 +113,31 @@ class FocusPeripheralModel : MyPeripheralDelegate,
     // Focus Accel is mounted with +Z up, +X to front and +Y to Right
     // Map Left Handed accelerometer to Right Handed Telescope Frame by:
     // flipping +Z to down
-    rhsXlData.x = rawXlData.x;
-    rhsXlData.y = rawXlData.y;
-    rhsXlData.z = -rawXlData.z;
+    let xlRhs = simd_float3(x: xlRaw.x, y: xlRaw.y, z: -xlRaw.z) // mapped to RH Tele Frame
     
     // normalize
-    let mag = sqrt(powf(rhsXlData.x, 2) + powf(rhsXlData.y, 2) + powf(rhsXlData.z, 2))
-    let focusAx = rhsXlData.x / mag
-    let focusAy = rhsXlData.y / mag
-    //let focusAz = rhsXlData.z / mag
-
-    // Measured offsets between arm and focus accelerometers
+    let xlNorm = simd_normalize(xlRhs)
+    
+    // TBD Measured offsets between arm and focus accelerometers
     let armToFocusThetaOffset = Float(toRad(0.0))
     let armToFocusPhiOffset = Float(toRad(0.0))
     
-    // Get Theta (pitch) and Phi (roll) from Arm Acceleromter
-    let focusTheta = (armAccelModel?.armTheta ?? 0.0) + armToFocusThetaOffset
-    let focusPhi = (armAccelModel?.armPhi ?? 0.0) + armToFocusPhiOffset
+    let yRot = yRot3x3(phiRad: 0.0)
+    let zRot = zRot3x3(psiRad: 0.0)
+    let xRot = xRot3x3(thetaRad: 0.0)
+    let alignTform = zRot * xRot * yRot // tbd for now
+    xlAligned = alignTform * xlNorm
     
-    // Based on Rz' * Rx' * Ry' for known theta
-    let CT = cos(focusTheta)
-    let ST = sin(focusTheta)
-    let SP = sin(focusPhi)
+    // Get theta (pitch) and Phi (roll) from Arm Acceleromter
+    theta = (armAccelModel?.theta ?? 0.0)
+    phi = (armAccelModel?.phi ?? 0.0)
+    
+    // Based on Rz' * Rx' * Ry' for known theta and phi
+    let CT = cos(theta)
+    let ST = sin(theta)
+    let SP = sin(phi)
     let CTSP = CT*SP
-    let focusPsi = acos( (CTSP*focusAy/ST - focusAx) / (CTSP*CTSP/ST + ST) )
-    
-    pitch = toDeg(focusTheta)
-    roll  = toDeg(focusPhi)
-    yaw   = toDeg(focusPsi)
+    psi = acos( (CTSP*xlAligned.y/ST - xlAligned.x) / (CTSP*CTSP/ST + ST) )
   }
   
   init() {
@@ -152,7 +150,7 @@ class FocusPeripheralModel : MyPeripheralDelegate,
   }
   
   // Called once by ViewController
-  func viewModelInit(linkToArmAccelModel: ArmPeripheralModel) {
+  func viewModelInit(linkToArmAccelModel: ArmBleModel) {
     armAccelModel = linkToArmAccelModel
     statusString = "Searching for Focus-Motor ..."
   }
@@ -297,8 +295,8 @@ class FocusPeripheralModel : MyPeripheralDelegate,
     // - This avoid approach 3's "escaping closure capture inout param" problem by:
     //   -- self reference to store result, vs passing inout param in closure
     focusMotor.setNotify(ACCEL_XYZ_UUID) { [weak self] (buffer:Data)->Void in
-      let numBytes = min(buffer.count, MemoryLayout.size(ofValue: self!.rawXlData))
-      withUnsafeMutableBytes(of: &self!.rawXlData) { pointer in
+      let numBytes = min(buffer.count, MemoryLayout.size(ofValue: self!.xlRaw))
+      withUnsafeMutableBytes(of: &self!.xlRaw) { pointer in
         _ = buffer.copyBytes(to:pointer, from:0..<numBytes)
       }
       self?.focusCalcAngles()

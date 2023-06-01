@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RaRateView: View {
-  @ObservedObject var mountModel: MountPeripheralModel
+  @ObservedObject var mountModel: MountBleModel
   
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -92,7 +92,7 @@ struct RaRateView: View {
 }
 
 struct RaRateView_Previews: PreviewProvider {
-  static let model = MountPeripheralModel()
+  static let model = MountBleModel()
   static let viewOptions = ViewOptions()
   
   static var previews: some View {

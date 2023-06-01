@@ -11,7 +11,7 @@
 
 import simd
 
-private let PI = Float(3.1415927)
+let PI = Float(3.1415927)
 
 func toDeg(_ rad:Float) -> Float {
   return rad * 180 / PI

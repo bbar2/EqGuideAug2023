@@ -7,9 +7,9 @@
 
 import SwiftUI
 struct BleStatusView: View {
-  @ObservedObject var mountModel: MountPeripheralModel
-  @ObservedObject var focusModel: FocusPeripheralModel
-  @ObservedObject var armModel: ArmPeripheralModel
+  @ObservedObject var mountModel: MountBleModel
+  @ObservedObject var focusModel: FocusBleModel
+  @ObservedObject var armModel: ArmBleModel
 
   @EnvironmentObject var viewOptions: ViewOptions
 
@@ -29,9 +29,9 @@ struct BleStatusView: View {
 }
 
 struct BleStatusView_Previews: PreviewProvider {
-  static let previewGuideModel = MountPeripheralModel()
-  static let previewFocusModel = FocusPeripheralModel()
-  static let previewArmModel = ArmPeripheralModel()
+  static let previewGuideModel = MountBleModel()
+  static let previewFocusModel = FocusBleModel()
+  static let previewArmModel = ArmBleModel()
   static let viewOptions = ViewOptions()
   static var previews: some View {
     BleStatusView(mountModel: previewGuideModel,

@@ -9,21 +9,18 @@ import SwiftUI
 import CoreBluetooth
 import simd
 
-class ArmPeripheralModel : MyPeripheralDelegate,
-                           ObservableObject {
+class ArmBleModel : MyPeripheralDelegate,
+                    ObservableObject {
   enum BleState {
     case disconnected
     case connecting
     case ready
   }
   private var bleState = BleState.disconnected
-
+  
   func bleConnected() -> Bool {
     return bleState == .ready
   }
-
-  var armTheta: Float = 0.0 // roll around X
-  var armPhi: Float = 0.0   // pitch around Y
   
   // Focus Service provides focus motor control and focus motor accelerations
   private let ARM_ACCEL_DEVICE_NAMED = "ArmAccel"
@@ -32,25 +29,26 @@ class ArmPeripheralModel : MyPeripheralDelegate,
   // Parameter Characteristic UUIDs
   private let ARM_ACCEL_XYZ_UUID = CBUUID(string: "828b0021-046a-42c7-9c16-00ca297e95eb")
   
-  private let armAccel: MyPeripheral
-
-  private var rawArmXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0) // is left handed
-  var rhsArmXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0)         // RHS and normalized
-  var alignedArmXlData = simd_float3(x: 0.0, y: 0.0, z: 0.0)       // axis aligned
+  private let armPeripheral: MyPeripheral
   
-  private var alignArmAccelTransform = matrix_identity_float3x3
+  private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // left handed
+  var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)     // axis aligned
+  var theta: Float = 0.0 // roll around X
+  var phi: Float = 0.0   // pitch around Y
 
+  private var alignArmAccelTransform = matrix_identity_float3x3
+  
   init() {
-    armAccel = MyPeripheral(deviceName: ARM_ACCEL_DEVICE_NAMED,
-                              serviceUUID: ARM_ACCEL_SERVICE_UUID,
-                              dataUUIDs: [ARM_ACCEL_XYZ_UUID])
-    armAccel.mpDelegate = self
-    armAccel.startBleConnection()
+    armPeripheral = MyPeripheral(deviceName: ARM_ACCEL_DEVICE_NAMED,
+                            serviceUUID: ARM_ACCEL_SERVICE_UUID,
+                            dataUUIDs: [ARM_ACCEL_XYZ_UUID])
+    armPeripheral.mpDelegate = self
+    armPeripheral.startBleConnection()
     
     // only need to do this once
     alignArmAccelTransform = buildCalTform()
   }
-
+  
   //MARK: MyPeripheralDelegate
   
   func onFound(){
@@ -62,7 +60,7 @@ class ArmPeripheralModel : MyPeripheralDelegate,
   }
   
   func onDisconnected(){
-//    armAccel.startBleConnection()
+    //    armAccel.startBleConnection()
     bleState = BleState.disconnected
   }
   
@@ -70,19 +68,19 @@ class ArmPeripheralModel : MyPeripheralDelegate,
     // Setup Notifications, to process writes from the FocusMotor peripheral
     
     // Common closure signature using Swift Data type.
-    armAccel.setNotify(ARM_ACCEL_XYZ_UUID) { [weak self] (buffer:Data)->Void in
-      let numBytes = min(buffer.count, MemoryLayout.size(ofValue: self!.rawArmXlData))
-      withUnsafeMutableBytes(of: &self!.rawArmXlData) { pointer in
+    armPeripheral.setNotify(ARM_ACCEL_XYZ_UUID) { [weak self] (buffer:Data)->Void in
+      let numBytes = min(buffer.count, MemoryLayout.size(ofValue: self!.xlRaw))
+      withUnsafeMutableBytes(of: &self!.xlRaw) { pointer in
         _ = buffer.copyBytes(to:pointer, from:0..<numBytes)
       }
       self?.calcArmAngles()
     }
-
+    
     bleState = BleState.ready
   }
-
+  
   //MARK: Called by delegate
-
+  
   // This runs everytime an ArmAccel data struct arrives via BLE.  Nominally at 5Hz.
   // Called by setNotify Closure
   func calcArmAngles() {
@@ -90,20 +88,16 @@ class ArmPeripheralModel : MyPeripheralDelegate,
     // Telescope Reference Frame is +Z down, +X forward (north), +Y right (east)
     // Arm Accel is mounted with +Z down, +X to back and +Y to Right
     // Map Left Handed accelerometer to Right Handed Telescope Frame
-    rhsArmXlData.x = -rawArmXlData.x;
-    rhsArmXlData.y = rawArmXlData.y;
-    rhsArmXlData.z = rawArmXlData.z;
-    
-    // Normalize unaligned accel data
-    let unAlignedArmXlData = simd_normalize(rhsArmXlData)
-
-    // align accelerometer with Telescope Frame - corrects mounting errors
-    alignedArmXlData = alignArmAccelTransform * unAlignedArmXlData
+    let rhsArmXl = simd_float3(-xlRaw.x, xlRaw.y, xlRaw.z)
         
+    // align accelerometer with Telescope Frame - corrects mounting errors
+    let rhsNormArmXl = simd_normalize(rhsArmXl)
+    xlAligned = alignArmAccelTransform * rhsNormArmXl
+    
     // From algebra of inverse transform mapping [0 0 -1] gravity to Telescope frame
     // based on Rx' * Ry' and fixed psi.
-    armTheta = asin(-alignedArmXlData.x)
-    armPhi = asin(alignedArmXlData.y / cos(armTheta))
+    theta = asin(-xlAligned.x)
+    phi = asin(xlAligned.y / cos(theta))
   }
   
   // Build calibration transform to aligns the arm accelerometer so it's X axis
@@ -150,11 +144,11 @@ class ArmPeripheralModel : MyPeripheralDelegate,
     let psi0 = Float(-3.2)
     let xCorrection = psi0  // rotate theta to zero psi
     let xRotation = xRot3x3(thetaRad: xCorrection)
-
+    
     // PreMultiplyt to Concatinate transforms
     let accelAlign = xRotation * yRotation * zRotation
-
+    
     return accelAlign
   }
-
+  
 }

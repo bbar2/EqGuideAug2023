@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import simd
 
 struct RawDataView: View {
   var gdb:GuideDataBlock
@@ -32,11 +33,11 @@ struct RawDataView: View {
       }
 
       HStack {
-        AccelView(label: "Ax: ", value: gdb.accel_x)
+        AccelView(label: "RawAx: ", value: gdb.accel_x)
         Spacer()
-        AccelView(label: "Ay: ", value: gdb.accel_y)
+        AccelView(label: "RawAy: ", value: gdb.accel_y)
         Spacer()
-        AccelView(label: "Az: ", value: gdb.accel_z)
+        AccelView(label: "RawAz: ", value: gdb.accel_z)
       }
 
       let totalSeconds = gdb.mountTimeMs / UInt32(1000)
@@ -45,13 +46,9 @@ struct RawDataView: View {
       let minute = minSecs / UInt32(60)
       let second = minSecs % UInt32(60)
       
-      let mag = sqrt(gdb.accel_x*gdb.accel_x + gdb.accel_z*gdb.accel_z)
-      let pitch = 180.0 * atan2(gdb.accel_x/mag, gdb.accel_z/mag) / 3.14
-      
       HStack {
         Text("Mount Time    h:\(hour)   m:\(minute)   s:\(second)")
         Spacer()
-        Text(String(format: "Pitch %5.2f", pitch))
       }
       
       Divider()

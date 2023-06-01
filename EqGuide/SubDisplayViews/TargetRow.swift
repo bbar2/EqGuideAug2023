@@ -29,7 +29,7 @@ struct TargetRow: View {
 }
 
 struct TargetRow_Previews: PreviewProvider {
-  static let guideModel = MountPeripheralModel()
+  static let guideModel = MountBleModel()
   @State static var viewOptions = ViewOptions()
 
   static var previews: some View {
