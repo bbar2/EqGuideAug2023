@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		350DF8AA2A335F1D00205FCB /* ManualView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350DF8A92A335F1D00205FCB /* ManualView.swift */; };
 		351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351204AE27F214F5006DF60B /* DoubleInputView.swift */; };
 		351A40D429FF0A7C003B9A0F /* FocusBleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D329FF0A7C003B9A0F /* FocusBleModel.swift */; };
 		351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A40D529FF0A9E003B9A0F /* OnShake.swift */; };
@@ -30,6 +31,8 @@
 		35A7F64928242638008EBC8C /* LoadJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64828242638008EBC8C /* LoadJson.swift */; };
 		35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A7F64C28246EBD008EBC8C /* TargetRow.swift */; };
 		35B92FEF280068C800342F7F /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B92FEE280068C800342F7F /* AppOptions.swift */; };
+		35C1E54A2A37A0F3003C68B0 /* TouchImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C1E5492A37A0F3003C68B0 /* TouchImage.swift */; };
+		35C1E54C2A37AB46003C68B0 /* ArrowPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C1E54B2A37AB46003C68B0 /* ArrowPadView.swift */; };
 		35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95427F09D1400BFE4CE /* GuideView.swift */; };
 		35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */; };
 		35DE202827F3D66600D96C68 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE202727F3D66600D96C68 /* BigButton.swift */; };
@@ -54,6 +57,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		350DF8A92A335F1D00205FCB /* ManualView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualView.swift; sourceTree = "<group>"; };
 		351204AE27F214F5006DF60B /* DoubleInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleInputView.swift; sourceTree = "<group>"; };
 		351A40D329FF0A7C003B9A0F /* FocusBleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusBleModel.swift; sourceTree = "<group>"; };
 		351A40D529FF0A9E003B9A0F /* OnShake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnShake.swift; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 		35A7F64828242638008EBC8C /* LoadJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadJson.swift; sourceTree = "<group>"; };
 		35A7F64C28246EBD008EBC8C /* TargetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRow.swift; sourceTree = "<group>"; };
 		35B92FEE280068C800342F7F /* AppOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOptions.swift; sourceTree = "<group>"; };
+		35C1E5492A37A0F3003C68B0 /* TouchImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchImage.swift; sourceTree = "<group>"; };
+		35C1E54B2A37AB46003C68B0 /* ArrowPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPadView.swift; sourceTree = "<group>"; };
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
 		35DE202727F3D66600D96C68 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -164,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
+				350DF8A92A335F1D00205FCB /* ManualView.swift */,
 				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
@@ -203,6 +210,7 @@
 				35E3C8BB28E8CA4E000E25B5 /* MountChangeView.swift */,
 				358067ED27EFA0B200CAF595 /* RawDataView.swift */,
 				35A7F64C28246EBD008EBC8C /* TargetRow.swift */,
+				35C1E54B2A37AB46003C68B0 /* ArrowPadView.swift */,
 			);
 			path = SubDisplayViews;
 			sourceTree = "<group>";
@@ -211,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				35DE202727F3D66600D96C68 /* BigButton.swift */,
+				35C1E5492A37A0F3003C68B0 /* TouchImage.swift */,
 				35EE3F9727F6958F007DA575 /* SignButton.swift */,
 			);
 			path = SingleControlViews;
@@ -337,6 +346,7 @@
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35E3D7C32A23F170002D1BFE /* BleXlData.swift in Sources */,
+				35C1E54C2A37AB46003C68B0 /* ArrowPadView.swift in Sources */,
 				35A7F64928242638008EBC8C /* LoadJson.swift in Sources */,
 				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
 				359E419629F5741600664AFC /* MyPeripheral.swift in Sources */,
@@ -358,6 +368,7 @@
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
 				356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */,
 				352168432814357900C76670 /* ViewOptions.swift in Sources */,
+				35C1E54A2A37A0F3003C68B0 /* TouchImage.swift in Sources */,
 				35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */,
 				35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */,
 				35F6244C283C04C200762730 /* RaRateView.swift in Sources */,
@@ -371,6 +382,7 @@
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
 				35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */,
+				350DF8AA2A335F1D00205FCB /* ManualView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,7 +440,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -483,7 +495,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

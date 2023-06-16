@@ -22,10 +22,11 @@ struct ContentView: View {
 
   enum Tab {
     case guide
+    case manual
     case rate
     case focus
     case hardware
-    case light
+//    case light
   }
   
   @State private var selection: Tab = .guide
@@ -37,6 +38,12 @@ struct ContentView: View {
           Label("Guide", systemImage: "arrow.2.squarepath")
         }
         .tag(Tab.guide)
+      
+      ManualView(mountModel: mountDeviceModel)
+        .tabItem {
+          Label("Manual", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+        }
+        .tag(Tab.manual)
       
       RaRateView(mountModel: mountDeviceModel)
         .tabItem {
@@ -58,12 +65,12 @@ struct ContentView: View {
         }
         .tag(Tab.hardware)
 
-      LightView()
-        .tabItem {
-          Label("Light", systemImage: "flashlight.off.fill")
-            .preferredColorScheme(.dark)
-        }
-        .tag(Tab.light)
+//      LightView()
+//        .tabItem {
+//          Label("Light", systemImage: "flashlight.off.fill")
+//            .preferredColorScheme(.dark)
+//        }
+//        .tag(Tab.light)
     }
     .statusBar(hidden: true)
     .accentColor(viewOptions.appRedColor)

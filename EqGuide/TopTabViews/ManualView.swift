@@ -13,6 +13,8 @@ struct ManualView: View {
   @ObservedObject var mountModel: MountBleModel
   @EnvironmentObject var viewOptions: ViewOptions
 
+  @State private var canTouchDown = true
+
   var body: some View {
     
     VStack {
@@ -35,52 +37,13 @@ struct ManualView: View {
       
       Spacer()
       
-      Picker(selection: $mountModel.arrowMode,
-             label: Text("???")) {
-        Text("Fast").tag(ArrowMode.fast)
-        Text("Medium").tag(ArrowMode.medium)
-        Text("Slow").tag(ArrowMode.slow)
-      } .pickerStyle(.segmented)
-        .onChange(of: mountModel.arrowMode) { _ in
-          softBump()
-        }
-      HStack {
-        Spacer()
-        BigButton(label:"+\nDEC") {
-          heavyBump()
-        }
-        Spacer()
-      }
-      HStack {
-        Spacer()
-        BigButton(label:"-\nRA") {
-          heavyBump()
-        }
-        Spacer()
-        BigButton(label:"+\nRA") {
-          heavyBump()
-        }
-        Spacer()
-      }
-      HStack {
-        Spacer()
-        BigButton(label:"-\nDEC") {
-          heavyBump()
-        }
-        Spacer()
-      }
+      ArrowPadView(mountModel: mountModel)
       
       Spacer()
       
-      HStack{
-        Toggle("RA Tracking", isOn: $mountModel.raTracking)
-          .toggleStyle(.automatic)
-        Spacer()
-        BigButton(label:"STOP") {
-          heavyBump()
-        }
-        Spacer()
-      }
+      Toggle("RA Tracking", isOn: $mountModel.raIsTracking).toggleStyle(.automatic)
+      
+      Spacer()
       
     } // end Main VStack
     

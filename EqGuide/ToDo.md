@@ -2,6 +2,13 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
+2023-06-08: Guide - execute SetTarget&Ref everytime target or ref change.  Remove button.
+2023-06-08: Guide - Put Swap, Mark, and GoTo on same line.
+2023-06-08: Manual - Create ArrowCluster view, and track/Stop view.
+2023-06-08: Guide - Put track/Stop view on bottom of page. 
+2023-06-08: Focus - Connect and Start BLE.  Only auto disconnect after first Mark. Leave a disconnect button.  Remove all XL data stuff from this page.
+2023-06-08: Hardware - Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
+2023-06-08: Decide on colors for Gray/Disabled, Yellow/NoBle, Red/Good.  When to use yellow vs gray.  Use the orange from LST app.
 2022-05-27: Hardware page showing raw accel, aligned accel, maybe unaligned accel for guide mount accel, arm accel and focus accel.  If space, add guide mount counts and time. Include enough info to support generating alignmnet angles, and accel calibrations.  
 2022-05-27: GUI reconfigure - No functional change to GuideMount
   New main Guide with: 
@@ -16,7 +23,6 @@ Do I get spel checking.  No.
     Pause Guiding Control.
     Swap and Set Target and Ref Control which transmits to mount
 2023-05-27: Targ mode not working as expected. Ref/Targ mode works well.
-2022-05-27: Functional change - Pause Tracking, leaves RA/DEC joystick control enabled
 2022-05-27: Add joystick capability to Guide App.  Include DMS step buttons? - If I do it, put it in a separate View.
 2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation. Not necessarily after adding joystick capability.  
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
@@ -32,6 +38,7 @@ Do I get spel checking.  No.
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.
+2023-06-11: Done - Pause RA Tracking, now leaves RA/DEC joystick control enabled
 2023-05-25: Done - Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
 2022-05-15: Done - After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
 2023-05-15: Done - After two BLE links, Integrate FocusControl as a separate Top level tab.

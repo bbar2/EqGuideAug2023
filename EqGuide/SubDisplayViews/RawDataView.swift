@@ -46,10 +46,7 @@ struct RawDataView: View {
       let minute = minSecs / UInt32(60)
       let second = minSecs % UInt32(60)
       
-      HStack {
-        Text("Mount Time    h:\(hour)   m:\(minute)   s:\(second)")
-        Spacer()
-      }
+      Text(String(format: "Mount Time  h:%d   m:%02d   s:%02d", hour, minute, second))
       
       Divider()
     }

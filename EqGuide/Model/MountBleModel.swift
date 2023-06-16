@@ -49,6 +49,11 @@ enum Knowledge {
   case marked
 }
 
+enum ArrowMode {
+  case fast
+  case slow
+}
+
 class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var statusString = "Not Started"
@@ -60,6 +65,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var refName = ""
   @Published var targName = ""
   
+  private var  readyForRefMark = true
+
   let catalog: [Target] = loadJson("TargetData.json")
   
   // These offsets, with current counts (in GuideDataBlock), determine angles.
@@ -81,13 +88,19 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var lstValid = false
   
   var xlAligned = simd_float3(x: 0, y: 0, z: 0)
-  var theta = Float(0.0)  // mount rotation around y
+  var theta = Float(0.0)  // Mount pitch toward Polaris, or rotation around y
   
   // ToDo: These fixed arm reference positions must advance with lst.
   // update in updateMountAngles()
+  // todo - or think of them in terms of arm and dsk, then go backward to RA and DEC.
   private var refArmVert = RaDec()
   private var refArmEast = RaDec()
   private var refArmWest = RaDec()
+  
+  @Published var raIsTracking = true
+  
+  // Manual Control stuff
+  @Published var arrowPadSpeed = ArrowMode.slow
   
   func bleConnected() -> Bool {
     return statusString == "Connected"
@@ -113,23 +126,12 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       serviceUUID: GUIDE_SERVICE_UUID,
       dataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
     
-    // Force self implement all delegate methods of BleWizardDelegate protocol
+    // Must implement all delegate methods of MyPeripheralDelegate protocol
     rocketMount.mpDelegate = self
   }
   
   func mountModelInit() {
     if (!initialized) {
-      // DON"T REALLY NEED startBleConnection() here.
-      // if this is first peripheralManager, then need to start CM, and only startBleConnection (really it's findPeripheral) once CM started.
-      // If subsequent peripheralManager, it's OK to start CM here.
-      // Need code approach that works for either case.
-      // Probably save the findPeripheral() call in an optional closure that's
-      // called by someones either myPeripheral's onCentralManagerStarted() method,
-      // or less likely, the peripherals delegate's onBleRunning method.  I like
-      // that less because then each Peripheral's code would have to duplicate
-      // that functionality, when I think it's OK to do it behind the curtain in
-      // MyPeripheral
-      // Once done, remove startBleConnection from local onBleRunning.
       rocketMount.startBleConnection()
       statusString = "Searching for RocketMount ..."
       initLocalMembers()
@@ -333,7 +335,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // Flipping +Z to down
     let rhsMountXl = simd_float3(guideDataBlock.accel_x,
                                  guideDataBlock.accel_y,
-                                -guideDataBlock.accel_z)
+                                 -guideDataBlock.accel_z)
     
     let rhsNormMountXl = simd_normalize(rhsMountXl)
     
@@ -342,7 +344,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let xCorrection = rhsNormMountXl.y  // rotate theta to zero psi
     let xRotation = xRot3x3(thetaRad: xCorrection)
     xlAligned = xRotation * rhsNormMountXl
-
+    
     // This is the only angle of with any meaming on the mount.
     theta = atan2(xlAligned.x, xlAligned.z) - PI // *BB* WHY PI (180) here
     
@@ -352,16 +354,19 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     }
     
     // Mark Reference on markRefNow transition away from zero
-    @State var readyForRefMark = true
-    if readyForRefMark && guideDataBlock.markReferenceNow {
+    if guideDataBlock.markReferenceNow {
       // Mark Reference on first GDB with markRefNow
-      if readyForRefMark && guideDataBlock.markReferenceNow {
+      if readyForRefMark {
         readyForRefMark = false
         updateOffsetsToReference()
         ackReference()
-      } else {
+        print("Set readyForRefMark false")
+      }
+    } else {
+      if (readyForRefMark == false) {
         // Reset on GDB w/o markReferenceNow
         readyForRefMark = true
+        print("Set readyForRefMark true")
       }
     }
     
@@ -405,7 +410,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   }
   
   // Offset Command - Relative offset.
-  // Mount moves offset amount from current position.
+  // Inform Mount of offset between Reference to Target.
+  // Does not actually move at this time.  Move can be initiated by hardware joystick.
   func guideCommandCurrentToTarget(){
     var armDeg = 0.0
     var diskDeg = 0.0
@@ -444,6 +450,54 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     guideCommand(resumeCommand)
   }
   
+  // Issue ios joystick commands
+  func guideCommandMove(ra: Int32, dec: Int32) {
+    let moveCommand = GuideCommandBlock(
+      command: GuideCommand.Move.rawValue,
+      armOffset: ra,
+      dskOffset: dec)
+    guideCommand(moveCommand)
+  }
+  
+  // This removes iOS joystick input.  Motion will decel to a stop.
+  func guideCommandMoveNull() {
+    let nullCommand = GuideCommandBlock(
+      command: GuideCommand.Move.rawValue,
+      armOffset: 0,
+      dskOffset: 0)
+    guideCommand(nullCommand)
+  }
+  
+  // This will stop a guide, hardware joystick, or ios joystick command.
+  func guideCommandStop() {
+    let stopCommand = GuideCommandBlock(command: GuideCommand.Stop.rawValue)
+    guideCommand(stopCommand)
+  }
+
+  // handle iOS UI MarkRef control.
+  func guideCommandMarkRefNow() {
+    updateOffsetsToReference()  // update model angles
+    // Advance mount arduino to next state
+    let markRefCommand = GuideCommandBlock(command: GuideCommand.MarkRefNow.rawValue)
+    guideCommand(markRefCommand)
+  }
+  
+  // Initiate a move by Offset between Ref and Target.
+  // Similar to SetOffset, except this iOS UI action initiates the move.
+  func guideCommandGoToTarget() {
+    var armDeg = 0.0
+    var diskDeg = 0.0
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+    
+    let goToTargetCommand = GuideCommandBlock(
+      command: GuideCommand.MoveToOffset.rawValue,
+      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
+      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep)
+    )
+
+    guideCommand(goToTargetCommand)
+  }
+  
   // Acknolwledge Reference Mark - offset's not used
   // Marking the reference, deserved a handshake.
   // Mount holds GuideDataBlock.markRefNowInt != 0 until it receives this CommandBlock.
@@ -452,19 +506,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       command: GuideCommand.AckReference.rawValue
     )
     guideCommand(ackCommand)
+    print("ackReference")
   }
-  
-  //MARK: === Begin MyPeripheral Delegate Methods ===
-  //  func onBleRunning(){
-  //    // DONT USE THIS - ONLY FIRST PERIPHERAL CAN USE.  PLAN TO REMOVE
-  ////    rocketMount.startBleConnection()
-  ////    statusString = "Connecting"
-  //  }
-  //
-  //  func onBleNotAvailable(){
-  //    statusString = "BLE Not Available"
-  //  }
-  
+    
   func onFound(){
     statusString = "RocketMount Found"
   }

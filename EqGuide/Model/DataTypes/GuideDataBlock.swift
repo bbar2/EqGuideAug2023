@@ -17,11 +17,7 @@ enum MountState:Int32 {
   case ReadyGuide
   case Guiding
   case GuideComplete
-  case Pointing
-  case PointComplete
   case Stopping
-  case ReadyShutter
-  case ShutterControl
   case StateError
 }
 

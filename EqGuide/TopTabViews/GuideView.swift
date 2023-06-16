@@ -173,10 +173,23 @@ struct GuideView: View {
             }
             
             Spacer()
+            HStack {
+              Spacer()
+              BigButton(label:"Mark\nRef") {
+                mountModel.guideCommandMarkRefNow()
+                heavyBump()
+              }
+              Spacer()
+              BigButton(label: "GoTo\nTarget") {
+                mountModel.guideCommandGoToTarget()
+                heavyBump()
+              }
+              Spacer()
+            }
+
+            Spacer()
           }
           
-          RawDataView(gdb: gdb)
-            .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         } // VStack in NavigationView
         .navigationBarTitle("") // needed for navigationBarHidden to work.
         .navigationBarHidden(true)
@@ -228,9 +241,9 @@ struct GuideView: View {
 
 struct GuideView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
-  static let guideModel = MountBleModel()
+  static let previewGuideModel = MountBleModel()
   static var previews: some View {
-    GuideView(mountModel: guideModel)
+    GuideView(mountModel: previewGuideModel)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)
