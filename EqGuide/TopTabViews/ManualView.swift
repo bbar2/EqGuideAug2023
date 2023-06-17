@@ -11,6 +11,8 @@ import SwiftUI
 
 struct ManualView: View {
   @ObservedObject var mountModel: MountBleModel
+  @ObservedObject var armModel: ArmBleModel
+  
   @EnvironmentObject var viewOptions: ViewOptions
 
   @State private var canTouchDown = true
@@ -26,10 +28,12 @@ struct ManualView: View {
       HStack {
         Spacer()
         BigButton(label:"HOME") {
+          mountModel.goHome()
           heavyBump()
         }
         Spacer()
         BigButton(label:"EAST\nPIER") {
+          mountModel.goEastPier()
           heavyBump()
         }
         Spacer()
@@ -41,21 +45,25 @@ struct ManualView: View {
       
       Spacer()
       
-      Toggle("RA Tracking", isOn: $mountModel.raIsTracking).toggleStyle(.automatic)
-      
-      Spacer()
-      
+      StopControlView(mountModel: mountModel)
+            
     } // end Main VStack
-    
+    .onAppear {
+      // MountBleModel needs access to ArmBleModel
+      mountModel.linkArmModel(armModel)
+    }
+
   }
+
 }
 
 struct ManualView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
   static let previewGuideModel = MountBleModel()
+  static let previewArmModel = ArmBleModel()
 
   static var previews: some View {
-    ManualView(mountModel: previewGuideModel)
+    ManualView(mountModel: previewGuideModel, armModel: previewArmModel)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

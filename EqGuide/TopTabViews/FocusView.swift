@@ -157,8 +157,8 @@ struct FocusView: View {
     .font(.title)
     
     .onAppear{
-      // pass in a reference to the ArmAccel
-      focusModel.viewModelInit(linkToArmAccelModel: armModel)
+      // FocusBleModel needs access to ArmBleModel
+      focusModel.linkArmModel(armModel)
       
       //Change picker font size
       UISegmentedControl.appearance().setTitleTextAttributes(

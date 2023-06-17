@@ -13,8 +13,7 @@ struct RaRateView: View {
   @EnvironmentObject var viewOptions: ViewOptions
   
   @State private var newOffsetArcSecPerMin = Double(0.0)
-  @State private var trackingIsPaused = false
-
+  
   enum TrackMode {
     case star
     case lunar
@@ -22,8 +21,7 @@ struct RaRateView: View {
   @State var trackMode: TrackMode = .star
   
   var body: some View {
-    ScrollView{
-      
+    VStack {
       VStack {
         Text("Tracking Mode").font(viewOptions.appHeaderFont)
         Picker(selection: $trackMode,
@@ -34,10 +32,10 @@ struct RaRateView: View {
             .tag(TrackMode.lunar)
         }
                .pickerStyle(.segmented)
-               .padding([.leading, .trailing], 60)
+        //               .padding([.leading, .trailing], 60)
         
         Image(systemName: trackMode == .star ? "star": "moon").font(.system(size:100))
-          .padding([.top], 30)
+        //          .padding([.top], 30)
           .fixedSize(horizontal: true, vertical: true)
         
         switch trackMode {
@@ -46,13 +44,16 @@ struct RaRateView: View {
           case .lunar:
             Text("Use -32 arcSec / min").font(viewOptions.labelFont)
         }
-
+        
         let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.guideDataBlock.raRateOffsetDegPerSec
         Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
+        //.padding([.bottom], 20)
       }
-      .padding([.bottom], 20)
-
+      
+      
+      Spacer()
+      
       VStack{
         Text("New Fine Tune Offset").font(viewOptions.appHeaderFont)
         Text("arcSec / min (+ccw)").font(viewOptions.labelFont)
@@ -60,36 +61,31 @@ struct RaRateView: View {
           Spacer()
           DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
                           prefix: "",
-                          numDigits: 0).padding([.top], -10)
+                          numDigits: 0)
+          //.padding([.top], -10)
         }
       }
-
+      
+      
+      Spacer()
+      
       BigButton(label: "Update\nFine Tune\n Offset", minWidth: 200) {
         let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
         mountModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
-      }.padding([.bottom], 50)
-
-      
-      if (trackingIsPaused) {
-        BigButton(label: "Resume Tracking", minWidth: 250) {
-          trackingIsPaused = false;
-          mountModel.guideCommandResumeTracking()
-        }
-      } else {
-        BigButton(label: "Pause Tracking", minWidth: 250) {
-          trackingIsPaused = true
-          mountModel.guideCommandPauseTracking()
-        }
       }
       
-    }
+      Spacer()
+      
+        StopControlView(mountModel: mountModel)
+      
+    } // Top Level VStack
     .foregroundColor(viewOptions.appRedColor)
     .onAppear{
       viewOptions.setupSegmentControl()
     }
-
-  }
-}
+    .ignoresSafeArea(.keyboard)
+  } // body
+} // RaRateView
 
 struct RaRateView_Previews: PreviewProvider {
   static let model = MountBleModel()

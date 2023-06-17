@@ -12,8 +12,6 @@ import Foundation
 // Must match Arduino project enum in NAppBleLogic.hpp
 enum MountState:Int32 {
   case PowerUp = 0
-  case ReadyOffset
-  case ReadyMark
   case ReadyGuide
   case Guiding
   case GuideComplete
@@ -29,16 +27,10 @@ struct GuideDataBlock {
   var accel_y: Float32 = 0.0
   var accel_z: Float32 = 0.0
   var mountState: Int32 = MountState.PowerUp.rawValue
-  var markRefNowInt: Int32 = 0
   var trackingPaused: Int32 = 0
   var mountTimeMs: UInt32 = 0
   var armCount: Int32 = 0
   var dskCount: Int32 = 0
-
-  // Conversions from BLE Communication driven types to iOS Application native types
-  var markReferenceNow: Bool {
-    return markRefNowInt != 0
-  }
   
   var armCountDeg: Double {
       return Double(armCount) * Double(armDegPerStep)

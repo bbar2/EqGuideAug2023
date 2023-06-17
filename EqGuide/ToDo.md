@@ -2,43 +2,46 @@ Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
-2023-06-08: Guide - execute SetTarget&Ref everytime target or ref change.  Remove button.
-2023-06-08: Guide - Put Swap, Mark, and GoTo on same line.
-2023-06-08: Manual - Create ArrowCluster view, and track/Stop view.
-2023-06-08: Guide - Put track/Stop view on bottom of page. 
+2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
+2023-06-17: App shutdown needs to issue a Move Neutral command.  Maybe invalidate timers too.
+2023-06-17: Hardware Red button, should also neutralize ios move commands. Directly, and probably through the data block sent to ios.
+2023-06-16: GoTo's should update current coordinates, if confidence is unknown, and advance confidence to estimated value.  MarkRef should change to highest value. 
+
 2023-06-08: Focus - Connect and Start BLE.  Only auto disconnect after first Mark. Leave a disconnect button.  Remove all XL data stuff from this page.
 2023-06-08: Hardware - Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
 2023-06-08: Decide on colors for Gray/Disabled, Yellow/NoBle, Red/Good.  When to use yellow vs gray.  Use the orange from LST app.
-2022-05-27: Hardware page showing raw accel, aligned accel, maybe unaligned accel for guide mount accel, arm accel and focus accel.  If space, add guide mount counts and time. Include enough info to support generating alignmnet angles, and accel calibrations.  
 2022-05-27: GUI reconfigure - No functional change to GuideMount
   New main Guide with: 
     BLE Link indication for all three BLE devices - for status display
-    Current RA/DEC (Yellow from angle, Red from Ref)
-    East/West Pier, 
-    LST, Lat, Long
-    Target RA/DEC - select and swap controls
-    Ref RA/DEC - select control
     East/West Pier indicator, 
     AZ/EL conversion
-    Pause Guiding Control.
-    Swap and Set Target and Ref Control which transmits to mount
+    Done - Current RA/DEC (Yellow from angle, Red from Ref)
+    Done - LST, Lat, Long
+    Done - Target RA/DEC - select and swap controls
+    Done - Ref RA/DEC - select control
+    Done - Pause Guiding Control.
+    Done - Swap and Set Target and Ref Control which transmits to mount
 2023-05-27: Targ mode not working as expected. Ref/Targ mode works well.
-2022-05-27: Add joystick capability to Guide App.  Include DMS step buttons? - If I do it, put it in a separate View.
-2022-05-21: Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation. Not necessarily after adding joystick capability.  
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
 2023-04-23: When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
 2022-10-12: Add a way to select the fixed angle refArmVert/East/West reference points. 
-2022-10-03: Power up should not go to ReadyGuide, after pre power cycle state was ReadyGuide.
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
 2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
-2022-04-09: Why do I get one MarkRefNow on EqGuide reset. 
 2022-10-10: Add time varying coordinates for Planets - or just enter them manually at show time. 
-
 2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.
+
+2023-06-17: Done - Guide and Manual - Put track/Stop view on bottom of page. 
+2023-06-17: Done - Reset should invalidate Home and EastPier timers.
+2023-06-16: Done - Guide - execute SetTarget&Ref everytime target or ref change.  Remove button.
+2023-06-16: Done - Guide - Rearrange Swap, Mark, and GoTo.
+2023-06-16: Done - Manual - Create ArrowCluster view, and track/Stop view.
+2022-06-16: Done - Consider allowing app to remotely issue the Mark and Guide commands, to enable remote operation. Not necessarily after adding joystick capability.  
+2022-06-15: Done - Add joystick capability to Guide App.  Include DMS step buttons? - If I do it, put it in a separate View.
 2023-06-11: Done - Pause RA Tracking, now leaves RA/DEC joystick control enabled
+2022-06-10: Hardware page showing raw accel, aligned accel, maybe unaligned accel for guide mount accel, arm accel and focus accel.  If space, add guide mount counts and time. Include enough info to support generating alignmnet angles, and accel calibrations.  
 2023-05-25: Done - Develop EqGuide Accelerometer to three angles conversions. El, RA, Dec.
 2022-05-15: Done - After two BLE links, Add FocusMotor transmit acceleromter data to EqGuide.
 2023-05-15: Done - After two BLE links, Integrate FocusControl as a separate Top level tab.

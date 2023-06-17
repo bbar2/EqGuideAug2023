@@ -147,12 +147,12 @@ class FocusBleModel : MyPeripheralDelegate,
     uponBleReadyAction = nil
     focusMotor.mpDelegate = self
     connectBle()
+    statusString = "Searching for Focus-Motor ..."
   }
   
-  // Called once by ViewController
-  func viewModelInit(linkToArmAccelModel: ArmBleModel) {
-    armAccelModel = linkToArmAccelModel
-    statusString = "Searching for Focus-Motor ..."
+  // Provide access to ArmBleModel
+  func linkArmModel(_ armModel: ArmBleModel) {
+    armAccelModel = armModel
   }
   
   // used by Views for UI color control and pointing knowledge

@@ -22,7 +22,7 @@ struct GuideView: View {
     return(stateString)
   }
   
-  @State var startFromReference = true
+//  @State var startFromReference = true
   
   var body: some View {
     
@@ -76,14 +76,6 @@ struct GuideView: View {
           
           Divider()
           
-          Picker(selection: $startFromReference,
-                 label: Text("???")) {
-            Text("Ref/Targ").tag(true)
-            Text("Targ").tag(false)
-          }.pickerStyle(.segmented)
-           .padding([.leading, .trailing], 10)
-          
-          if startFromReference {
             NavigationLink {
               RaDecInputView(label: "Select Reference",
                              coord: $mountModel.refCoord,
@@ -117,35 +109,10 @@ struct GuideView: View {
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            MountChangeView(title: "Mount Movement:\nRef to Target",
-                            armMoveDeg: mountModel.anglesReferenceToTarget().ra,
-                            dskMoveDeg: mountModel.anglesReferenceToTarget().dec)
-            
-
-          } else {  // start from current
-            NavigationLink {
-              RaDecInputView(label: "Select Target",
-                             coord: $mountModel.targetCoord,
-                             name: $mountModel.targName,
-                             unitHmsDms: viewOptions.showDmsHms,
-                             catalog: mountModel.catalog)
-              
-            } label: {
-              let (targetArmDeg, targetDskDeg) = mountModel.mountAnglesForRaDec(mountModel.targetCoord)
-              RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
-                            pair: mountModel.targetCoord,
-                            showDmsHms: viewOptions.showDmsHms,
-                            armDeg: targetArmDeg,
-                            dskDeg: targetDskDeg)
-              .foregroundColor(viewOptions.appActionColor)
-            }
-            
             MountChangeView(title: "Mount Movement:\nCurrent to Target",
                             armMoveDeg: mountModel.anglesCurrentToTarget().ra,
                             dskMoveDeg: mountModel.anglesCurrentToTarget().dec)
 
-          }
-          
           Divider()
 
           // Big Button Area
@@ -158,36 +125,23 @@ struct GuideView: View {
                 mountModel.swapRefAndTarg()
               }
               Spacer()
-              if startFromReference {
-                BigButton(label:" Set Target  \n & Ref") {
-                  mountModel.guideCommandReferenceToTarget()
-                  heavyBump()
-                }
-              } else {
-                BigButton(label:" Set Target  ") {
-                  mountModel.guideCommandCurrentToTarget()
-                  heavyBump()
-                }
-              }
-              Spacer()
-            }
-            
-            Spacer()
-            HStack {
-              Spacer()
               BigButton(label:"Mark\nRef") {
                 mountModel.guideCommandMarkRefNow()
                 heavyBump()
               }
               Spacer()
-              BigButton(label: "GoTo\nTarget") {
+            }
+            
+            Spacer()
+
+            BigButton(label: " GoTo Target ") {
                 mountModel.guideCommandGoToTarget()
                 heavyBump()
-              }
-              Spacer()
             }
 
             Spacer()
+
+            StopControlView(mountModel: mountModel)
           }
           
         } // VStack in NavigationView

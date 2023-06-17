@@ -48,7 +48,8 @@ struct ArrowPadView: View {
         })
         TouchImage(systemName: "x.square",
                    touchAction: {
-          mountModel.guideCommandStop()
+          mountModel.guideCommandMoveNull()
+//          mountModel.guideCommandReset()
           softBump()
         },
                    releaseAction: {

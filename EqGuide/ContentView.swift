@@ -39,7 +39,7 @@ struct ContentView: View {
         }
         .tag(Tab.guide)
       
-      ManualView(mountModel: mountDeviceModel)
+      ManualView(mountModel: mountDeviceModel, armModel: armDeviceModel)
         .tabItem {
           Label("Manual", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
         }

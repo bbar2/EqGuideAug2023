@@ -10,6 +10,7 @@ import SwiftUI
 struct BigButton: View {
   var label:String
   var minWidth = 100
+  var textColor: Color?
   var action: ()->Void
   
   @EnvironmentObject var viewOptions: ViewOptions
@@ -25,7 +26,7 @@ struct BigButton: View {
     .frame(minHeight: 75)
     .frame(minWidth: CGFloat(minWidth))
     .background(viewOptions.thumbColor)
-    .foregroundColor(viewOptions.appActionColor)
+    .foregroundColor(textColor ?? viewOptions.appActionColor)
     .cornerRadius(20)
   }
 }

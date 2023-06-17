@@ -65,9 +65,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var refName = ""
   @Published var targName = ""
   
-  private var  readyForRefMark = true
-
   let catalog: [Target] = loadJson("TargetData.json")
+  
+  var armModelLink: ArmBleModel?
   
   // These offsets, with current counts (in GuideDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
@@ -97,10 +97,13 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   private var refArmEast = RaDec()
   private var refArmWest = RaDec()
   
-  @Published var raIsTracking = true
+  @Published private var raIsTracking = true
+  func isRaTracking() -> Bool {
+    return raIsTracking
+  }
   
   // Manual Control stuff
-  @Published var arrowPadSpeed = ArrowMode.slow
+  @Published var arrowPadSpeed = ArrowMode.fast
   
   func bleConnected() -> Bool {
     return statusString == "Connected"
@@ -118,6 +121,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   private var fpic = true
   private var lstOffset = 0.0
+  
+  private var autoControlTimer = Timer()
+  private var count: Int = 0;
   
   init() {
     
@@ -147,12 +153,123 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     targName = catalog[targIndex].name
     
   }
+
+  // ManualView.onAppear calls this to tie models together.
+  func linkArmModel(_ armModel: ArmBleModel) {
+    armModelLink = armModel
+  }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
   func initLocalMembers() {
     // Init local variables
   }
   
+  //MARK: === UI Control Actions ===
+  
+  func swapRefAndTarg() {
+    let temp = refCoord
+    refCoord = targetCoord
+    targetCoord = temp
+    let tempName = targName
+    targName = refName
+    refName = tempName
+  }
+  
+  func pauseTracking() {
+    guideCommandPauseTracking()
+  }
+  
+  func resumeTracking() {
+    guideCommandResumeTracking()
+  }
+  
+  func goHome(){
+    // Start a timer to drive the mount home
+    count = 500
+    
+    autoControlTimer = Timer.scheduledTimer(withTimeInterval: 0.2, // 5 Hz
+                                            repeats: true) { _ in
+      self.goHomeTimerHandler()
+    }
+  }
+
+  // Simulate Arrow presses, until Arm Y acceleration = 0.0.
+  // if Ay is possitive, go West; else go East
+  func goHomeTimerHandler() {
+    let ay = armModelLink?.xlAligned.y ?? 0.0
+    print("goHomeTimer \(count) \(ay)")
+
+    let slowThreshold = Float(0.1)
+    let stopThreshold = Float(0.005)
+    let west_fast = Int32(-2)
+    let west_slow = Int32(-1)
+    let east_fast = Int32(2)
+    let east_slow = Int32(1)
+    if (ay > slowThreshold) {
+      guideCommandMove(ra: west_fast, dec: 0)
+    } else if (ay < -slowThreshold) {
+      guideCommandMove(ra: east_fast, dec: 0)
+    }
+    else if (ay > stopThreshold) {
+      guideCommandMove(ra: west_slow, dec: 0)
+    } else if (ay < -stopThreshold) {
+      guideCommandMove(ra: east_slow, dec: 0)
+    } else {
+      guideCommandMoveNull()
+      autoControlTimer.invalidate()
+    }
+
+    count -= 1
+    if (count < 0) {
+      guideCommandMoveNull()
+      autoControlTimer.invalidate()
+    }
+  }
+  
+  func goEastPier() {
+    count = 500
+    
+    autoControlTimer = Timer.scheduledTimer(withTimeInterval: 0.2, // 5 Hz
+                                            repeats: true) { _ in
+      self.goEastPierTimerHandler()
+    }
+  }
+
+  // Simulate Arrow presses, until Arm Y acceleration = 0.0.
+  // if Ay is possitive, go West; else go East
+  func goEastPierTimerHandler() {
+    let az = armModelLink?.xlAligned.z ?? 0.0
+    let ay = armModelLink?.xlAligned.y ?? 0.0
+    print("goHomeTimer \(count) \(az)")
+
+    let slowThreshold = Float(0.1)
+    let stopThreshold = Float(0.005)
+    let west_fast = Int32(-2)
+    let west_slow = Int32(-1)
+    let east_fast = Int32(2)
+    let east_slow = Int32(1)
+    if (ay < Float(0.0) || az > slowThreshold) {
+      guideCommandMove(ra: east_fast, dec: 0)
+    } else if (az < -slowThreshold) {
+      guideCommandMove(ra: west_fast, dec: 0)
+    }
+    else if (az > stopThreshold) {
+      guideCommandMove(ra: east_slow, dec: 0)
+    } else if (az < -stopThreshold) {
+      guideCommandMove(ra: west_slow, dec: 0)
+    } else {
+      guideCommandMoveNull()
+      autoControlTimer.invalidate()
+    }
+
+    count -= 1
+    if (count < 0) {
+      guideCommandMoveNull()
+      autoControlTimer.invalidate()
+    }
+  }
+
+
   //MARK: === Angle Processing ===
   
   func updateLstDeg() {
@@ -183,15 +300,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       lstValid = false
       lstDeg = 0.0
     }
-  }
-  
-  func swapRefAndTarg() {
-    let temp = refCoord
-    refCoord = targetCoord
-    targetCoord = temp
-    let tempName = targName
-    targName = refName
-    refName = tempName
   }
   
   // Update all time dependent model calcs at once
@@ -319,8 +427,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
   }  // end updateOffsetsToReference
   
+  //MARK: === Read Data From Mount ==========
   
-  /// ========== Read Data From Mount ==========
   // This runs (via Notify Handler) every time EqMount sends a new GuideDataBlock (~10Hz)
   func processDataFromMount(_ guideData: GuideDataBlock) {
     
@@ -328,6 +436,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     guideDataBlock = guideData
     readCount += 1
     updateMountAngles()
+    
+    // trackingPaused is non zero when tracking.
+    raIsTracking = guideDataBlock.trackingPaused == 0 ? true : false;
     
     // Telescope Reference Frame is +Z down, +X forward (north), +Y right (east)
     // Mount Accel is mounted with +Z up, +X forward and +Y to Right
@@ -352,24 +463,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     if guideDataBlock.mountState == MountState.PowerUp.rawValue {
       pointingKnowledge = .none
     }
-    
-    // Mark Reference on markRefNow transition away from zero
-    if guideDataBlock.markReferenceNow {
-      // Mark Reference on first GDB with markRefNow
-      if readyForRefMark {
-        readyForRefMark = false
-        updateOffsetsToReference()
-        ackReference()
-        print("Set readyForRefMark false")
-      }
-    } else {
-      if (readyForRefMark == false) {
-        // Reset on GDB w/o markReferenceNow
-        readyForRefMark = true
-        print("Set readyForRefMark true")
-      }
-    }
-    
+        
     // Add code here for next specific GDB command
     if lookForRateChange {
       let oneArcSecPerMin = Float32(1.0 / (3600.0 * 60.0))
@@ -380,7 +474,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     }
   }
   
-  //MARK: === Command Processing ===
+  //MARK: === Issue Commands to Mount ===
   
   /// ========== Transmit Commands to Mount ==========
   /// Build and transmit GuideCommandBlocks
@@ -391,41 +485,37 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     rocketMount.bleWrite(GUIDE_COMMAND_UUID, writeData: writeBlock)
   }
   
-  // Target Command - Offset from a reference.
-  // Mount will Mark Reference then move to offset.
-  func guideCommandReferenceToTarget(){
-    var armDeg = 0.0
-    var diskDeg = 0.0
-    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
-    
-    //    let armDeg = armDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
-    //    let diskDeg = diskDeltaDeg(fromCoord: refCoord, toCoord: targetCoord)
-    let refToTargetCommand = GuideCommandBlock(
-      command: GuideCommand.SetTarget.rawValue,
-      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep),
-      raRateOffsetDps: Float32(0.0)
-    )
-    guideCommand(refToTargetCommand)
-  }
-  
-  // Offset Command - Relative offset.
-  // Inform Mount of offset between Reference to Target.
-  // Does not actually move at this time.  Move can be initiated by hardware joystick.
-  func guideCommandCurrentToTarget(){
-    var armDeg = 0.0
-    var diskDeg = 0.0
-    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
-    
-    //    let armDeg = armDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
-    //    let diskDeg = diskDeltaDeg(fromCoord: currentPosition, toCoord: targetCoord)
-    let currentToTargetCommand = GuideCommandBlock(
-      command: GuideCommand.SetOffset.rawValue,
-      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
-      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep)
-    )
-    guideCommand(currentToTargetCommand)
-  }
+//  // Target Command - Offset from a reference.
+//  // Mount will Mark Reference then move to offset.
+//  func guideCommandReferenceToTarget(){
+//    var armDeg = 0.0
+//    var diskDeg = 0.0
+//    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+//
+//    let refToTargetCommand = GuideCommandBlock(
+//      command: GuideCommand.SetTarget.rawValue,
+//      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
+//      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep),
+//      raRateOffsetDps: Float32(0.0)
+//    )
+//    guideCommand(refToTargetCommand)
+//  }
+//
+//  // Offset Command - Relative offset.
+//  // Inform Mount of offset between Reference to Target.
+//  // Does not actually move at this time.  Move can be initiated by hardware joystick.
+//  func guideCommandCurrentToTarget(){
+//    var armDeg = 0.0
+//    var diskDeg = 0.0
+//    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+//
+//    let currentToTargetCommand = GuideCommandBlock(
+//      command: GuideCommand.SetOffset.rawValue,
+//      armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
+//      dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep)
+//    )
+//    guideCommand(currentToTargetCommand)
+//  }
   
   // Send track rate adjustment to Mount.
   func guideCommandSetRaRateOffsetDps(newDps: Double) {
@@ -469,28 +559,30 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   }
   
   // This will stop a guide, hardware joystick, or ios joystick command.
-  func guideCommandStop() {
-    let stopCommand = GuideCommandBlock(command: GuideCommand.Stop.rawValue)
-    guideCommand(stopCommand)
+  // Motion decels to a stop, then Mount goes thru PowerUp state.
+  func guideCommandReset() {
+    // stop any local timer driven movements
+    autoControlTimer.invalidate()
+    
+    // Tell the mount to Reset
+    let resetCommand = GuideCommandBlock(command: GuideCommand.Reset.rawValue)
+    guideCommand(resetCommand)
   }
 
   // handle iOS UI MarkRef control.
   func guideCommandMarkRefNow() {
     updateOffsetsToReference()  // update model angles
-    // Advance mount arduino to next state
-    let markRefCommand = GuideCommandBlock(command: GuideCommand.MarkRefNow.rawValue)
-    guideCommand(markRefCommand)
   }
   
-  // Initiate a move by Offset between Ref and Target.
-  // Similar to SetOffset, except this iOS UI action initiates the move.
+  // Initiate a move by Offset between Current and Target.
   func guideCommandGoToTarget() {
     var armDeg = 0.0
     var diskDeg = 0.0
-    (armDeg, diskDeg) = mountAngleChange(fromCoord: refCoord, toCoord: targetCoord)
+    (armDeg, diskDeg) = mountAngleChange(fromCoord: currentPosition,
+                                         toCoord: targetCoord)
     
     let goToTargetCommand = GuideCommandBlock(
-      command: GuideCommand.MoveToOffset.rawValue,
+      command: GuideCommand.GuideToOffset.rawValue,
       armOffset: Int32( Float32(armDeg) / guideDataBlock.armDegPerStep),
       dskOffset: Int32( Float32(diskDeg) / guideDataBlock.dskDegPerStep)
     )
@@ -498,17 +590,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     guideCommand(goToTargetCommand)
   }
   
-  // Acknolwledge Reference Mark - offset's not used
-  // Marking the reference, deserved a handshake.
-  // Mount holds GuideDataBlock.markRefNowInt != 0 until it receives this CommandBlock.
-  func ackReference() {
-    let ackCommand = GuideCommandBlock(
-      command: GuideCommand.AckReference.rawValue
-    )
-    guideCommand(ackCommand)
-    print("ackReference")
-  }
-    
+  //MARK: === MyPeripheral Delegate Methods ===
+
   func onFound(){
     statusString = "RocketMount Found"
   }
