@@ -21,7 +21,7 @@ struct StopControlView: View {
         heavyBump()
       }
       Spacer()
-      if (mountModel.isRaTracking()) {
+      if (mountModel.raIsTracking) {
         BigButton(label: "Pause\nTracking", minWidth: 150) {
           mountModel.pauseTracking()
           softBump()

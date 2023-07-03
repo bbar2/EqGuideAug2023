@@ -20,8 +20,8 @@ enum MountState:Int32 {
 }
 
 struct GuideDataBlock {
-  var armDegPerStep: Float32 = 1.0    // really, Degrees per MicroStep
-  var dskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
+  var pierDegPerStep: Float32 = 1.0    // really, Degrees per MicroStep
+  var diskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
   var raRateOffsetDegPerSec: Float32 = 0.0
   var accel_x: Float32 = 0.0
   var accel_y: Float32 = 0.0
@@ -29,15 +29,15 @@ struct GuideDataBlock {
   var mountState: Int32 = MountState.PowerUp.rawValue
   var trackingPaused: Int32 = 0
   var mountTimeMs: UInt32 = 0
-  var armCount: Int32 = 0
-  var dskCount: Int32 = 0
+  var pierCount: Int32 = 0
+  var diskCount: Int32 = 0
   
-  var armCountDeg: Double {
-      return Double(armCount) * Double(armDegPerStep)
+  var pierCountDeg: Double {
+      return Double(pierCount) * Double(pierDegPerStep)
   }
   
-  var dskCountDeg: Double {
-    return Double(dskCount) * Double(dskDegPerStep)
+  var diskCountDeg: Double {
+    return Double(diskCount) * Double(diskDegPerStep)
   }
   
 }

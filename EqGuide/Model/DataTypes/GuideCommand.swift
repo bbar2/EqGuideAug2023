@@ -16,15 +16,15 @@ enum GuideCommand:Int32 {
   case ResumeTracking = 4 // Resume RA tracking
   case Move = 5           // Offsets hold move speed. +-2 fast.  +-1 slow. 0 Neutral.
   case Reset = 6           // Offsets get 0 to neutalize movement.
-  case GoHome = 7         // Move till XlArmY = 0.  Direciton controlled by XlArmY
-  case GoEastPier = 8    // Move till XlAmrZ = 0.  Direction controlled by XlArmY
+  case GoHome = 7         // Move till XlPierY = 0.  Direciton controlled by XlPierY
+  case GoEastPier = 8    // Move till XlAmrZ = 0.  Direction controlled by XlPierY
   case NumCommands = 9
 }
 
 struct GuideCommandBlock {
   var command: Int32
-  var armOffset = Int32(0)       // Counts, or micro steps
-  var dskOffset = Int32(0)       // Counts, or micro steps
+  var pierOffset = Int32(0)      // Counts, or micro steps
+  var diskOffset = Int32(0)       // Counts, or micro steps
   var raRateOffsetDps = Float32(0)   // Offset in Deg Per Sec -- UI is ArcSec per Min
 }
 

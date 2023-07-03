@@ -11,12 +11,11 @@ import SwiftUI
 
 struct ManualView: View {
   @ObservedObject var mountModel: MountBleModel
-  @ObservedObject var armModel: ArmBleModel
   
   @EnvironmentObject var viewOptions: ViewOptions
-
+  
   @State private var canTouchDown = true
-
+  
   var body: some View {
     
     VStack {
@@ -26,17 +25,34 @@ struct ManualView: View {
       Spacer()
       
       HStack {
-        Spacer()
-        BigButton(label:"HOME") {
-          mountModel.goHome()
-          heavyBump()
+        if ((mountModel.pierModelLink?.bleConnected()) != nil)
+        {
+          Spacer()
+          BigButton(label:"HOME") {
+            mountModel.goHome()
+            heavyBump()
+          }
+          Spacer()
+          BigButton(label:"EAST\nPIER") {
+            mountModel.goEastPier()
+            heavyBump()
+          }
+          Spacer()
         }
-        Spacer()
-        BigButton(label:"EAST\nPIER") {
-          mountModel.goEastPier()
-          heavyBump()
+        else
+        {
+          Spacer()
+          BigButton(label:"HOME",
+                    textColor: viewOptions.appDisabledColor) {
+            softBump()
+          }
+          Spacer()
+          BigButton(label:"EAST\nPIER",
+                    textColor: viewOptions.appDisabledColor) {
+            softBump()
+          }
+          Spacer()
         }
-        Spacer()
       }
       
       Spacer()
@@ -46,24 +62,19 @@ struct ManualView: View {
       Spacer()
       
       StopControlView(mountModel: mountModel)
-            
+      
     } // end Main VStack
-    .onAppear {
-      // MountBleModel needs access to ArmBleModel
-      mountModel.linkArmModel(armModel)
-    }
-
+    
   }
-
+  
 }
 
 struct ManualView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
   static let previewGuideModel = MountBleModel()
-  static let previewArmModel = ArmBleModel()
-
+  
   static var previews: some View {
-    ManualView(mountModel: previewGuideModel, armModel: previewArmModel)
+    ManualView(mountModel: previewGuideModel)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

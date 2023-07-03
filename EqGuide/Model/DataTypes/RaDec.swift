@@ -7,7 +7,7 @@
 //  ra = Right Ascension.  0 to 360 degrees when specified in decimal degrees.
 //  dec = Declination.  -180 to 180 degrees when specified in decimal degrees.
 //    Although typical usage is -90 <= dec <= 90
-//    Can use |dec| > 90 if ra and LST, cause armAngle to exceed its limit of about +-95
+//    Can use |dec| > 90 if ra and LST, cause pierAngle to exceed its limit of about +-95
 //    Tranform (RA, DEC) to (RA+180º, 180º-DEC) or (RA+12H, 180º-DEC)
 //
 
@@ -42,7 +42,7 @@ struct RaDec {
     }
   }
   
-//  // Removed - do this to arm and disk angles, not RA and DEC
+//  // Removed - do this to pier and disk angles, not RA and DEC
 //  // Use inverted RA/DEC with DEC > 90, if RA is unachievable by mount
 //  mutating func raInvert() {
 //    _ra = _ra + 180.0

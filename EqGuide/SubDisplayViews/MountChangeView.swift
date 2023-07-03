@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MountChangeView: View {
   var title: String
-  var armMoveDeg: Double = 0.0
-  var dskMoveDeg: Double = 0.0
+  var pierMoveDeg: Double = 0.0
+  var diskMoveDeg: Double = 0.0
   
   var gapPad = 30.0
 
@@ -30,14 +30,14 @@ struct MountChangeView: View {
         Spacer()
 
         VStack (alignment: .leading){
-          Text("Δ Arm")
-          Text("Δ Dsk")
+          Text("Δ Pier")
+          Text("Δ Disk")
         }
         .font(viewOptions.smallValueFont)
 
         VStack (alignment: .trailing){
-          Text(String(format: "%+7.2fº", armMoveDeg))
-          Text(String(format: "%+7.2fº", dskMoveDeg))
+          Text(String(format: "%+7.2fº", pierMoveDeg))
+          Text(String(format: "%+7.2fº", diskMoveDeg))
         }
         .font(viewOptions.smallValueFont)
         .padding([.trailing], gapPad/2)
@@ -49,10 +49,10 @@ struct MountChangeView: View {
 
 struct MountChangeView_Previews: PreviewProvider {
   static let viewOptions = ViewOptions()
-  static let armMoveDeg = -123.456
-  static let dskMoveDeg = 7.89
+  static let pierMoveDeg = -123.456
+  static let diskMoveDeg = 7.89
   static var previews: some View {
-    MountChangeView(title: "Title", armMoveDeg: armMoveDeg, dskMoveDeg: dskMoveDeg)
+    MountChangeView(title: "Title", pierMoveDeg: pierMoveDeg, diskMoveDeg: diskMoveDeg)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
   }

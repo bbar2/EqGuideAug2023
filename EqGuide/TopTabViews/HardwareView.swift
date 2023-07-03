@@ -11,8 +11,6 @@ import simd
 
 struct HardwareView: View {
   @ObservedObject var mountModel: MountBleModel
-  @ObservedObject var focusModel: FocusBleModel
-  @ObservedObject var armModel: ArmBleModel
     
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -23,57 +21,100 @@ struct HardwareView: View {
     }
   }
   
+  func pointingKnowledgeColor() -> Color {
+    switch (mountModel.pointingKnowledge)
+    {
+      case .none:
+        return viewOptions.confNoneColor
+      case .estimated:
+        return viewOptions.confEstColor
+      case .marked:
+        return viewOptions.appRedColor
+    }
+  }
+  
   var body: some View {
-    let floatFormat = "%.2f"
+//    let floatFormat = "%.2f"
     VStack {
-      Text("Hardware View").bold().font(.title)
+
+      VStack {
+        Text("Hardware View").font(.title)
+        
+        HStack {
+          BleStatusView(mountModel: mountModel)
+          Spacer()
+        }
+      }
+      
+      RaDecPairView(
+        pairTitle: "Current\nPosition",
+        pair: mountModel.currentPosition,
+        showDmsHms: viewOptions.showDmsHms,
+        pierDeg: mountModel.pierCurrentDeg,
+        diskDeg: mountModel.diskCurrentDeg
+      )
+      .foregroundColor(pointingKnowledgeColor())
+      .padding([.bottom], 1)
+      
       Spacer()
-      BleStatusView(mountModel: mountModel, focusModel: focusModel, armModel: armModel)
+      HStack {
+        Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
+          .foregroundColor(lstValidColor())
+        Spacer()
+        let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
+        Text("Lat:" + latString).foregroundColor(lstValidColor())
+        Spacer()
+        let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
+        Text("Lng:" + longString).foregroundColor(lstValidColor())
+      }.font(viewOptions.smallValueFont)
+      
+      Divider()
+
       Spacer()
       Grid {
         GridRow {
           Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
           Text("Mount")
-          Text("Arm")
+          Text("Pier")
           Text("Focus")
         }
         Divider().gridCellUnsizedAxes([ .vertical])
         GridRow {
           Text("Ax:")
           cell(cellValue: mountModel.xlAligned.x)
-          cell(cellValue: armModel.xlAligned.x)
-          cell(cellValue: focusModel.xlAligned.x)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.x ?? 0.0)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.x ?? 0.0)
         }
         GridRow {
           Text("Ay:")
           cell(cellValue: mountModel.xlAligned.y)
-          cell(cellValue: armModel.xlAligned.y)
-          cell(cellValue: focusModel.xlAligned.y)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.y ?? 0.0)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.y ?? 0.0)
         }
         GridRow {
           Text("Az:")
           cell(cellValue: mountModel.xlAligned.z)
-          cell(cellValue: armModel.xlAligned.z)
-          cell(cellValue: focusModel.xlAligned.z)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.z ?? 0.0)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.z ?? 0.0)
         }
         Divider().gridCellUnsizedAxes([ .vertical])
         GridRow {
           Text("theta")
           cell(cellValue: toDeg(mountModel.theta))
-          cell(cellValue: toDeg(armModel.theta))
-          cell(cellValue: toDeg(focusModel.theta))
+          cell(cellValue: toDeg(mountModel.pierModelLink?.theta ?? 0.0))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.theta ?? 0.0))
         }
         GridRow {
           Text("phi")
           Text("n/a")
-          cell(cellValue: toDeg(armModel.phi))
-          cell(cellValue: toDeg(focusModel.phi))
+          cell(cellValue: toDeg(mountModel.pierModelLink?.phi ?? 0.0))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.phi ?? 0.0))
         }
         GridRow {
           Text("psi")
           Text("n/a")
           Text("n/a")
-          cell(cellValue: toDeg(focusModel.psi))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.psi ?? 0.0))
         }
       }
       Spacer()
@@ -85,14 +126,15 @@ struct HardwareView: View {
     }.font(viewOptions.bigValueFont)
   }
   
+  func lstValidColor() -> Color {
+    return mountModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
+  }
+
+  
   struct LightView_Previews: PreviewProvider {
     static let previewGuideModel = MountBleModel()
-    static let previewFocusModel = FocusBleModel()
-    static let previewArmModel = ArmBleModel()
     static var previews: some View {
-      HardwareView(mountModel: previewGuideModel,
-                   focusModel: previewFocusModel,
-                   armModel: previewArmModel)
+      HardwareView(mountModel: previewGuideModel)
     }
   }
   

@@ -11,6 +11,7 @@ struct TouchImage: View {
   var systemName:String
   var touchAction: ()->Void
   var releaseAction: ()->Void
+  var enable: Bool = true
 
   var minWidth = 100
 
@@ -26,17 +27,21 @@ struct TouchImage: View {
     .gesture(
       DragGesture(minimumDistance: 0)
         .onChanged { value in
-          if canTouchDown {
-            touchAction()
-            canTouchDown = false
+          if enable {
+            if canTouchDown {
+              touchAction()
+              canTouchDown = false
+            }
           }
         }
         .onEnded { value in
-          releaseAction()
-          canTouchDown = true
+          if enable {
+            releaseAction()
+            canTouchDown = true
+          }
         }
     )
-    .foregroundColor(canTouchDown == false ? viewOptions.appRedColor : viewOptions.appActionColor)
+    .foregroundColor(enable ? (canTouchDown == false ? viewOptions.appRedColor : viewOptions.appActionColor) : viewOptions.appDisabledColor)
   }
 }
 

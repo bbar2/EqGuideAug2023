@@ -57,7 +57,7 @@ class FocusBleModel : MyPeripheralDelegate,
   
   private var bleState = BleState.disconnected
   
-  var armAccelModel: ArmBleModel?
+  var pierAccelModel: PierBleModel?
   
   // Command structure sent to FocusMotor
   private struct RocketFocusMsg {
@@ -109,18 +109,17 @@ class FocusBleModel : MyPeripheralDelegate,
   func focusCalcAngles() {
     
     // Focus motor is mounted to telescope, so same rotation ref frame as telescope
-    // Telescope Reference Frame is +Z down, +X forward (north), +Y right (east)
-    // Focus Accel is mounted with +Z up, +X to front and +Y to Right
-    // Map Left Handed accelerometer to Right Handed Telescope Frame by:
-    // flipping +Z to down
-    let xlRhs = simd_float3(x: xlRaw.x, y: xlRaw.y, z: -xlRaw.z) // mapped to RH Tele Frame
+    // Telescope Reference Frame: +X forward (north), +Y left (west), +Z up
+    // Focus Accel is mounted:    +X back,            +Y right,       +Z down
+    // Map Left Handed accelerometer to Right Handed Telescope Frame
+    let xlRhs = simd_float3(x: -xlRaw.x, y: -xlRaw.y, z: -xlRaw.z)
     
     // normalize
     let xlNorm = simd_normalize(xlRhs)
     
-    // TBD Measured offsets between arm and focus accelerometers
-    let armToFocusThetaOffset = Float(toRad(0.0))
-    let armToFocusPhiOffset = Float(toRad(0.0))
+    // TBD Measured offsets between pier and focus accelerometers
+    //let pierToFocusThetaOffset = Float(toRad(0.0))
+    //let pierToFocusPhiOffset = Float(toRad(0.0))
     
     let yRot = yRot3x3(phiRad: 0.0)
     let zRot = zRot3x3(psiRad: 0.0)
@@ -128,9 +127,9 @@ class FocusBleModel : MyPeripheralDelegate,
     let alignTform = zRot * xRot * yRot // tbd for now
     xlAligned = alignTform * xlNorm
     
-    // Get theta (pitch) and Phi (roll) from Arm Acceleromter
-    theta = (armAccelModel?.theta ?? 0.0)
-    phi = (armAccelModel?.phi ?? 0.0)
+    // Get theta (pitch) and Phi (roll) from Pier Acceleromter
+    theta = (pierAccelModel?.theta ?? 0.0)
+    phi = (pierAccelModel?.phi ?? 0.0)
     
     // Based on Rz' * Rx' * Ry' for known theta and phi
     let CT = cos(theta)
@@ -150,9 +149,9 @@ class FocusBleModel : MyPeripheralDelegate,
     statusString = "Searching for Focus-Motor ..."
   }
   
-  // Provide access to ArmBleModel
-  func linkArmModel(_ armModel: ArmBleModel) {
-    armAccelModel = armModel
+  // Provide access to PierBleModel
+  func linkPierModel(_ pierModel: PierBleModel) {
+    pierAccelModel = pierModel
   }
   
   // used by Views for UI color control and pointing knowledge

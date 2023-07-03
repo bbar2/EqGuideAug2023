@@ -11,8 +11,8 @@ struct RaDecPairView: View {
   var pairTitle: String
   var pair: RaDec
   var showDmsHms: Bool = false
-  var armDeg: Double = 0.0
-  var dskDeg: Double = 0.0
+  var pierDeg: Double = 0.0
+  var diskDeg: Double = 0.0
   
   var gapPad = 30.0
 
@@ -43,13 +43,13 @@ struct RaDecPairView: View {
 
         Spacer()
         VStack (alignment: .trailing) {
-          Text("Arm")
-          Text("Dsk")
+          Text("Pier")
+          Text("Disk")
         }
         .font(viewOptions.smallValueFont)
         VStack (alignment: .trailing) {
-          Text(String(format: "%+7.2fº", armDeg))
-          Text(String(format: "%+7.2fº", dskDeg))
+          Text(String(format: "%+7.2fº", pierDeg))
+          Text(String(format: "%+7.2fº", diskDeg))
         }
         .font(viewOptions.smallValueFont)
         .padding([.trailing], gapPad/2)

@@ -52,12 +52,13 @@ class LocationData : NSObject, ObservableObject, CLLocationManagerDelegate{
                        didUpdateLocations locations:[CLLocation]) {
     if let location = locations.first {
       coordinateDeg = location.coordinate
+//      print("LocationManager.didUpdatelocation()")
     }
   }
   
   func locationManager(_ manager: CLLocationManager,
                        didFailWithError error: Error) {
-    print("Location Manager Error")
+    print("LocationManager.didFailWithError")
   }
   
 }

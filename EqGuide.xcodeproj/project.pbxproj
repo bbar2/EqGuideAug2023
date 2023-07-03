@@ -20,7 +20,7 @@
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
-		358516FE2A1EB653009C505D /* ArmBleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* ArmBleModel.swift */; };
+		358516FE2A1EB653009C505D /* PierBleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* PierBleModel.swift */; };
 		358B108728492AB0002AD52C /* BitVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358B108628492AB0002AD52C /* BitVector.swift */; };
 		3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3599A1E7280CB9ED00E1C442 /* Vallado.swift */; };
 		359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359C8D9227F2063D00AA7E7B /* RaDec.swift */; };
@@ -71,7 +71,7 @@
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
-		358516FD2A1EB653009C505D /* ArmBleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArmBleModel.swift; sourceTree = "<group>"; };
+		358516FD2A1EB653009C505D /* PierBleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierBleModel.swift; sourceTree = "<group>"; };
 		358B108628492AB0002AD52C /* BitVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitVector.swift; sourceTree = "<group>"; };
 		3599A1E7280CB9ED00E1C442 /* Vallado.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vallado.swift; sourceTree = "<group>"; };
 		359C8D9227F2063D00AA7E7B /* RaDec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDec.swift; sourceTree = "<group>"; };
@@ -133,6 +133,7 @@
 		35A7F64128240EDE008EBC8C /* DataTypes */ = {
 			isa = PBXGroup;
 			children = (
+				352168482814A86D00C76670 /* LocationData.swift */,
 				3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
 				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
@@ -152,7 +153,6 @@
 				351A40D529FF0A9E003B9A0F /* OnShake.swift */,
 				359E419529F5741600664AFC /* MyCentralManager.swift */,
 				359E419429F5741600664AFC /* MyPeripheral.swift */,
-				352168482814A86D00C76670 /* LocationData.swift */,
 				3521684628145C2A00C76670 /* Haptics.swift */,
 				3599A1E7280CB9ED00E1C442 /* Vallado.swift */,
 				35A7F64828242638008EBC8C /* LoadJson.swift */,
@@ -171,8 +171,8 @@
 		35B92FF22800B89400342F7F /* TopTabViews */ = {
 			isa = PBXGroup;
 			children = (
-				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
 				350DF8A92A335F1D00205FCB /* ManualView.swift */,
+				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
 				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
@@ -195,8 +195,8 @@
 			isa = PBXGroup;
 			children = (
 				35FBF06727888866001EFA53 /* MountBleModel.swift */,
+				358516FD2A1EB653009C505D /* PierBleModel.swift */,
 				351A40D329FF0A7C003B9A0F /* FocusBleModel.swift */,
-				358516FD2A1EB653009C505D /* ArmBleModel.swift */,
 				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				352168422814357900C76670 /* ViewOptions.swift */,
 				35A7F64228240F1B008EBC8C /* Utilities */,
@@ -357,7 +357,7 @@
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				35E3D7B92A2278BD002D1BFE /* HardwareView.swift in Sources */,
-				358516FE2A1EB653009C505D /* ArmBleModel.swift in Sources */,
+				358516FE2A1EB653009C505D /* PierBleModel.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
 				35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */,
 				35E3D7BD2A229884002D1BFE /* BleStatusView.swift in Sources */,

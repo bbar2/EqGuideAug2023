@@ -12,38 +12,41 @@ struct ContentView: View {
 
   // Models at Local scope.
   // Each model is associated with a different BLE Peripheral device
-  // Pass to Views as needed.
+  // .onAppear puts focusDeviceModel and pierDeviceModel links in mountDeviceModel
+  // Passing mountDeviceModel gives access to all model objects
   @StateObject private var mountDeviceModel = MountBleModel()
   @StateObject private var focusDeviceModel = FocusBleModel()
-  @StateObject private var armDeviceModel = ArmBleModel()
+  @StateObject private var pierDeviceModel = PierBleModel()
 
   // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions
 
+  @Environment(\.scenePhase) var scenePhase
+
   enum Tab {
-    case guide
     case manual
+    case guide
     case rate
     case focus
     case hardware
 //    case light
   }
   
-  @State private var selection: Tab = .guide
+  @State private var selection: Tab = .manual
   var body: some View {
     
     TabView (selection: $selection) {
+      ManualView(mountModel: mountDeviceModel)
+        .tabItem {
+          Label("Manual", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+        }
+        .tag(Tab.manual)
+      
       GuideView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Guide", systemImage: "arrow.2.squarepath")
         }
         .tag(Tab.guide)
-      
-      ManualView(mountModel: mountDeviceModel, armModel: armDeviceModel)
-        .tabItem {
-          Label("Manual", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
-        }
-        .tag(Tab.manual)
       
       RaRateView(mountModel: mountDeviceModel)
         .tabItem {
@@ -51,15 +54,13 @@ struct ContentView: View {
         }
         .tag(Tab.rate)
 
-      FocusView(focusModel: focusDeviceModel, armModel: armDeviceModel)
+      FocusView(focusModel: focusDeviceModel, pierModel: pierDeviceModel)
         .tabItem {
           Label("Focus", systemImage: "staroflife.circle")
         }
         .tag(Tab.focus)
       
-      HardwareView(mountModel: mountDeviceModel,
-                   focusModel: focusDeviceModel,
-                   armModel: armDeviceModel)
+      HardwareView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Hardware", systemImage: "angle")
         }
@@ -74,6 +75,25 @@ struct ContentView: View {
     }
     .statusBar(hidden: true)
     .accentColor(viewOptions.appRedColor)
+    .onChange(of: scenePhase) { newPhase in
+      if newPhase == .active {
+        print("ScenePhase = Active")
+      } else if newPhase == .inactive {
+        mountDeviceModel.endAutoControl()
+        print("ScenePhase = Inactive")
+      } else if newPhase == .background {
+        mountDeviceModel.endAutoControl()
+        print("ScenePhase = Background")
+      } else {
+        print("ScenePhase = ?")
+      }
+    }
+    .onAppear {
+      mountDeviceModel.mountModelInit()
+      mountDeviceModel.linkPierModel(pierDeviceModel)
+      mountDeviceModel.linkFocusModel(focusDeviceModel)
+    }
+
   }
 }
 

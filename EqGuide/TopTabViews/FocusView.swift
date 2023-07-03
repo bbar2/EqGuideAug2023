@@ -19,7 +19,7 @@ import SwiftUI
 
 struct FocusView: View {
   @ObservedObject var focusModel: FocusBleModel
-  @ObservedObject var armModel: ArmBleModel
+  @ObservedObject var pierModel: PierBleModel
       
   @Environment(\.scenePhase) var scenePhase
   
@@ -157,8 +157,8 @@ struct FocusView: View {
     .font(.title)
     
     .onAppear{
-      // FocusBleModel needs access to ArmBleModel
-      focusModel.linkArmModel(armModel)
+      // FocusBleModel needs access to PierBleModel
+      focusModel.linkPierModel(pierModel)
       
       //Change picker font size
       UISegmentedControl.appearance().setTitleTextAttributes(
@@ -184,9 +184,9 @@ struct FocusView: View {
 
 struct MainView_Previews: PreviewProvider {
   static let previewFocusModel = FocusBleModel()
-  static let previewArmModel = ArmBleModel()
+  static let previewPierModel = PierBleModel()
   static var previews: some View {
-    FocusView(focusModel: previewFocusModel, armModel: previewArmModel)
+    FocusView(focusModel: previewFocusModel, pierModel: previewPierModel)
       .previewDevice(PreviewDevice(rawValue: "iPhone Xs"))
   }
 }

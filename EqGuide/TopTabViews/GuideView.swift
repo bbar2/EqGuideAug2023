@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GuideView: View {
   @ObservedObject var mountModel: MountBleModel
-    
+
   @EnvironmentObject var viewOptions: ViewOptions
   
   var gdb:GuideDataBlock {
@@ -22,7 +22,17 @@ struct GuideView: View {
     return(stateString)
   }
   
-//  @State var startFromReference = true
+  func pointingKnowledgeColor() -> Color {
+    switch (mountModel.pointingKnowledge)
+    {
+      case .none:
+        return viewOptions.confNoneColor
+      case .estimated:
+        return viewOptions.confEstColor
+      case .marked:
+        return viewOptions.appRedColor
+    }
+  }
   
   var body: some View {
     
@@ -31,15 +41,15 @@ struct GuideView: View {
       VStack {
         HStack{
           if !mountModel.bleConnected() {
-            Text("Status: ")
             Text(mountModel.statusString)
           } else {
-            Text("EqMount: ")
             let stateEnum = MountState(rawValue: gdb.mountState)
             Text(String("\(stateEnum ?? MountState.StateError)"))
           }
         }.font(.title)
         HStack {
+          BleStatusView(mountModel: mountModel)
+          //, focusModel: focusModel, pierModel: pierModel)
           Spacer()
           Button() {
             viewOptions.showDmsHms = !viewOptions.showDmsHms
@@ -57,25 +67,12 @@ struct GuideView: View {
             pairTitle: "Current\nPosition",
             pair: mountModel.currentPosition,
             showDmsHms: viewOptions.showDmsHms,
-            armDeg: mountModel.armCurrentDeg,
-            dskDeg: mountModel.dskCurrentDeg
+            pierDeg: mountModel.pierCurrentDeg,
+            diskDeg: mountModel.diskCurrentDeg
           )
           .foregroundColor(pointingKnowledgeColor())
           .padding([.bottom], 1)
 
-          HStack {
-            Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
-              .foregroundColor(lstValidColor())
-            Spacer()
-            let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
-            Text("Lat:" + latString).foregroundColor(lstValidColor())
-            Spacer()
-            let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
-            Text("Lng:" + longString).foregroundColor(lstValidColor())
-          }.font(viewOptions.smallValueFont)
-          
-          Divider()
-          
             NavigationLink {
               RaDecInputView(label: "Select Reference",
                              coord: $mountModel.refCoord,
@@ -83,12 +80,12 @@ struct GuideView: View {
                              unitHmsDms: viewOptions.showDmsHms,
                              catalog: mountModel.catalog)
             } label: {
-              let (refArmDeg, refDskDeg) = mountModel.mountAnglesForRaDec( mountModel.refCoord)
+              let (refPierDeg, refDiskDeg) = mountModel.raDecToMountAngles( mountModel.refCoord)
               RaDecPairView(pairTitle: "Reference:\n\(mountModel.refName)",
                             pair: mountModel.refCoord,
                             showDmsHms: viewOptions.showDmsHms,
-                            armDeg: refArmDeg,
-                            dskDeg: refDskDeg)
+                            pierDeg: refPierDeg,
+                            diskDeg: refDiskDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
@@ -100,18 +97,18 @@ struct GuideView: View {
                              catalog: mountModel.catalog)
               
             } label: {
-              let (targetArmDeg, targetDskDeg) = mountModel.mountAnglesForRaDec(mountModel.targetCoord)
+              let (targetPierDeg, targetDiskDeg) = mountModel.raDecToMountAngles(mountModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
                             pair: mountModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,
-                            armDeg: targetArmDeg,
-                            dskDeg: targetDskDeg)
+                            pierDeg: targetPierDeg,
+                            diskDeg: targetDiskDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
-            MountChangeView(title: "Mount Movement:\nCurrent to Target",
-                            armMoveDeg: mountModel.anglesCurrentToTarget().ra,
-                            dskMoveDeg: mountModel.anglesCurrentToTarget().dec)
+            MountChangeView(title: "Angles to Target",
+                            pierMoveDeg: mountModel.anglesCurrentToTarget().ra,
+                            diskMoveDeg: mountModel.anglesCurrentToTarget().dec)
 
           Divider()
 
@@ -125,8 +122,8 @@ struct GuideView: View {
                 mountModel.swapRefAndTarg()
               }
               Spacer()
-              BigButton(label:"Mark\nRef") {
-                mountModel.guideCommandMarkRefNow()
+              BigButton(label:"Mark\nTarget") {
+                mountModel.guideCommandMarkTarget()
                 heavyBump()
               }
               Spacer()
@@ -152,22 +149,9 @@ struct GuideView: View {
       
     } // Top Level VStack
     .onAppear{
-      mountModel.mountModelInit()
       setupSegmentControl()
       softBump()
     } // body: some View
-  }
-  
-  func pointingKnowledgeColor() -> Color {
-    switch (mountModel.pointingKnowledge)
-    {
-      case .none:
-        return viewOptions.confNoneColor
-      case .estimated:
-        return viewOptions.confEstColor
-      case .marked:
-        return viewOptions.appRedColor
-    }
   }
   
   func lstValidColor() -> Color {

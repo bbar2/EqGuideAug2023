@@ -35,7 +35,8 @@ struct ArrowPadView: View {
                  releaseAction: {
         mountModel.guideCommandMoveNull()
         softBump()
-      })
+      },
+                 enable: !mountModel.autoControlActive)
       HStack {
         TouchImage(systemName: "arrowtriangle.left",
                    touchAction: {
@@ -45,11 +46,11 @@ struct ArrowPadView: View {
                    releaseAction: {
           mountModel.guideCommandMoveNull()
           softBump()
-        })
+        },
+                   enable: !mountModel.autoControlActive)
         TouchImage(systemName: "x.square",
                    touchAction: {
-          mountModel.guideCommandMoveNull()
-//          mountModel.guideCommandReset()
+          mountModel.endAutoControl()
           softBump()
         },
                    releaseAction: {
@@ -64,7 +65,8 @@ struct ArrowPadView: View {
                    releaseAction: {
           mountModel.guideCommandMoveNull()
           softBump()
-        })
+        },
+                   enable: !mountModel.autoControlActive)
       }
       TouchImage(systemName: "arrowtriangle.down",
                  touchAction: {
@@ -74,7 +76,8 @@ struct ArrowPadView: View {
                  releaseAction: {
         mountModel.guideCommandMoveNull()
         softBump()
-      })
+      },
+                 enable: !mountModel.autoControlActive)
     }
   }
 }

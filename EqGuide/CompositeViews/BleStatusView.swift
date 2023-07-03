@@ -8,8 +8,6 @@
 import SwiftUI
 struct BleStatusView: View {
   @ObservedObject var mountModel: MountBleModel
-  @ObservedObject var focusModel: FocusBleModel
-  @ObservedObject var armModel: ArmBleModel
 
   @EnvironmentObject var viewOptions: ViewOptions
 
@@ -18,25 +16,21 @@ struct BleStatusView: View {
       Text("Mount").foregroundColor((mountModel.bleConnected() ?
                                      viewOptions.appRedColor :
                                       viewOptions.noBleColor) )
-      Text("Focus").foregroundColor((focusModel.bleConnected() ?
-                                     viewOptions.appRedColor :
-                                      viewOptions.noBleColor) )
-      Text("Arm").foregroundColor((armModel.bleConnected() ?
+      Text("Pier").foregroundColor((mountModel.pierModelLink?.bleConnected() != nil ?
                                    viewOptions.appRedColor :
                                     viewOptions.noBleColor) )
+      Text("Focus").foregroundColor((mountModel.focusModelLink?.bleConnected() != nil ?
+                                     viewOptions.appRedColor :
+                                      viewOptions.noBleColor) )
     }
   }
 }
 
 struct BleStatusView_Previews: PreviewProvider {
   static let previewGuideModel = MountBleModel()
-  static let previewFocusModel = FocusBleModel()
-  static let previewArmModel = ArmBleModel()
   static let viewOptions = ViewOptions()
   static var previews: some View {
-    BleStatusView(mountModel: previewGuideModel,
-                  focusModel: previewFocusModel,
-                  armModel: previewArmModel)
+    BleStatusView(mountModel: previewGuideModel)
     .previewLayout(.fixed(width: 400, height: 150))
     .preferredColorScheme(.dark)
     .environmentObject(viewOptions)
