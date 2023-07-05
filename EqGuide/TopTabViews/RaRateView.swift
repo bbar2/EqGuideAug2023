@@ -76,7 +76,9 @@ struct RaRateView: View {
       
       Spacer()
       
-        StopControlView(mountModel: mountModel)
+      StopControlView(mountModel: mountModel)
+      
+      BleStatusView(mountModel: mountModel)
       
     } // Top Level VStack
     .foregroundColor(viewOptions.appRedColor)

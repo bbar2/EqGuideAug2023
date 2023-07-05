@@ -44,6 +44,7 @@
 //  phi = -pierDeg; // due to CCW direction of pierDeg.
 
 //  Mount Disk angle (diskDeg) rotates in Declination, around Pier_Z/Tele_Z
+// FIXME: seems backwards.  Look at hardware view and counts.
 //  + is CCW looking up from bottom of disk.
 //  diskDeg is:
 //   +90 pointing at north end of pier
@@ -75,13 +76,16 @@
 //    If (RA-LST) >= 180   // Define as DEC Normal
 //      (RA-LST) = -90 - pierDeg
 //      pierDeg = -90 - (RA-LST) = LST - 90 - RA
+//      RA = LST - 90 - pierDeg
 //      Note that pierDeg decreases as RA increases.
 //      This fits since pierDeg increases CCW and RA increases CW.
 //      diskDeg = DEC   //-90 <= diskDeg <= +90
+//      DEC = diskDeg
 //      |diskDeg| <= 90
 //    Else If (RA-LST) < 180 // target is east, declination flip (NE or SE Quadrant)
 //      (RA-LST) = 90 - pierDeg
 //      pierDeg = 90 - (RA-LST) = LST + 90 - RA
+//      RA = LST + 90 - pierDeg
 //      diskDeg = 180 - DEC // |Dec| == 90 is forced to normal decliation.
 //      DEC = 180 - diskDeg
 //      // Although diskDeg = |90| is valid for normal or flipped declination,
@@ -220,15 +224,15 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     }
     
     // Setup initial Reference and Target
-    let refIndex = 0
+    let refIndex = 5 // mizar
     refCoord = RaDec(ra: catalog[refIndex].ra, dec: catalog[refIndex].dec)
     refName = catalog[refIndex].name
-    let targIndex = 3
+    let targIndex = 13 // m101 Pinwheel Galaxy
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
   }
 
-  // ManualView.onAppear calls these to tie models together.
+  // ContentView.onAppear calls these to tie models together.
   func linkPierModel(_ pierModel: PierBleModel) {
     pierModelLink = pierModel
   }
@@ -288,55 +292,21 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   // if Ay is possitive, go West; else go East
   func goHomeTimerHandler() {
 
-    if homeRa()
+    if goHomeRa()
     {
-      if homeDec()
+      if goHomeDec()
       {
         endAutoControl()
         updateLstDeg()
         let homeCoord = RaDec(ra: lstDeg - 90.0, dec: 0.0)
         updateOffsetsTo(reference: homeCoord)
+        pointingKnowledge = lstValid ? .estimated : .none
       }
     }
   }
   
-  func homeDec() -> Bool {
-    guideCommandMoveNull();
-    return true;
-//    let ay = pierModelLink?.xlAligned.y ?? 0.0
-//    print("goHomeTimer \(ay)")
-//
-//    let slowThreshold = Float(0.1)
-//    let stopThreshold = Float(0.005)
-//    let west_fast = Int32(-2)
-//    let west_slow = Int32(-1)
-//    let east_fast = Int32(2)
-//    let east_slow = Int32(1)
-//
-//    if (ay > slowThreshold) {
-//      guideCommandMove(ra: west_fast, dec: 0)
-//      return false;
-//    } else if (ay < -slowThreshold) {
-//      guideCommandMove(ra: east_fast, dec: 0)
-//      return false;
-//    }
-//    else if (ay > stopThreshold) {
-//      guideCommandMove(ra: west_slow, dec: 0)
-//      return false;
-//    } else if (ay < -stopThreshold) {
-//      guideCommandMove(ra: east_slow, dec: 0)
-//      return false;
-//    }
-//    else {
-//      guideCommandMoveNull();
-//      return true;
-//    }
-  }
-
-  
-  func homeRa() -> Bool {
+  func goHomeRa() -> Bool {
     let ay = pierModelLink?.xlAligned.y ?? 0.0
-    print("goHomeTimer \(ay)")
 
     let slowThreshold = Float(0.1)
     let stopThreshold = Float(0.005)
@@ -366,17 +336,61 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
 
   }
   
+  func goHomeDec() -> Bool {
+    let ax = focusModelLink?.xlAligned.x ?? 0.0
+
+    let slowThreshold = Float(0.1)
+    let stopThreshold = Float(0.005)
+    let north_fast = Int32(2)
+    let north_slow = Int32(1)
+    let south_fast = Int32(-2)
+    let south_slow = Int32(-1)
+
+    if (ax > slowThreshold) {
+      guideCommandMove(ra: 0, dec: north_fast)
+      return false;
+    } else if (ax < -slowThreshold) {
+      guideCommandMove(ra: 0, dec: south_fast)
+      return false;
+    }
+    else if (ax > stopThreshold) {
+      guideCommandMove(ra: 0, dec: north_slow)
+      return false;
+    } else if (ax < -stopThreshold) {
+      guideCommandMove(ra: 0, dec: south_slow)
+      return false;
+    }
+    else {
+      guideCommandMoveNull();
+      return true;
+    }
+  }
+  
   func goEastPier() {
     beginAutoControl(controlAction: goEastPierTimerHandler )
+  }
+  
+  func goEastPierTimerHandler() ->Void {
+    if goEastPierRa()
+    {
+      if goEastPierDec()
+      {
+        endAutoControl()
+        updateLstDeg()
+        let eastPierCoord = RaDec(ra: lstDeg, dec: 0.0)
+        print("eastPierCoord.ra = \(eastPierCoord.ra)  dec = \(eastPierCoord.dec)")
+        updateOffsetsTo(reference: eastPierCoord)
+        pointingKnowledge = lstValid ? .estimated : .none
+      }
+    }
   }
   
   // Simulate Arrow presses, until Pier Z acceleration = 0.0.
   // if Az is possitive, go east; else go west
   // Use Ay to detect arm beyond 90
-  func goEastPierTimerHandler() ->Void {
+  func goEastPierRa() -> Bool {
     let az = pierModelLink?.xlAligned.z ?? 0.0
     let ay = pierModelLink?.xlAligned.y ?? 0.0
-    print("goHomeTimer \(az)")
 
     let slowThreshold = Float(0.1)
     let stopThreshold = Float(0.005)
@@ -386,21 +400,55 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let east_slow = Int32(1)
     if (ay < Float(0.0) || az > slowThreshold) {
       guideCommandMove(ra: east_fast, dec: 0)
+      return false
     } else if (az < -slowThreshold) {
       guideCommandMove(ra: west_fast, dec: 0)
+      return false
     }
     else if (az > stopThreshold) {
       guideCommandMove(ra: east_slow, dec: 0)
+      return false
     } else if (az < -stopThreshold) {
       guideCommandMove(ra: west_slow, dec: 0)
+      return false
     } else {
-      endAutoControl()
-      updateLstDeg()
-      let eastPierCoord = RaDec(ra: lstDeg, dec: 0.0)
-      updateOffsetsTo(reference: eastPierCoord)
+      guideCommandMoveNull()
+      return true
     }
-
   }
+  
+  // Align by matching -FocusY with PierX
+  func goEastPierDec() -> Bool {
+    let focusY = focusModelLink?.xlAligned.y ?? 0.0
+    let targetY = (pierModelLink?.xlAligned.x ?? 0.0) * -1.0
+
+    let slowThreshold = Float(0.1)
+    let stopThreshold = Float(0.005)
+    let north_fast = Int32(2)
+    let north_slow = Int32(1)
+    let south_fast = Int32(-2)
+    let south_slow = Int32(-1)
+
+    if ((focusY-targetY) > slowThreshold) {
+      guideCommandMove(ra: 0, dec: north_fast)
+      return false;
+    } else if ((focusY-targetY) < -slowThreshold) {
+      guideCommandMove(ra: 0, dec: south_fast)
+      return false;
+    }
+    else if ((focusY-targetY) > stopThreshold) {
+      guideCommandMove(ra: 0, dec: north_slow)
+      return false;
+    } else if ((focusY-targetY) < -stopThreshold) {
+      guideCommandMove(ra: 0, dec: south_slow)
+      return false;
+    }
+    else {
+      guideCommandMoveNull();
+      return true;
+    }
+  }
+
 
   //MARK: === Angle Processing ===
   
@@ -410,7 +458,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       lstValid = true
       lstDeg = lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
       
-      lstDeg += lstOffset
+      lstDeg += lstOffset // used for testing offsets from current LST
             
     } else {
       lstValid = false
@@ -431,23 +479,39 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     pierCurrentDeg = guideDataBlock.pierCountDeg + pierOffsetDeg
     diskCurrentDeg = guideDataBlock.diskCountDeg + diskOffsetDeg
     
-    // Looking to which side of pier (disk<=0 looks east; disk>0 looks west)
+    pierCurrentDeg = pierCurrentDeg.mapAnglePm180()
+    diskCurrentDeg = diskCurrentDeg.mapAnglePm180()
+    
+    // Looking to which side of pier |disk|<=90 no flip; |disk|>90 DEC Flip
     if lstValid && (pointingKnowledge != Knowledge.none) {
-      if (diskCurrentDeg <= 0) { // lens is looking to east side of pier
+      if (fabs(diskCurrentDeg) <= 90.0) { // lens is looking to west side of pier
+        currentPosition.ra = lstDeg - 90.0 - pierCurrentDeg
+        currentPosition.dec = diskCurrentDeg
+      } else { // looking to east side of pier
         currentPosition.ra = lstDeg + 90.0 - pierCurrentDeg
-        currentPosition.dec = diskCurrentDeg + 90.0
-      } else { // looking to west side of pier
-        currentPosition.ra = lstDeg + 270.0 - pierCurrentDeg
-        currentPosition.dec = 90.0 - diskCurrentDeg
+        currentPosition.dec = 180.0 - diskCurrentDeg
       }
     } else {
-      // TODO: add elseif block for intertial calcualtion, with confidence .estimated
-      // TBD: Do inertial calc now?  Every time?
-      //      print("updateMountAngles pointingKnowledge = \(pointingKnowledge)")
-      
       currentPosition.ra = pierCurrentDeg  // RA unknown without pointing knowledge
       currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
     }
+    
+    currentPosition.ra = currentPosition.ra.mapAngle0To360()
+    currentPosition.dec = currentPosition.dec.mapAnglePm180()
+
+    //    // Looking to which side of pier (disk<=0 looks east; disk>0 looks west)
+//    if lstValid && (pointingKnowledge != Knowledge.none) {
+//      if (diskCurrentDeg <= 0) { // lens is looking to east side of pier
+//        currentPosition.ra = lstDeg + 90.0 - pierCurrentDeg
+//        currentPosition.dec = diskCurrentDeg + 90.0
+//      } else { // looking to west side of pier
+//        currentPosition.ra = lstDeg + 270.0 - pierCurrentDeg
+//        currentPosition.dec = 90.0 - diskCurrentDeg
+//      }
+//    } else {
+//      currentPosition.ra = pierCurrentDeg  // RA unknown without pointing knowledge
+//      currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
+//    }
     
   } // end updateMountAngles
   
@@ -457,27 +521,30 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     var pierDeg = 0.0
     var diskDeg = 0.0
     
-    // Find angle between LST and RA
-    var raLst = coord.ra - lstDeg;
+    // Find angle from LST to RA = (end - start) = (RA-LST)
+    var lstToRa = coord.ra - lstDeg;
     
     // Map to 0.0 <= raLst < 360.0
-    if raLst < 0.0 {
-      raLst += 360.0
-    } else if raLst >= 360 {
-      raLst -= 360.0
+    lstToRa = lstToRa.mapAngle0To360()
+
+    // Select pier and disk angles based on target side of lst (lstToRa = RA-LST)
+    // For 0 <= raLst < 360:  (360.0 maps to 0.0)
+    // looking east:  0 <= raLst < 180.0  (define 0 as looking east)
+    // Looking west: 180.0 <= raLst < 360.0 (define 180 as looking west)
+    // Note that lstToRa == 0 is straight up and could be looked at Dec Normnal or Flip
+    //   Treat straight up like west target and star looking using Dec Normal
+    if lstToRa >= 180.0 || lstToRa < 0.001 { // Normal Declination - looking west
+      pierDeg = -90.0 - lstToRa                 //270.0 - lstToRa
+      // FIXME: I think these are backwards.  It looks like disk actually increases CW.
+      diskDeg = coord.dec                       //90.0 - coord.dec
+    } else {  // Declination Flip - looking east
+      pierDeg = 90.0 - lstToRa                  // 90.0 - lstToRa
+      // FIXME: I think these are backwards.  It looks like disk actually increases CW.
+      diskDeg = 180.0 - coord.dec               // coord.dec - 90.0
     }
     
-    // Select pier and disk angles based on target side of lst (raLst = ra-lst)
-    // For 0 <= raLst < 360:  (360.0 maps to 0.0)
-    // looking east:  0<= raLst < 180.0  (define 0 as looking east)
-    // Looking west: 180.0 <= raLst < 360.0 (define 180 as looking west)
-    if raLst >= 180.0 {
-      pierDeg = 270.0 - raLst
-      diskDeg = 90.0 - coord.dec
-    } else {
-      pierDeg = 90.0 - raLst
-      diskDeg = coord.dec - 90.0
-    }
+    pierDeg = pierDeg.mapAnglePm180()
+    diskDeg = diskDeg.mapAnglePm180()
     
     return (pierDeg, diskDeg)
   }
@@ -493,11 +560,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     var deltaDiskDeg = toDiskDeg - fromDiskDeg
     
     // Take shorter route if |deltaDiskDeg| > 180.0
-    if deltaDiskDeg > 180.0 {
-      deltaDiskDeg = deltaDiskDeg - 360.0 // go -170 instead of +190
-    } else if deltaDiskDeg < -180.0 {
-      deltaDiskDeg = deltaDiskDeg + 360.0 // go 170 instead of -190
-    }
+    deltaDiskDeg = deltaDiskDeg.mapAnglePm180()
     
     return (deltaPierDeg, deltaDiskDeg)
   }
@@ -530,8 +593,15 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     pierOffsetDeg = refPierAngle - guideDataBlock.pierCountDeg
     diskOffsetDeg = refDiskAngle - guideDataBlock.diskCountDeg
     
+    // not sure these need to be mapped, but it shouldn't hurt.
+    pierOffsetDeg = pierOffsetDeg.mapAnglePm180()
+    diskOffsetDeg = diskOffsetDeg.mapAnglePm180()
+    
+    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(guideDataBlock.pierCountDeg + pierOffsetDeg)")
+    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(guideDataBlock.diskCountDeg + diskOffsetDeg)")
+    
     // Used for color coding values that depend on references
-    pointingKnowledge = lstValid ? .marked : .none
+//    pointingKnowledge = lstValid ? .marked : .none
     
   }  // end updateOffsetsTo
   
@@ -647,6 +717,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   // Update model angle offsets after manually fine aligning telescope view to target
   func guideCommandMarkTarget() {
     updateOffsetsTo(reference: targetCoord)  // update model angles
+    pointingKnowledge = lstValid ? .marked : .none
   }
   
   // Initiate a move by Offset between Current and Target.
@@ -694,7 +765,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       // Process the received GuideDataBlock
       self?.processDataFromMount(self!.guideDataBlock)
     }
-    
   }
   
 }

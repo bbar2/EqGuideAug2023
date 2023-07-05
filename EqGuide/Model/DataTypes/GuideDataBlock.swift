@@ -20,7 +20,7 @@ enum MountState:Int32 {
 }
 
 struct GuideDataBlock {
-  var pierDegPerStep: Float32 = 1.0    // really, Degrees per MicroStep
+  var pierDegPerStep: Float32 = 1.0   // really, Degrees per MicroStep
   var diskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
   var raRateOffsetDegPerSec: Float32 = 0.0
   var accel_x: Float32 = 0.0

@@ -21,6 +21,8 @@ struct HardwareView: View {
     }
   }
   
+  // TODO: Put this in mountModel.  Had trouble accessing viewOptions.  It's
+  // also used by GuideView, so duplicated for now.
   func pointingKnowledgeColor() -> Color {
     switch (mountModel.pointingKnowledge)
     {
@@ -41,35 +43,35 @@ struct HardwareView: View {
         Text("Hardware View").font(.title)
         
         HStack {
-          BleStatusView(mountModel: mountModel)
           Spacer()
+          DegreeFormatControl()
         }
       }
-      
-      RaDecPairView(
-        pairTitle: "Current\nPosition",
-        pair: mountModel.currentPosition,
-        showDmsHms: viewOptions.showDmsHms,
-        pierDeg: mountModel.pierCurrentDeg,
-        diskDeg: mountModel.diskCurrentDeg
-      )
-      .foregroundColor(pointingKnowledgeColor())
-      .padding([.bottom], 1)
-      
-      Spacer()
-      HStack {
-        Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
-          .foregroundColor(lstValidColor())
-        Spacer()
-        let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
-        Text("Lat:" + latString).foregroundColor(lstValidColor())
-        Spacer()
-        let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
-        Text("Lng:" + longString).foregroundColor(lstValidColor())
-      }.font(viewOptions.smallValueFont)
-      
-      Divider()
 
+      VStack {
+        RaDecPairView(
+          pairTitle: "Current\nPosition",
+          pair: mountModel.currentPosition,
+          showDmsHms: viewOptions.showDmsHms,
+          pierDeg: mountModel.pierCurrentDeg,
+          diskDeg: mountModel.diskCurrentDeg
+        )
+        .foregroundColor(pointingKnowledgeColor())
+        .padding([.bottom], 1)
+        
+        HStack {
+          Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
+            .foregroundColor(lstValidColor())
+          Spacer()
+          let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
+          Text("Lat:" + latString).foregroundColor(lstValidColor())
+          Spacer()
+          let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
+          Text("Lng:" + longString).foregroundColor(lstValidColor())
+        }.font(viewOptions.smallValueFont)
+        
+        Divider()
+      }
       Spacer()
       Grid {
         GridRow {
@@ -122,6 +124,8 @@ struct HardwareView: View {
       RawDataView(gdb: mountModel.guideDataBlock)
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
+      
+      BleStatusView(mountModel: mountModel)
 
     }.font(viewOptions.bigValueFont)
   }

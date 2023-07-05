@@ -55,8 +55,6 @@ class FocusBleModel : MyPeripheralDelegate,
     case ready
   }
   
-  private var bleState = BleState.disconnected
-  
   var pierAccelModel: PierBleModel?
   
   // Command structure sent to FocusMotor
@@ -77,9 +75,10 @@ class FocusBleModel : MyPeripheralDelegate,
     case XL_STOP  = 0x17  // Central ask peripheral to stop streaming XL data
   }
   
+  @Published var bleState = BleState.disconnected
   @Published var statusString = "Not Connected"
   @Published var focusMode = FocusMode.medium
-  @Published var connectionLock = false // true to prevent connection timeout
+  @Published var connectionLock = true // true to prevent connection timeout
   @Published var timerValue: Int = 0
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // is left handed
@@ -145,7 +144,9 @@ class FocusBleModel : MyPeripheralDelegate,
                               dataUUIDs: [FOCUS_MSG_UUID, ACCEL_XYZ_UUID])
     uponBleReadyAction = nil
     focusMotor.mpDelegate = self
-    connectBle()
+    connectBle() {
+      self.startXlStream()
+    }
     statusString = "Searching for Focus-Motor ..."
   }
   

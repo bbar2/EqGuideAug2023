@@ -3,18 +3,17 @@ Do I get spel checking.  No.
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
-2023-07-02: After GOTO EastPier, PierDeg should be -90 and it's +90
-2023-06-16: Review/Update reference confidence:  updateOffsetsTo(reference:) should update confidence to estimated value.  MarkRef should change to highest value. 
-2023-06-08: Focus - Connect and Start BLE.  Only auto disconnect after first Mark. Leave a disconnect button.  Remove all XL data stuff from this page.
-2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset?
+2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.
+2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
 2023-07-02: While guiding to a target, Pause Tracking to improve accuracy.
+2023-07-02: Should a Reset set pointing knowledge to none?
 2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
 2023-06-17: Hardware Red button, should also neutralize ios move commands. Directly, and probably through the data block sent to ios.
 2023-06-08: Hardware - Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
 2023-06-08: Decide on colors for Gray/Disabled, Yellow/NoBle, Red/Good.  When to use yellow vs gray.  Use the orange from LST app.
 2022-05-27: GUI reconfigure - No functional change to GuideMount
   New main Guide with: 
-    BLE Link indication for all three BLE devices - for status display
+    done - BLE Link indication for all three BLE devices - for status display
     East/West Pier indicator, 
     AZ/EL conversion
     Done - Current RA/DEC (Yellow from angle, Red from Ref)
@@ -35,6 +34,9 @@ Do I get spel checking.  No.
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-07-02: Done - it was the straight up is west thing.  Added test for (RA-LST) -- 0. After GOTO EastPier, PierDeg should be -90 and it's +90
+2023-07-02: Done - Focus - Connect and Start BLE. Remove all XL data stuff from this page.
+2023-07-02: Done - Review/Update reference confidence:  updateOffsetsTo(reference:) should update confidence to estimated value.  MarkRef should change to highest value. 
 2023-06-16: Done - GoTo's should update current coordinates 
 2023-06-18: Done - App shutdown needs to issue a Move Neutral command.  Maybe invalidate timers too.
 2023-06-17: Done - Guide and Manual - Put track/Stop view on bottom of page. 

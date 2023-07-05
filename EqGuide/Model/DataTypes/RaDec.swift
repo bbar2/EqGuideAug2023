@@ -2,13 +2,11 @@
 //  RaDec.swift
 //  EqGuide
 //
-//  Object to hold the two angles required to point to an object.
+//  Object to hold the two angles (in degrees) required to point to an object.
 //  Operators for calculating offsets between objects.
-//  ra = Right Ascension.  0 to 360 degrees when specified in decimal degrees.
-//  dec = Declination.  -180 to 180 degrees when specified in decimal degrees.
-//    Although typical usage is -90 <= dec <= 90
-//    Can use |dec| > 90 if ra and LST, cause pierAngle to exceed its limit of about +-95
-//    Tranform (RA, DEC) to (RA+180º, 180º-DEC) or (RA+12H, 180º-DEC)
+//  ra = Right Ascension.  0 <= ra < 360 degrees when specified in decimal degrees.
+//  dec = Declination.  -180 <= dec < 180 degrees when specified in decimal degrees.
+//    Typical dec usage is -90 <= dec <= 90
 //
 
 import SwiftUI
@@ -41,14 +39,7 @@ struct RaDec {
       _dec = mapTo180(_dec)
     }
   }
-  
-//  // Removed - do this to pier and disk angles, not RA and DEC
-//  // Use inverted RA/DEC with DEC > 90, if RA is unachievable by mount
-//  mutating func raInvert() {
-//    _ra = _ra + 180.0
-//    _dec = mapTo180(180.0 - _dec);
-//  }
-  
+    
   static func + (left: RaDec, right: RaDec) -> RaDec {
     return RaDec(ra: left._ra + right._ra, dec: left._dec + right._dec)
   }
@@ -58,11 +49,11 @@ struct RaDec {
   }
   
   private func mapTo180(_ input: Double) -> Double {
-    if input > 180.0 {
+    if input >= 180.0 {   // 180 will map to -180
       return input - 360.0
-    } else if input <= -180.0 {
+    } else if input < -180.0 {
       return input + 360.0
-    } else {
+    } else {  // -180 <= input < 180
       return input
     }
   }

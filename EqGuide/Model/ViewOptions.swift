@@ -23,7 +23,6 @@ final class ViewOptions: ObservableObject {
   let noBleColor = Color(.yellow)
   let thumbColor = Color(red: 0.2, green: 0.0, blue: 0.0)
   let thumbBarColor = Color(red: 0.05, green: 0.0, blue: 0.0)
-  
 
   var fontColor : Color {
     return (forceDarkMode || colorScheme == .dark ? appRedColor : .black)
@@ -34,6 +33,7 @@ final class ViewOptions: ObservableObject {
   let bigValueFont = Font.system(.title2).bold().monospacedDigit()
   let smallValueFont = Font.system(.body).monospacedDigit()
   let noteFont =  Font.system(.body)
+  let smallHeaderfont = Font.headline.weight(.light)
   
   let leadingPad = CGFloat(10)
   let trailingPad = CGFloat(10)

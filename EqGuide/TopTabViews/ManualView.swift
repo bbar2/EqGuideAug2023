@@ -19,8 +19,9 @@ struct ManualView: View {
   var body: some View {
     
     VStack {
-      
-      Text("Manual Control").font(.title)
+      VStack {
+        Text("Manual Control").font(viewOptions.appHeaderFont)
+      }
       
       Spacer()
       
@@ -62,6 +63,8 @@ struct ManualView: View {
       Spacer()
       
       StopControlView(mountModel: mountModel)
+
+      BleStatusView(mountModel: mountModel)
       
     } // end Main VStack
     

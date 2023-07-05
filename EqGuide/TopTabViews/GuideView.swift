@@ -22,6 +22,8 @@ struct GuideView: View {
     return(stateString)
   }
   
+  // TODO: Put this in mountModel.  Had trouble accessing viewOptions.  It's
+  // also used by HardwareView, so duplicated for now.
   func pointingKnowledgeColor() -> Color {
     switch (mountModel.pointingKnowledge)
     {
@@ -48,15 +50,8 @@ struct GuideView: View {
           }
         }.font(.title)
         HStack {
-          BleStatusView(mountModel: mountModel)
-          //, focusModel: focusModel, pierModel: pierModel)
           Spacer()
-          Button() {
-            viewOptions.showDmsHms = !viewOptions.showDmsHms
-          } label: {
-            Text(viewOptions.showDmsHms ? "DMS/HMS" : "Degrees")
-              .foregroundColor(viewOptions.appActionColor).bold()
-          }
+          DegreeFormatControl()
         }
       }
       
@@ -139,6 +134,8 @@ struct GuideView: View {
             Spacer()
 
             StopControlView(mountModel: mountModel)
+            
+            BleStatusView(mountModel: mountModel)
           }
           
         } // VStack in NavigationView

@@ -13,16 +13,13 @@ struct BleStatusView: View {
 
   var body: some View {
     HStack {
-      Text("Mount").foregroundColor((mountModel.bleConnected() ?
-                                     viewOptions.appRedColor :
-                                      viewOptions.noBleColor) )
-      Text("Pier").foregroundColor((mountModel.pierModelLink?.bleConnected() != nil ?
-                                   viewOptions.appRedColor :
-                                    viewOptions.noBleColor) )
-      Text("Focus").foregroundColor((mountModel.focusModelLink?.bleConnected() != nil ?
-                                     viewOptions.appRedColor :
-                                      viewOptions.noBleColor) )
-    }
+      Text("Mount").foregroundColor(mountModel.bleConnected() ?
+                                    viewOptions.appRedColor : viewOptions.noBleColor)
+      Text("Pier").foregroundColor(mountModel.pierModelLink?.bleConnected() ?? false ?
+                                   viewOptions.appRedColor : viewOptions.noBleColor)
+      Text("Focus").foregroundColor(mountModel.focusModelLink?.bleConnected() ?? false ?
+                                    viewOptions.appRedColor : viewOptions.noBleColor)
+    }.font(viewOptions.smallHeaderfont)
   }
 }
 

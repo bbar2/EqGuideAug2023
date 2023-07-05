@@ -71,35 +71,23 @@ struct FocusView: View {
       
       // Everything else is in this VStack and is red
       VStack {
-        VStack{
-          Text("XL Data").bold()
-          Text(String(format: "Pitch: %+7.2fº %+5.2f",
-                      toDeg(focusModel.theta),
-                      focusModel.xlAligned.x))
-          Text(String(format: "Roll: %+7.2fº %+5.2f",
-                      toDeg(focusModel.phi),
-                      focusModel.xlAligned.y))
-          Text(String(format: "Yaw: %+7.2fº %+5.2f",
-                      toDeg(focusModel.psi),
-                      focusModel.xlAligned.z))
-          HStack{
-            Button("Update"){
-              softBump()
-              focusModel.reportUiActive()
-              focusModel.requestCurrentXl()
-            }
-            Button("Start"){
-              softBump()
-              focusModel.reportUiActive()
-              focusModel.startXlStream()
-            }
-            Button("Stop"){
-              softBump()
-              focusModel.reportUiActive()
-              focusModel.stopXlStream()
-            }
-          }
-        }
+//        HStack{
+//          Button("Update"){
+//            softBump()
+//            focusModel.reportUiActive()
+//            focusModel.requestCurrentXl()
+//          }
+//          Button("Start"){
+//            softBump()
+//            focusModel.reportUiActive()
+//            focusModel.startXlStream()
+//          }
+//          Button("Stop"){
+//            softBump()
+//            focusModel.reportUiActive()
+//            focusModel.stopXlStream()
+//          }
+//        }
         
         Spacer()
         
@@ -159,7 +147,7 @@ struct FocusView: View {
     .onAppear{
       // FocusBleModel needs access to PierBleModel
       focusModel.linkPierModel(pierModel)
-      
+
       //Change picker font size
       UISegmentedControl.appearance().setTitleTextAttributes(
         [.font : UIFont.preferredFont(forTextStyle: .title1)],

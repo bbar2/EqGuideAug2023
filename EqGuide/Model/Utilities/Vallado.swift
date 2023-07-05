@@ -73,7 +73,7 @@ func utDateFromLocalTerms(y: Int, m: Int, d: Int,
 // Return angle so: 0 <= angle < 360.  Inputs can be pos or neg.
 extension Double {
   func clampAngle0To360() -> Double {
-    var clampedValue = self.truncatingRemainder(dividingBy: 360.0)
+    var clampedValue = (self).truncatingRemainder(dividingBy: 360.0)
     if clampedValue < 0.0 {
       clampedValue += 360.0
     }

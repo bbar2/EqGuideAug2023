@@ -15,6 +15,8 @@
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
 		3521684728145C2A00C76670 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521684628145C2A00C76670 /* Haptics.swift */; };
 		352168492814A86D00C76670 /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168482814A86D00C76670 /* LocationData.swift */; };
+		35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */; };
+		35558F2C2A537790004E6C76 /* MapAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F2B2A537790004E6C76 /* MapAngles.swift */; };
 		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
 		3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */; };
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
@@ -66,6 +68,8 @@
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
 		3521684628145C2A00C76670 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		352168482814A86D00C76670 /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
+		35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeFormatControl.swift; sourceTree = "<group>"; };
+		35558F2B2A537790004E6C76 /* MapAngles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAngles.swift; sourceTree = "<group>"; };
 		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
 		3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDataBlock.swift; sourceTree = "<group>"; };
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 				3521684628145C2A00C76670 /* Haptics.swift */,
 				3599A1E7280CB9ED00E1C442 /* Vallado.swift */,
 				35A7F64828242638008EBC8C /* LoadJson.swift */,
+				35558F2B2A537790004E6C76 /* MapAngles.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -173,8 +178,8 @@
 			children = (
 				350DF8A92A335F1D00205FCB /* ManualView.swift */,
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
-				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
+				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
 				35E3D7B82A2278BD002D1BFE /* HardwareView.swift */,
 			);
@@ -224,6 +229,7 @@
 				35DE202727F3D66600D96C68 /* BigButton.swift */,
 				35C1E5492A37A0F3003C68B0 /* TouchImage.swift */,
 				35EE3F9727F6958F007DA575 /* SignButton.swift */,
+				35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */,
 			);
 			path = SingleControlViews;
 			sourceTree = "<group>";
@@ -377,7 +383,9 @@
 				35F6244C283C04C200762730 /* RaRateView.swift in Sources */,
 				359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */,
 				351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */,
+				35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */,
 				35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */,
+				35558F2C2A537790004E6C76 /* MapAngles.swift in Sources */,
 				35BE5CCC2A3DF87A0055FF5D /* StopControlView.swift in Sources */,
 				35DE202827F3D66600D96C68 /* BigButton.swift in Sources */,
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,
