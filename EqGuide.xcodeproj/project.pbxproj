@@ -17,6 +17,8 @@
 		352168492814A86D00C76670 /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168482814A86D00C76670 /* LocationData.swift */; };
 		35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */; };
 		35558F2C2A537790004E6C76 /* MapAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F2B2A537790004E6C76 /* MapAngles.swift */; };
+		3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B72A5621EE00E16091 /* PierModeView.swift */; };
+		3565E1BA2A572B0600E16091 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B92A572B0600E16091 /* StatusBar.swift */; };
 		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
 		3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */; };
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
@@ -70,6 +72,8 @@
 		352168482814A86D00C76670 /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
 		35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeFormatControl.swift; sourceTree = "<group>"; };
 		35558F2B2A537790004E6C76 /* MapAngles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAngles.swift; sourceTree = "<group>"; };
+		3565E1B72A5621EE00E16091 /* PierModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierModeView.swift; sourceTree = "<group>"; };
+		3565E1B92A572B0600E16091 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
 		3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDataBlock.swift; sourceTree = "<group>"; };
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
@@ -191,7 +195,7 @@
 			children = (
 				35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */,
 				35FBF0612787AF52001EFA53 /* TargetListView.swift */,
-				35E3D7BC2A229884002D1BFE /* BleStatusView.swift */,
+				3565E1B92A572B0600E16091 /* StatusBar.swift */,
 			);
 			path = CompositeViews;
 			sourceTree = "<group>";
@@ -219,6 +223,8 @@
 				35A7F64C28246EBD008EBC8C /* TargetRow.swift */,
 				35C1E54B2A37AB46003C68B0 /* ArrowPadView.swift */,
 				35BE5CCB2A3DF87A0055FF5D /* StopControlView.swift */,
+				35E3D7BC2A229884002D1BFE /* BleStatusView.swift */,
+				3565E1B72A5621EE00E16091 /* PierModeView.swift */,
 			);
 			path = SubDisplayViews;
 			sourceTree = "<group>";
@@ -352,6 +358,7 @@
 				35A7F6442824103F008EBC8C /* Target.swift in Sources */,
 				351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */,
 				359E419729F5741600664AFC /* MyCentralManager.swift in Sources */,
+				3565E1BA2A572B0600E16091 /* StatusBar.swift in Sources */,
 				35EE3F9827F6958F007DA575 /* SignButton.swift in Sources */,
 				358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */,
 				35E3D7C32A23F170002D1BFE /* BleXlData.swift in Sources */,
@@ -371,6 +378,7 @@
 				35DE202E27F4AEB600D96C68 /* Dms.swift in Sources */,
 				358B108728492AB0002AD52C /* BitVector.swift in Sources */,
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
+				3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */,
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
 				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
 				35FBF06827888866001EFA53 /* MountBleModel.swift in Sources */,

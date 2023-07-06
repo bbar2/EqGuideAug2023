@@ -75,7 +75,7 @@ struct GuideView: View {
                              unitHmsDms: viewOptions.showDmsHms,
                              catalog: mountModel.catalog)
             } label: {
-              let (refPierDeg, refDiskDeg) = mountModel.raDecToMountAngles( mountModel.refCoord)
+              let (refPierDeg, refDiskDeg, _) = mountModel.raDecToMountAngles( mountModel.refCoord)
               RaDecPairView(pairTitle: "Reference:\n\(mountModel.refName)",
                             pair: mountModel.refCoord,
                             showDmsHms: viewOptions.showDmsHms,
@@ -92,7 +92,7 @@ struct GuideView: View {
                              catalog: mountModel.catalog)
               
             } label: {
-              let (targetPierDeg, targetDiskDeg) = mountModel.raDecToMountAngles(mountModel.targetCoord)
+              let (targetPierDeg, targetDiskDeg, _) = mountModel.raDecToMountAngles(mountModel.targetCoord)
               RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
                             pair: mountModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,
@@ -135,7 +135,7 @@ struct GuideView: View {
 
             StopControlView(mountModel: mountModel)
             
-            BleStatusView(mountModel: mountModel)
+            StatusBarView(mountModel: mountModel)
           }
           
         } // VStack in NavigationView

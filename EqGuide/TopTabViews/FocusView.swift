@@ -125,6 +125,9 @@ struct FocusView: View {
             }
           }
         }
+        
+//        StatusBarView(mountModel: mountModel)
+
       } // Vstack that is always Red
       .colorMultiply(Color(red:159/255, green: 0, blue: 0))
       

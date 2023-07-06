@@ -125,7 +125,7 @@ struct HardwareView: View {
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
       
-      BleStatusView(mountModel: mountModel)
+      StatusBarView(mountModel: mountModel)
 
     }.font(viewOptions.bigValueFont)
   }

@@ -18,14 +18,14 @@ struct ArrowPadView: View {
     VStack {
       Picker(selection: $mountModel.arrowPadSpeed,
              label: Text("???")) {
-        Text("Fast").tag(ArrowMode.fast)
-        Text("Slow").tag(ArrowMode.slow)
+        Text("Fast").tag(ManualControlSpeeed.fast)
+        Text("Slow").tag(ManualControlSpeeed.slow)
       } .pickerStyle(.segmented)
         .onChange(of: mountModel.arrowPadSpeed) { _ in
           softBump()
         }
       
-      let speed :Int32 = mountModel.arrowPadSpeed == ArrowMode.fast ? 2 : 1
+      let speed :Int32 = mountModel.arrowPadSpeed == ManualControlSpeeed.fast ? 2 : 1
       
       TouchImage(systemName: "arrowtriangle.up",
                  touchAction: {

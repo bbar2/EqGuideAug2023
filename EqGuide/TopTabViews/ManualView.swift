@@ -64,8 +64,8 @@ struct ManualView: View {
       
       StopControlView(mountModel: mountModel)
 
-      BleStatusView(mountModel: mountModel)
-      
+      StatusBarView(mountModel: mountModel)
+
     } // end Main VStack
     
   }
