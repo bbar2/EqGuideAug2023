@@ -12,8 +12,8 @@ struct GuideView: View {
 
   @EnvironmentObject var viewOptions: ViewOptions
   
-  var gdb:GuideDataBlock {
-    mountModel.guideDataBlock
+  var gdb:MountDataBlock {
+    mountModel.mountDataBlock
   }
   
   var mountStateString:String {
@@ -22,8 +22,8 @@ struct GuideView: View {
     return(stateString)
   }
   
-  // TODO: Put this in mountModel.  Had trouble accessing viewOptions.  It's
-  // also used by HardwareView, so duplicated for now.
+  // TODO: Put this in mountModel.  Had trouble accessing viewOptions from mountModel.
+  // It's also used by HardwareView, so duplicated for now.
   func pointingKnowledgeColor() -> Color {
     switch (mountModel.pointingKnowledge)
     {
@@ -48,7 +48,7 @@ struct GuideView: View {
             let stateEnum = MountState(rawValue: gdb.mountState)
             Text(String("\(stateEnum ?? MountState.StateError)"))
           }
-        }.font(.title)
+        }.font(viewOptions.appHeaderFont)
         HStack {
           Spacer()
           DegreeFormatControl()
@@ -126,7 +126,7 @@ struct GuideView: View {
             
             Spacer()
 
-            BigButton(label: " GoTo Target ") {
+            BigButton(label: "GoTo Target") {
                 mountModel.guideCommandGoToTarget()
                 heavyBump()
             }
@@ -146,7 +146,7 @@ struct GuideView: View {
       
     } // Top Level VStack
     .onAppear{
-      setupSegmentControl()
+//      setupSegmentControl()
       softBump()
     } // body: some View
   }
@@ -155,22 +155,22 @@ struct GuideView: View {
     return mountModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
   }
   
-  func setupSegmentControl() {
-    // Set color of "thumb" that selects between items
-    UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(viewOptions.thumbColor)
-    
-    // Set color for whole "bar" background
-    UISegmentedControl.appearance().backgroundColor = UIColor(viewOptions.thumbBarColor)
-    
-    // Set font attributes - call once for each state (.normal, .selected)
-    UISegmentedControl.appearance().setTitleTextAttributes(
-      [.font : UIFont.preferredFont(forTextStyle: .title2),
-       .foregroundColor : UIColor(viewOptions.appActionColor)], for: .normal)
-    
-    UISegmentedControl.appearance().setTitleTextAttributes(
-      [.foregroundColor : UIColor(viewOptions.appActionColor),
-       .font : UIFont.preferredFont(forTextStyle: .title2)], for: .selected)
-  }
+//  func setupSegmentControl() {
+//    // Set color of "thumb" that selects between items
+//    UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(viewOptions.thumbColor)
+//    
+//    // Set color for whole "bar" background
+//    UISegmentedControl.appearance().backgroundColor = UIColor(viewOptions.thumbBarColor)
+//    
+//    // Set font attributes - call once for each state (.normal, .selected)
+//    UISegmentedControl.appearance().setTitleTextAttributes(
+//      [.font : UIFont.preferredFont(forTextStyle: .title2),
+//       .foregroundColor : UIColor(viewOptions.appActionColor)], for: .normal)
+//    
+//    UISegmentedControl.appearance().setTitleTextAttributes(
+//      [.foregroundColor : UIColor(viewOptions.appActionColor),
+//       .font : UIFont.preferredFont(forTextStyle: .title2)], for: .selected)
+//  }
   
 }
 

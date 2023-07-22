@@ -16,6 +16,7 @@ class PierBleModel : MyPeripheralDelegate,
     case connecting
     case ready
   }
+  
   private var bleState = BleState.disconnected
   
   func bleConnected() -> Bool {
@@ -32,12 +33,12 @@ class PierBleModel : MyPeripheralDelegate,
   private let pierPeripheral: MyPeripheral
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // left handed
-  var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)     // axis aligned
+  var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)   // axis aligned
   var theta: Float = 0.0 // roll around X
   var phi: Float = 0.0   // pitch around Y
 
   private var alignPierAccelTransform = matrix_identity_float3x3
-  
+
   init() {
     pierPeripheral = MyPeripheral(deviceName: ARM_ACCEL_DEVICE_NAMED,
                             serviceUUID: ARM_ACCEL_SERVICE_UUID,
@@ -100,13 +101,13 @@ class PierBleModel : MyPeripheralDelegate,
     phi = asin(xlAligned.y / cos(theta))
   }
   
-  // Build calibration transform to aligns the pier accelerometer so it's X axis
+  // Build calibration transform to align pier accelerometer so pier X axis
   // is aligned with the ideal telescope frame of reference. With this calibration
-  // applied, the x axis of the accelerations reported will not does not move as psi
+  // applied, the x axis of the accelerations reported does not move as psi
   // rotates from 90E to 90W, and psi = 0 will be established.  There may still be
   // psi offsets at psi = +- 90 degrees.
   //
-  // Any movement of declination motor control box may necessitate re measuring
+  // Any re-mounting of declination motor control box may necessitate re measuring
   // these four calibration points.
   // - With identity calibration measure:
   //   1. theta with pier at 90E, determined with bubble level
@@ -145,7 +146,7 @@ class PierBleModel : MyPeripheralDelegate,
     let xCorrection = psi0  // rotate theta to zero psi
     let xRotation = xRot3x3(thetaRad: xCorrection)
     
-    // PreMultiplyt to Concatinate transforms
+    // PreMultiply to Concatinate transforms
     let accelAlign = xRotation * yRotation * zRotation
     
     return accelAlign

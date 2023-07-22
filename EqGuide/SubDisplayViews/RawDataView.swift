@@ -9,7 +9,7 @@ import SwiftUI
 import simd
 
 struct RawDataView: View {
-  var gdb:GuideDataBlock
+  var gdb:MountDataBlock
  
   struct AccelView: View {
     var label: String
@@ -57,7 +57,7 @@ struct RawDataView: View {
 
 struct rawDataView_Previews: PreviewProvider {
   static var previews: some View {
-    RawDataView(gdb: GuideDataBlock())
+    RawDataView(gdb: MountDataBlock())
       .preferredColorScheme(.dark)
   }
 

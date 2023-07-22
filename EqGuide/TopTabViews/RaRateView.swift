@@ -45,12 +45,11 @@ struct RaRateView: View {
             Text("Use -32 arcSec / min").font(viewOptions.labelFont)
         }
         
-        let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.guideDataBlock.raRateOffsetDegPerSec
+        let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.mountDataBlock.raRateOffsetDegPerSec
         Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
         //.padding([.bottom], 20)
       }
-      
       
       Spacer()
       

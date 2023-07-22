@@ -20,7 +20,9 @@ import SwiftUI
 struct FocusView: View {
   @ObservedObject var focusModel: FocusBleModel
   @ObservedObject var pierModel: PierBleModel
-      
+
+  @EnvironmentObject var viewOptions: ViewOptions
+
   @Environment(\.scenePhase) var scenePhase
   
   var body: some View {
@@ -29,72 +31,58 @@ struct FocusView: View {
       // App Title and BLE connection status area
       // Yellow title emulates yellow LED on hardware focus control
       VStack {
-        Text("Focus Control").bold()
+        Text("Focus Control").font(viewOptions.appHeaderFont)
+        
         HStack{
           Text("Status: ")
           Text(focusModel.statusString)
-        }
+            
+        }.font(.title)
+      }.foregroundColor(viewOptions.appRedColor)
+
+        
+      VStack {
         if focusModel.bleConnected() {
           HStack{
-            Button("Disconnect"){
+            BigButton(label: "Disconnect"){
               softBump()
               focusModel.disconnectBle()
             }
             if focusModel.connectionLock {
-              Button(){
+              BigButton(image: Image(systemName: "timer"), imageSize:75) {
                 softBump()
                 focusModel.connectionLock = false
                 focusModel.reportUiActive()
-              } label: {
-                Image(systemName: "timer") // current state no timer
               }
             } else {
-              Button(){
+              BigButton(label: String(focusModel.timerValue)){
                 softBump()
                 focusModel.connectionLock = true
                 focusModel.reportUiActive()
-              } label: {
-                Text(String(focusModel.timerValue))
               }
-            }
+            }//.foregroundColor(viewOptions.appActionColor)
           }
-        } else {
-          Button("Connect"){
+        }
+        else {
+          BigButton(label: "Connect", textColor: viewOptions.noBleColor){
             softBump()
             focusModel.connectBle()
             focusModel.reportUiActive()
           }
         }
-      }.colorMultiply(focusModel.bleConnected() ? .red : .yellow)
+      }
       
       Spacer()
       
       // Everything else is in this VStack and is red
       VStack {
-//        HStack{
-//          Button("Update"){
-//            softBump()
-//            focusModel.reportUiActive()
-//            focusModel.requestCurrentXl()
-//          }
-//          Button("Start"){
-//            softBump()
-//            focusModel.reportUiActive()
-//            focusModel.startXlStream()
-//          }
-//          Button("Stop"){
-//            softBump()
-//            focusModel.reportUiActive()
-//            focusModel.stopXlStream()
-//          }
-//        }
         
         Spacer()
         
         // Focus mode selection and indication area
         // Red circles emulate red LEDs on hardware device.
         VStack {
-          Text("Focus Mode").bold()
+          Text("Focus Mode").font(.title)
           Picker(selection: $focusModel.focusMode,
                  label: Text("???")) {
             Text("Course").tag(FocusMode.course)
@@ -111,14 +99,14 @@ struct FocusView: View {
         // Focus control area - BIG buttons simplify focusing
         // while looking through telescope and not at UI.
         VStack{
-          Text("Adjust Focus").bold()
+          Text("Adjust Focus").font(.title)
           HStack {
-            Button("\nCounter\nClockwise\n") {
+            BigButton(label: "Counter\nClockwise", minHeight: 200) {
               heavyBump() // feel different
               focusModel.reportUiActive()
               focusModel.updateMotorCommandCCW()}
             Spacer()
-            Button("\nClockwise\n\n") {
+            BigButton(label: "Clockwise", minHeight: 200) {
               softBump()
               focusModel.reportUiActive()
               focusModel.updateMotorCommandCW()
@@ -126,10 +114,7 @@ struct FocusView: View {
           }
         }
         
-//        StatusBarView(mountModel: mountModel)
-
-      } // Vstack that is always Red
-      .colorMultiply(Color(red:159/255, green: 0, blue: 0))
+      }
       
     } // top level VStack
     .onChange(of: scenePhase) { newPhase in
@@ -142,35 +127,16 @@ struct FocusView: View {
       }
     }
     .preferredColorScheme(.dark)
-    .foregroundColor(.white)
-    .buttonStyle(.bordered)
-    .controlSize(.large)
-    .font(.title)
     
     .onAppear{
       // FocusBleModel needs access to PierBleModel
       focusModel.linkPierModel(pierModel)
-
-      //Change picker font size
-      UISegmentedControl.appearance().setTitleTextAttributes(
-        [.font : UIFont.preferredFont(forTextStyle: .title1)],
-        for: .normal)
     }
     .onShake {
       focusModel.connectBle()
     }
   }
-  
-  func heavyBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .heavy)
-    haptic.impactOccurred()
-  }
-  
-  func softBump(){
-    let haptic = UIImpactFeedbackGenerator(style: .soft)
-    haptic.impactOccurred()
-  }
-  
+    
 }
 
 struct MainView_Previews: PreviewProvider {

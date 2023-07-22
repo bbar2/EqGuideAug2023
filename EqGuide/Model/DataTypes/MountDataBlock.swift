@@ -1,5 +1,5 @@
 //
-//  GuideDataBlock.swift
+//  MountDataBlock.swift
 //  EqGuide
 //
 //  Created by Barry Bryant on 4/2/22.
@@ -19,7 +19,7 @@ enum MountState:Int32 {
   case StateError
 }
 
-struct GuideDataBlock {
+struct MountDataBlock {
   var pierDegPerStep: Float32 = 1.0   // really, Degrees per MicroStep
   var diskDegPerStep: Float32 = 1.0   // Again, Degrees per MicroStep
   var raRateOffsetDegPerSec: Float32 = 0.0

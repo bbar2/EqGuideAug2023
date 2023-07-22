@@ -92,8 +92,8 @@ struct ContentView: View {
       mountDeviceModel.mountModelInit()
       mountDeviceModel.linkPierModel(pierDeviceModel)
       mountDeviceModel.linkFocusModel(focusDeviceModel)
+      viewOptions.setupSegmentControl()
     }
-
   }
 }
 

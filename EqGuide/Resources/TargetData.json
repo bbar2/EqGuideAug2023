@@ -360,6 +360,46 @@
     "mag": 6.8,
     "category": "Nebula",
     "constellation": "Orion"
+  },
+  {
+    "id": 1036,
+    "name": "Veil Nebula",
+    "description": "NGC 6960, 6992 and 6995.  3º size.  South of Sadr",
+    "ra": 311.4083,
+    "dec": 30.7083,
+    "mag": 7.0,
+    "category": "Nebula",
+    "constellation": "Cygnus"
+  },
+  {
+    "id": 1037,
+    "name": "Witch's Broom",
+    "description": "NGC 6960 within Veil Nebula",
+    "ra": 311.5000,
+    "dec": 30.7167,
+    "mag": 7.0,
+    "category": "Nebula",
+    "constellation": "Cygnus"
+  },
+  {
+    "id": 1038,
+    "name": "Sadr",
+    "description": "Gamma Cygni, Cross intersection in Cygnus",
+    "ra": 305.5571,
+    "dec": 40.2567,
+    "mag": 2.23,
+    "category": "Star",
+    "constellation": "Cygnus"
+  },
+  {
+    "id": 1039,
+    "name": "Albireo",
+    "description": "β Cygni, Southert tip of cross.",
+    "ra": 292.6804,
+    "dec": 27.9597,
+    "mag": 3.21,
+    "category": "MultiStar",
+    "constellation": "Cygnus"
   }
 
 ]

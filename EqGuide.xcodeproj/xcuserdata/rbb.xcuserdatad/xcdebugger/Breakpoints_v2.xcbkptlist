@@ -14,8 +14,8 @@
             filePath = "EqGuide/Model/MountBleModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "423"
-            endingLineNumber = "423"
+            startingLineNumber = "424"
+            endingLineNumber = "424"
             landmarkName = "goEastPierTimerHandler()"
             landmarkType = "7">
          </BreakpointContent>

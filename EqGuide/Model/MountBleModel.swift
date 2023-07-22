@@ -1,5 +1,5 @@
 //
-//  GuideModel.swift - manage astro angles.  RocketMount only knows about stepper
+//  MountBleModel.swift - manage astro angles.  RocketMount only knows about stepper
 //    motor counts.  This model maps stepper motor counts from known reference
 //    positions to RA/DEC angles.
 //
@@ -10,7 +10,7 @@
 //   Local_Y Level West
 //   Local_Z Up Opposite Gravity
 
-// Mount Reference Frame - Local Reference Frame rotated around Local_Y to point
+// Mount Reference Frame - Local Reference Frame rotated theta around Local_Y to point
 // to north celestial pole, near Polaris
 //   Mount_X rotated around Local_Y to north celestial pole.  theta = -(local latitude)
 //   Mount_Y level out left toward west, remains aligned with Local_Y
@@ -71,7 +71,7 @@
 
 //  RA/DEC to pierDeg/diskDeg mapping depends on target's side of pier
 //  determined by (RA-LST)
-//    If target is west use normal declination (NW or SW Quadrants)
+//    If target is west of LST use normal declination (NW or SW Quadrants)
 //      180 <= (RA-LST) <= 360
 //      PierMode = .east
 //      (RA-LST) = -90 - pierDeg
@@ -82,7 +82,7 @@
 //      diskDeg = DEC   //-90 <= diskDeg <= +90
 //      DEC = diskDeg
 //      |diskDeg| <= 90
-//  If target is east use flipped declination (NE or SE Quadrant)
+//  If target is east of LST use flipped declination (NE or SE Quadrant)
 //      0 < (RA-LST) < 180
 //      PierMode = .west
 //      (RA-LST) = 90 - pierDeg
@@ -91,7 +91,7 @@
 //      diskDeg = 180 - DEC
 //      DEC = 180 - diskDeg
 //      |diskDeg| > 90
-//   After these calcs, always map:
+//   After mapping, always limit:
 //     -180 <= pierDeg < 180
 //     -180 <= diskDeg < 180
 //     0 <= (RA-LST) < 360
@@ -151,6 +151,7 @@ import simd
 //   - When an eastern target (tracked in PierMode.west) tracks past LST to become a
 //     western target, the mount will not automatically switch to PierMode.east
 //     In that case, the mount can run to pierDeg hardware limit near -95º
+
 enum PierMode {
   case unknown  // arbitrarily use .east calulations
   case east     // target on west, calculations normal
@@ -172,7 +173,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var statusString = "Not Started"
   @Published var readCount = Int32(0)
-  @Published var guideDataBlock = GuideDataBlock()
+  @Published var mountDataBlock = MountDataBlock()
   @Published var refCoord = RaDec(ra: 0, dec: 0)
   @Published var targetCoord = RaDec(ra: 0, dec: 0)
   @Published var locationData = LocationData() // Should I @Published since elements are @Published elements?
@@ -184,7 +185,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   var pierModelLink: PierBleModel?
   var focusModelLink: FocusBleModel?
   
-  // These offsets, with current counts (in GuideDataBlock), determine angles.
+  // These offsets, with current counts (in MountDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
   // Offsets are established when Marking a known object, in updateOffsetsToReference()
   private var pierOffsetDeg = 0.0
@@ -512,14 +513,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   // Update mount angles, and Current RA/DEC from new Counts.
   // Don't do in calculated vars, because there is too much repetition building
   // terms, and updating Views.
-  // Call this everytime a new GuideDataBlock arrives from Mount
+  // Call this everytime a new MountDataBlock arrives from Mount
   func updateMountAngles() {
     
     updateLstDeg() // LST is function of time and longitude
     
     // Positive Count's advance axes CCW, looking to Polaris or top of scope
-    pierCurrentDeg = guideDataBlock.pierCountDeg + pierOffsetDeg
-    diskCurrentDeg = guideDataBlock.diskCountDeg + diskOffsetDeg
+    pierCurrentDeg = mountDataBlock.pierCountDeg + pierOffsetDeg
+    diskCurrentDeg = mountDataBlock.diskCountDeg + diskOffsetDeg
     
     pierCurrentDeg = pierCurrentDeg.mapAnglePm180()
     diskCurrentDeg = diskCurrentDeg.mapAnglePm180()
@@ -631,15 +632,15 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // given:
     //  pierAngle = guideDataBlock.pierCountDeg + pierOffsetDeg
     //  diskAngle = guideDataBlock.diskCountDeg + diskOffsetDeg
-    pierOffsetDeg = refPierAngle - guideDataBlock.pierCountDeg
-    diskOffsetDeg = refDiskAngle - guideDataBlock.diskCountDeg
+    pierOffsetDeg = refPierAngle - mountDataBlock.pierCountDeg
+    diskOffsetDeg = refDiskAngle - mountDataBlock.diskCountDeg
     
     // not sure these need to be mapped, but it shouldn't hurt.
     pierOffsetDeg = pierOffsetDeg.mapAnglePm180()
     diskOffsetDeg = diskOffsetDeg.mapAnglePm180()
     
-    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(guideDataBlock.pierCountDeg + pierOffsetDeg)")
-    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(guideDataBlock.diskCountDeg + diskOffsetDeg)")
+    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(mountDataBlock.pierCountDeg + pierOffsetDeg)")
+    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(mountDataBlock.diskCountDeg + diskOffsetDeg)")
     
     // Used for color coding values that depend on references
 //    pointingKnowledge = lstValid ? .marked : .none
@@ -648,23 +649,23 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   //MARK: === Read Data From Mount ==========
   
-  // This runs (via Notify Handler) every time EqMount sends a new GuideDataBlock (~10Hz)
-  func processDataFromMount(_ guideData: GuideDataBlock) {
+  // This runs (via Notify Handler) every time EqMount sends a new MountDataBlock (~10Hz)
+  func processDataFromMount(_ guideData: MountDataBlock) {
     
-    // Store the new GuideDataBlock
-    guideDataBlock = guideData
+    // Store the new MountDataBlock
+    mountDataBlock = guideData
     readCount += 1
     updateMountAngles()
     
     // trackingPaused is non zero when tracking.
-    raIsTracking = guideDataBlock.trackingPaused == 0 ? true : false;
+    raIsTracking = mountDataBlock.trackingPaused == 0 ? true : false;
     
     // Mount Reference Frame: +X forward/polaris, +Y left/west, +Z up/equatorial
     // Mount Accel is mounted +X forward,         +Y Right,     +Z up
     // Map Left Handed accelerometer to Right Handed Telescope
-    let rhsMountXl = simd_float3(guideDataBlock.accel_x,
-                                 -guideDataBlock.accel_y,
-                                 guideDataBlock.accel_z)
+    let rhsMountXl = simd_float3(mountDataBlock.accel_x,
+                                 -mountDataBlock.accel_y,
+                                 mountDataBlock.accel_z)
     
     let rhsNormMountXl = simd_normalize(rhsMountXl)
     
@@ -677,15 +678,15 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // This is the only angle with any meaming on the mount.
     theta = atan2(xlAligned.x, xlAligned.z) - PI // TODO: WHY PI (180) here
     
-    // Process specific GuideDataBlock commands
-    if guideDataBlock.mountState == MountState.PowerUp.rawValue {
+    // Process specific MountDataBlock commands
+    if mountDataBlock.mountState == MountState.PowerUp.rawValue {
       pointingKnowledge = .none
     }
         
     // Add code here for next specific GDB command
     if lookForRateChange {
       let oneArcSecPerMin = Float32(1.0 / (3600.0 * 60.0))
-      if abs(guideDataBlock.raRateOffsetDegPerSec - targetRateDps) < oneArcSecPerMin {
+      if abs(mountDataBlock.raRateOffsetDegPerSec - targetRateDps) < oneArcSecPerMin {
         heavyBump()
         lookForRateChange = false
       }
@@ -770,8 +771,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     let goToTargetCommand = GuideCommandBlock(
       command: GuideCommand.GuideToOffset.rawValue,
-      pierOffset: Int32( Float32(pierDeg) / guideDataBlock.pierDegPerStep),
-      diskOffset: Int32( Float32(diskDeg) / guideDataBlock.diskDegPerStep)
+      pierOffset: Int32( Float32(pierDeg) / mountDataBlock.pierDegPerStep),
+      diskOffset: Int32( Float32(diskDeg) / mountDataBlock.diskDegPerStep)
     )
     guideCommand(goToTargetCommand)
 
@@ -799,15 +800,15 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   func onReady(){
     rocketMount.setNotify(GUIDE_DATA_BLOCK_UUID) { [weak self] (buffer:Data)->Void in
       
-      // Copy the Data to a local GuideDataBlock structure
+      // Copy the Data to a local MountDataBlock structure
       let numBytes = min(buffer.count,
-                         MemoryLayout.size(ofValue: self!.guideDataBlock))
-      withUnsafeMutableBytes(of: &self!.guideDataBlock) { pointer in
+                         MemoryLayout.size(ofValue: self!.mountDataBlock))
+      withUnsafeMutableBytes(of: &self!.mountDataBlock) { pointer in
         _ = buffer.copyBytes(to:pointer, from:0..<numBytes)
       }
       
-      // Process the received GuideDataBlock
-      self?.processDataFromMount(self!.guideDataBlock)
+      // Process the received MountDataBlock
+      self?.processDataFromMount(self!.mountDataBlock)
     }
   }
   

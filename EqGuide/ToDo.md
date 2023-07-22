@@ -1,11 +1,12 @@
 Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
+This is a Mark Down file. What are formating options in md files? 
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
+2023-07-02: While guiding to a target, Pause Tracking to improve accuracy.
 2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.
 2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
-2023-07-02: While guiding to a target, Pause Tracking to improve accuracy.
 2023-07-02: Should a Reset set pointing knowledge to none?
 2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
 2023-06-17: Hardware Red button, should also neutralize ios move commands. Directly, and probably through the data block sent to ios.
@@ -14,7 +15,7 @@ Do I get spel checking.  No.
 2022-05-27: GUI reconfigure - No functional change to GuideMount
   New main Guide with: 
     done - BLE Link indication for all three BLE devices - for status display
-    East/West Pier indicator, 
+    done - East/West Pier indicator, 
     AZ/EL conversion
     Done - Current RA/DEC (Yellow from angle, Red from Ref)
     Done - LST, Lat, Long
@@ -22,18 +23,17 @@ Do I get spel checking.  No.
     Done - Ref RA/DEC - select control
     Done - Pause Guiding Control.
     Done - Swap and Set Target and Ref Control which transmits to mount
-2023-05-27: Targ mode not working as expected. Ref/Targ mode works well.
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
-2023-04-23: When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
-2022-10-12: Add a way to select the fixed angle refPierVert/East/West reference points. 
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
 2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
 2022-10-10: Add time varying coordinates for Planets - or just enter them manually at show time. 
-2022-04-06: This is a Mark Down file. What are formating options in md files? 
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-07-02: Done - Add a way to select the fixed angle refPierVert/East/West reference points. 
+2023-07-02: Done - When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
+2023-07-02: Done - Targ mode not working as expected. Ref/Targ mode works well.
 2023-07-02: Done - it was the straight up is west thing.  Added test for (RA-LST) -- 0. After GOTO EastPier, PierDeg should be -90 and it's +90
 2023-07-02: Done - Focus - Connect and Start BLE. Remove all XL data stuff from this page.
 2023-07-02: Done - Review/Update reference confidence:  updateOffsetsTo(reference:) should update confidence to estimated value.  MarkRef should change to highest value. 

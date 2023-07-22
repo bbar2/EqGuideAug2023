@@ -20,7 +20,7 @@
 		3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B72A5621EE00E16091 /* PierModeView.swift */; };
 		3565E1BA2A572B0600E16091 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B92A572B0600E16091 /* StatusBar.swift */; };
 		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
-		3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */; };
+		3574C9F527F8D6FE0036CD94 /* MountDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */; };
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
@@ -75,7 +75,7 @@
 		3565E1B72A5621EE00E16091 /* PierModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierModeView.swift; sourceTree = "<group>"; };
 		3565E1B92A572B0600E16091 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
-		3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideDataBlock.swift; sourceTree = "<group>"; };
+		3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountDataBlock.swift; sourceTree = "<group>"; };
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				352168482814A86D00C76670 /* LocationData.swift */,
-				3574C9F427F8D6FE0036CD94 /* GuideDataBlock.swift */,
+				3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
 				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
 				35DE202D27F4AEB600D96C68 /* Dms.swift */,
@@ -380,7 +380,7 @@
 				358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */,
 				3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */,
 				3521684728145C2A00C76670 /* Haptics.swift in Sources */,
-				3574C9F527F8D6FE0036CD94 /* GuideDataBlock.swift in Sources */,
+				3574C9F527F8D6FE0036CD94 /* MountDataBlock.swift in Sources */,
 				35FBF06827888866001EFA53 /* MountBleModel.swift in Sources */,
 				35DF7EC927F4B1DB008E925A /* Hms.swift in Sources */,
 				356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */,

@@ -27,7 +27,7 @@ struct StopControlView: View {
           softBump()
         }
       } else {
-        BigButton(label: "Resume\nTracking", minWidth: 150, textColor: Color.yellow) {
+        BigButton(label: "Resume\nTracking", textColor: Color.yellow, minWidth: 150) {
           mountModel.resumeTracking()
           softBump()
         }

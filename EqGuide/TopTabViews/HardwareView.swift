@@ -40,7 +40,7 @@ struct HardwareView: View {
     VStack {
 
       VStack {
-        Text("Hardware View").font(.title)
+        Text("Hardware View").font(viewOptions.appHeaderFont)
         
         HStack {
           Spacer()
@@ -121,7 +121,7 @@ struct HardwareView: View {
       }
       Spacer()
 
-      RawDataView(gdb: mountModel.guideDataBlock)
+      RawDataView(gdb: mountModel.mountDataBlock)
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
       

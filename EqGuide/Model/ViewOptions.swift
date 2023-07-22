@@ -28,7 +28,7 @@ final class ViewOptions: ObservableObject {
     return (forceDarkMode || colorScheme == .dark ? appRedColor : .black)
   }
     
-  let appHeaderFont = Font.system(.title).monospacedDigit()
+  let appHeaderFont = Font.system(.title).monospacedDigit().bold()
   let labelFont = Font.system(.title3)
   let bigValueFont = Font.system(.title2).bold().monospacedDigit()
   let smallValueFont = Font.system(.body).monospacedDigit()
@@ -38,6 +38,7 @@ final class ViewOptions: ObservableObject {
   let leadingPad = CGFloat(10)
   let trailingPad = CGFloat(10)
 
+  // Segment controls in any View will use these values
   func setupSegmentControl() {
     // Set color of "thumb" that selects between items
     UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(thumbColor)
