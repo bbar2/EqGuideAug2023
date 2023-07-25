@@ -79,10 +79,10 @@ struct ContentView: View {
       if newPhase == .active {
         print("ScenePhase = Active")
       } else if newPhase == .inactive {
-        mountDeviceModel.endAutoControl()
+        mountDeviceModel.endXlControl()
         print("ScenePhase = Inactive")
       } else if newPhase == .background {
-        mountDeviceModel.endAutoControl()
+        mountDeviceModel.endXlControl()
         print("ScenePhase = Background")
       } else {
         print("ScenePhase = ?")

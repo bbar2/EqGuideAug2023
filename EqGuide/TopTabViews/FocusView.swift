@@ -48,19 +48,19 @@ struct FocusView: View {
               softBump()
               focusModel.disconnectBle()
             }
-            if focusModel.connectionLock {
-              BigButton(image: Image(systemName: "timer"), imageSize:75) {
+            if focusModel.bleTimeoutEnable {
+              BigButton(label: String(focusModel.timerValue)){
                 softBump()
-                focusModel.connectionLock = false
+                focusModel.bleTimeoutEnable = false
                 focusModel.reportUiActive()
               }
             } else {
-              BigButton(label: String(focusModel.timerValue)){
+              BigButton(image: Image(systemName: "timer"), imageSize:75) {
                 softBump()
-                focusModel.connectionLock = true
+                focusModel.bleTimeoutEnable = true
                 focusModel.reportUiActive()
               }
-            }//.foregroundColor(viewOptions.appActionColor)
+            }
           }
         }
         else {

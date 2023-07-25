@@ -16,6 +16,20 @@ struct ManualView: View {
   
   @State private var canTouchDown = true
   
+  // TODO: Put this in mountModel.  Had trouble accessing viewOptions from mountModel.
+  // It's also used by HardwareView, so duplicated for now.
+  func pointingKnowledgeColor() -> Color {
+    switch (mountModel.pointingKnowledge)
+    {
+      case .none:
+        return viewOptions.confNoneColor
+      case .estimated:
+        return viewOptions.confEstColor
+      case .marked:
+        return viewOptions.appRedColor
+    }
+  }
+  
   var body: some View {
     
     VStack {
@@ -24,7 +38,17 @@ struct ManualView: View {
       }
       
       Spacer()
-      
+
+      RaDecPairView(
+        pairTitle: "Current\nPosition",
+        pair: mountModel.currentPosition,
+        showDmsHms: viewOptions.showDmsHms,
+        pierDeg: mountModel.pierCurrentDeg,
+        diskDeg: mountModel.diskCurrentDeg
+      )
+      .foregroundColor(pointingKnowledgeColor())
+//      .padding([.bottom], 1)
+
       HStack {
         if ((mountModel.pierModelLink?.bleConnected()) != nil)
         {
@@ -34,7 +58,7 @@ struct ManualView: View {
             heavyBump()
           }
           Spacer()
-          BigButton(label:"EAST\nPIER") {
+          BigButton(label:"EAST") {
             mountModel.goEastPier()
             heavyBump()
           }

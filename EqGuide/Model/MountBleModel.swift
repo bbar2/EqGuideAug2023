@@ -238,12 +238,13 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   private let rocketMount: MyPeripheral
   private var initialized = false
   
-  private var lstOffset = 0.0  // leave this 0.0 for normal operation.
+  private var lstOffset = 0.0  // must be 0.0 for normal operation.
                   //lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
                   //lstOffset = 90.0 - lstDeg // match figure
 
-  private var autoControlTimer = Timer()
-  @Published var autoControlActive = false
+  private var xlControlTimer = Timer()
+  @Published var xlControlActive = false
+  private var raOnXlTarget = false
   
   init() {
     
@@ -306,44 +307,32 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     guideCommandResumeTracking()
   }
   
-  func beginAutoControl(controlAction: @escaping ()->Void)
-  {
-    if autoControlActive {
-      endAutoControl()
-    }
-    
-    autoControlActive = true
-    autoControlTimer = Timer.scheduledTimer(withTimeInterval: 0.2, // 5 Hz
-                                            repeats: true) { _ in
-      controlAction()
-    }
+  func goHome() -> Bool {
+    raOnXlTarget = false
+    return beginXlControl(controlAction: goHomeTimerHandler)
   }
   
-  func endAutoControl() {
-    guideCommandMoveNull()
-    autoControlTimer.invalidate()
-    autoControlActive = false
-  }
-
-  func goHome(){
-    beginAutoControl(controlAction: goHomeTimerHandler)
-  }
-
   // Simulate Arrow presses, until Pier Y acceleration = 0.0.
   // if Ay is possitive, go West; else go East
   func goHomeTimerHandler() {
 
-    if goHomeRa()
+    if raOnXlTarget || goHomeRa()
     {
-      if goHomeDec()
-      {
-        endAutoControl()
-        updateLstDeg()
-        let homeCoord = RaDec(ra: lstDeg - 90.0, dec: 0.0)
-        updateOffsetsTo(reference: homeCoord)
-        pointingKnowledge = lstValid ? .estimated : .none
-        setPierMode()
-      }
+      if focusModelLink?.bleConnected() ?? false {
+        if goHomeDec()
+        {
+          endXlControl()
+          updateLstDeg()
+          let homeCoord = RaDec(ra: lstDeg - 90.0, dec: 0.0)
+          updateOffsetsTo(reference: homeCoord)
+          pointingKnowledge = lstValid ? .estimated : .none
+          setPierMode()
+          
+          if let focusModel = focusModelLink {
+            focusModel.enableBleTimeout()  // let focus disconnect after timeout
+          }
+        }
+      } // focusModelLink?.bleConnected()
     }
   }
   
@@ -373,6 +362,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     }
     else {
       guideCommandMoveNull();
+      raOnXlTarget = true;
       return true;
     }
 
@@ -408,23 +398,30 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     }
   }
   
-  func goEastPier() {
-    beginAutoControl(controlAction: goEastPierTimerHandler )
+  func goEastPier() -> Bool {
+    raOnXlTarget = false
+    return beginXlControl(controlAction: goEastPierTimerHandler)
   }
   
   func goEastPierTimerHandler() ->Void {
-    if goEastPierRa()
+    if raOnXlTarget || goEastPierRa()
     {
-      if goEastPierDec()
-      {
-        endAutoControl()
-        updateLstDeg()
-        let eastPierCoord = RaDec(ra: lstDeg, dec: 0.0)
-        print("eastPierCoord.ra = \(eastPierCoord.ra)  dec = \(eastPierCoord.dec)")
-        updateOffsetsTo(reference: eastPierCoord)
-        pointingKnowledge = lstValid ? .estimated : .none
-        setPierMode()
-      }
+      if focusModelLink?.bleConnected() ?? false {
+        if goEastPierDec()
+        {
+          endXlControl()
+          updateLstDeg()
+          let eastPierCoord = RaDec(ra: lstDeg, dec: 0.0)
+          updateOffsetsTo(reference: eastPierCoord)
+          pointingKnowledge = lstValid ? .estimated : .none
+          setPierMode()
+          
+          if let focusModel = focusModelLink {
+            focusModel.enableBleTimeout()  // can let focus timeout now
+          }
+          
+        }
+      } // focusModelLink?.bleConnected()
     }
   }
   
@@ -441,7 +438,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let west_slow = Int32(-1)
     let east_fast = Int32(2)
     let east_slow = Int32(1)
-    if (ay < Float(0.0) || az > slowThreshold) {
+    if (ay < Float(0.0) || az >= slowThreshold) {
       guideCommandMove(ra: east_fast, dec: 0)
       return false
     } else if (az < -slowThreshold) {
@@ -456,6 +453,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       return false
     } else {
       guideCommandMoveNull()
+      raOnXlTarget = true
       return true
     }
   }
@@ -491,6 +489,60 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       return true;
     }
   }
+
+  //MARK: === XL Control ===
+
+  // Auto control uses XL in PierModel to position RA
+  // Auto control uses XL in FocusModel to position DEC
+  func beginXlControl(controlAction: @escaping ()->Void) -> Bool
+  {
+    if xlControlActive {
+      endXlControl()
+    }
+    
+    // Something very wrong if pier not connected
+    if let pierModel = pierModelLink {
+      if !pierModel.bleConnected() {
+        print("Pier BLE Not Connected")
+        return false
+      }
+    } else {
+      print("PierModel nil")
+      return false
+    }
+ 
+    // It's normal for FocusBle to timeout.  Start reconnection.
+    // Test for focusModel.bleConnected() before trying to control DEC.
+    if let focusModel = focusModelLink {
+      focusModel.disableBleTimeout()
+      if !focusModel.bleConnected() {
+        focusModel.connectBle() // initiate connection.
+      }
+    } else {
+      print("FocusModel nil")
+      return false
+    }
+    
+    pauseTracking() // no need to track while under XlControl
+    
+    xlControlActive = true
+    xlControlTimer = Timer.scheduledTimer(withTimeInterval: 0.4, // 2.5 Hz
+                                            repeats: true) { _ in
+      controlAction()
+    }
+    
+    return true // XL Control Stated
+  }
+  
+  func endXlControl() {
+    guideCommandMoveNull()
+    xlControlTimer.invalidate()
+    xlControlActive = false
+    //resumeTracking() // TODO: definitely overwrites MoveNull command - sometimes.
+    // TODO: Requires buffering, or handshake acknowledment of commands or use of .withResponse.
+  }
+  
+  
 
 
   //MARK: === Angle Processing ===
@@ -541,20 +593,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     currentPosition.ra = currentPosition.ra.mapAngle0To360()
     currentPosition.dec = currentPosition.dec.mapAnglePm180()
-
-    //    // Looking to which side of pier (disk<=0 looks east; disk>0 looks west)
-//    if lstValid && (pointingKnowledge != Knowledge.none) {
-//      if (diskCurrentDeg <= 0) { // lens is looking to east side of pier
-//        currentPosition.ra = lstDeg + 90.0 - pierCurrentDeg
-//        currentPosition.dec = diskCurrentDeg + 90.0
-//      } else { // looking to west side of pier
-//        currentPosition.ra = lstDeg + 270.0 - pierCurrentDeg
-//        currentPosition.dec = 90.0 - diskCurrentDeg
-//      }
-//    } else {
-//      currentPosition.ra = pierCurrentDeg  // RA unknown without pointing knowledge
-//      currentPosition.dec = diskCurrentDeg // DEC unknown without pointing knowledge
-//    }
     
   } // end updateMountAngles
   
@@ -749,7 +787,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   // Motion decels to a stop, then Mount goes thru PowerUp states.
   func guideCommandReset() {
     // stop any local timer driven movements
-    autoControlTimer.invalidate()
+    xlControlTimer.invalidate()
     
     // Tell the mount to Reset
     let resetCommand = GuideCommandBlock(command: GuideCommand.Reset.rawValue)

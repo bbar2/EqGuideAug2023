@@ -4,8 +4,8 @@ This is a Mark Down file. What are formating options in md files?
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
-2023-07-02: While guiding to a target, Pause Tracking to improve accuracy.
-2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.
+2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.  I think I can use PierMode.unknown to detect this. Working in: enableAutoDisconnect()
+2023-07-24: Manual - Home/EastPier either disable if no Focus and Pier BLE connection, or issue connects to both before executing Home/EastPier operations.  Maybe, disable if no Pier, and issue Focus connect if not connected.
 2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
 2023-07-02: Should a Reset set pointing knowledge to none?
 2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
@@ -31,6 +31,8 @@ This is a Mark Down file. What are formating options in md files?
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-07-24: Done - Mount BLE reconnects. Make Pier and Focus do it too.
+2023-07-24: NO - Mount does this with counts:  While guiding to a target, Pause Tracking to improve accuracy.
 2023-07-02: Done - Add a way to select the fixed angle refPierVert/East/West reference points. 
 2023-07-02: Done - When I Set East Pier, it's only correct for an instant. Running making the reference error increase.  
 2023-07-02: Done - Targ mode not working as expected. Ref/Targ mode works well.

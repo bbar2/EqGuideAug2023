@@ -13,8 +13,6 @@ struct TouchImage: View {
   var releaseAction: ()->Void
   var enable: Bool = true
 
-  var minWidth = 100
-
   @State private var canTouchDown = true
 
   @EnvironmentObject var viewOptions: ViewOptions
@@ -22,7 +20,7 @@ struct TouchImage: View {
   var body: some View {
     Image(systemName: systemName)
       .resizable()
-      .frame(width: 120, height: 120)
+      .frame(width: 100, height: 90)
     //.offset(x:canTouchDown ? 0 : 2, y:canTouchDown ? 0 : 2)
     .gesture(
       DragGesture(minimumDistance: 0)

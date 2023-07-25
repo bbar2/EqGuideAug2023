@@ -63,6 +63,9 @@ class PierBleModel : MyPeripheralDelegate,
   func onDisconnected(){
     //    pierAccel.startBleConnection()
     bleState = BleState.disconnected
+    
+    // attmempt to restart the connection
+    pierPeripheral.startBleConnection()  // restart after connection lost
   }
   
   func onReady() {

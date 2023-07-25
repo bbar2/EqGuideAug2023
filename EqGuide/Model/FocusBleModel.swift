@@ -78,7 +78,7 @@ class FocusBleModel : MyPeripheralDelegate,
   @Published var bleState = BleState.disconnected
   @Published var statusString = "Not Connected"
   @Published var focusMode = FocusMode.medium
-  @Published var connectionLock = true // true to prevent connection timeout
+  @Published var bleTimeoutEnable = false
   @Published var timerValue: Int = 0
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // is left handed
@@ -101,6 +101,7 @@ class FocusBleModel : MyPeripheralDelegate,
   // Disconnect BLE if no UI inputs for this long, so other devices can control focus
   private let TIMER_DISCONNECT_SEC = 10
   private var connectionTimer = Timer()
+  private var requestDisconnect = false;
   
   
   // This runs everytime an FocusAccel data struct arrives via BLE.  Nominally at 5Hz.
@@ -173,6 +174,7 @@ class FocusBleModel : MyPeripheralDelegate,
   
   func disconnectBle() {
     if (bleState != .disconnected) {
+      requestDisconnect = true
       focusMotor.endBleConnection()
     }
   }
@@ -186,12 +188,24 @@ class FocusBleModel : MyPeripheralDelegate,
       connectBle()
     }
   }
+
+  // Once Home or EastPier have been found, it's OK for focus to disconnect
+  // Releasing the connectionLock, enables mixed use of hardware focus controller
+  // FocusTab can always reset the connectionLock
+  func enableBleTimeout(){
+    timerValue = TIMER_DISCONNECT_SEC
+    bleTimeoutEnable = true
+  }
+  
+  func disableBleTimeout(){
+    bleTimeoutEnable = false
+  }
   
   // If no UI interaction for one timerInterval disconnect the BLE link.
   func uiTimerHandler() {
     timerValue -= 1
-    
-    if (!connectionLock && timerValue <= 0) {
+        
+    if (bleTimeoutEnable && timerValue == 0) {
       disconnectBle()   // disconnect ble
     }
   }
@@ -268,13 +282,19 @@ class FocusBleModel : MyPeripheralDelegate,
   // BLE Connected, but have not yet scanned for services and characeristics
   func onConnected(){
     statusString = "Connected"
+    requestDisconnect = false
   }
   
   func onDisconnected(){
     bleState = .disconnected;
     statusString = "Disconnected"
     connectionTimer.invalidate()
-    connectionLock = false
+    bleTimeoutEnable = false // TODO: not sure about this one
+    
+    // If user didn't ask for this, reconnect
+    if !requestDisconnect {
+      focusMotor.startBleConnection()
+    }
   }
   
   func onReady() {

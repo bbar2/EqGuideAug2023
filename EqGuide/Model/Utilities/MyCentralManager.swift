@@ -87,7 +87,6 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
   }
   
   public func reConnect(_ peripheral: CBPeripheral) {
-    print("reConnect \(peripheral.name ?? "no-name")")
     cbCentralManager!.connect(peripheral, options: nil)
   }
   
