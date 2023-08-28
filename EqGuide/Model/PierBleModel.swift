@@ -33,9 +33,9 @@ class PierBleModel : MyPeripheralDelegate,
   private let pierPeripheral: MyPeripheral
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // left handed
-  var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)   // axis aligned
-  var theta: Float = 0.0 // roll around X
-  var phi: Float = 0.0   // pitch around Y
+  @Published var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)   // axis aligned
+  @Published var theta: Float = 0.0 // roll around X
+  @Published var phi: Float = 0.0   // pitch around Y
 
   private var alignPierAccelTransform = matrix_identity_float3x3
 
@@ -47,7 +47,7 @@ class PierBleModel : MyPeripheralDelegate,
     pierPeripheral.startBleConnection()
     
     // only need to do this once
-    //alignPierAccelTransform = buildCalTform() // TODO: need to update
+    alignPierAccelTransform = buildCalTform() // TODO: need to update
   }
   
   //MARK: MyPeripheralDelegate
@@ -110,8 +110,9 @@ class PierBleModel : MyPeripheralDelegate,
   // rotates from 90E to 90W, and psi = 0 will be established.  There may still be
   // psi offsets at psi = +- 90 degrees.
   //
-  // Any re-mounting of declination motor control box may necessitate re measuring
+  // Any re-mounting of declination motor control box may require re measuring
   // these four calibration points.
+  // - Tilt to some representative theta - about 36 will do.
   // - With identity calibration measure:
   //   1. theta with pier at 90E, determined with bubble level
   //   2. theta with pier at 90W, determined with bubble level
@@ -127,30 +128,35 @@ class PierBleModel : MyPeripheralDelegate,
   // This procedure alligns x axis and zero's roll.
   // It does not calibrate the accelerations, so there may be noticable (1 to 2 deg)
   // offsets at psi = +-90 degrees of roll around X.
+  
+  // Really, all I care about is using Az = 0 to find East, or Ay = 0 to find Home.
+  // 1. Find Home with bubble.  Rotate X to get Y = 0.
+  // 2. Find East with bubble.
   func buildCalTform() -> simd_float3x3 {
     
     // Two calibration points measured before applying correction, to estimate Z rotation
-    // correction to center up theta at psi=90E and psi=90W readings
-    let theta90EDeg = Float(-23.4)  // Theta reported while pier East by bubble level
-    let theta90WDeg = Float(-27.3)  // Theta reported while pier West by bubble level
-    let zCorrection = (toRad(-(theta90EDeg - theta90WDeg)/2))
+    // correction to center up phi at using phi=90E and phi=90W readings
+    let theta90EDeg = Float(-35.80)  // Theta reported while pier East by bubble level
+    let theta90WDeg = Float(-39.57)  // Theta reported while pier West by bubble level
+    let zCorrection = toRad((theta90EDeg - theta90WDeg)/2)
     
     // Rotation required to cancel out Z mounting rotational offset
-    let zRotation = zRot3x3(psiRad: zCorrection)   // offset in rads to make theta90E = -theta90W
+    let zRotation = zRot3x3(psiRad: zCorrection)   // offset makes theta90E = -theta90W
     
-    // Use theta at psi=0 (measured after Z correction alone) to correct y pointing
-    let theta90Deg = Float(-25.3) // both 90E and 90W report -25.3 after z correction
-    let theta0Deg = Float(-25.0)
-    let yCorrection = (toRad(theta0Deg - theta90Deg))
-    let yRotation = yRot3x3(phiRad: yCorrection)
+    // Use theta at phi=0 (measured after Z correction alone) to correct y pointing
+    let thetaAtPhi90Deg = Float(-37.32) // both 90E and 90W report this after z correction
+    let thetaAtPhi0Deg = Float(-36.88)
+    let yCorrection = -(toRad(thetaAtPhi0Deg - thetaAtPhi90Deg))
+    let yRotation = yRot3x3(thetaRad: yCorrection)
     
-    // After applying z and y corrections, measure psi at psi=0(by bubble level)
-    let psi0 = Float(-3.2)
-    let xCorrection = psi0  // rotate theta to zero psi
-    let xRotation = xRot3x3(thetaRad: xCorrection)
+    // TODO: this is not right yet - the z and y corrections help a lot.  Not this.
+    // After applying z and y corrections, measure phi at phi=0(by bubble level)
+//    let phi0Deg = Float(-1.56)
+//    let xCorrection = toRad(phi0Deg)  // rotate phi to zero phi
+//    let xRotation = xRot3x3(phiRad: xCorrection)
     
     // PreMultiply to Concatinate transforms
-    let accelAlign = xRotation * yRotation * zRotation
+    let accelAlign = /* xRotation */ yRotation * zRotation * matrix_identity_float3x3
     
     return accelAlign
   }

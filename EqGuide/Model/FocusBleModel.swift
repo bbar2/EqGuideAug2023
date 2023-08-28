@@ -121,9 +121,9 @@ class FocusBleModel : MyPeripheralDelegate,
     //let pierToFocusThetaOffset = Float(toRad(0.0))
     //let pierToFocusPhiOffset = Float(toRad(0.0))
     
-    let yRot = yRot3x3(phiRad: 0.0)
+    let yRot = yRot3x3(thetaRad: 0.0)
+    let xRot = xRot3x3(phiRad: 0.0)
     let zRot = zRot3x3(psiRad: 0.0)
-    let xRot = xRot3x3(thetaRad: 0.0)
     let alignTform = zRot * xRot * yRot // tbd for now
     xlAligned = alignTform * xlNorm
     

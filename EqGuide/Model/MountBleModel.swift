@@ -4,127 +4,9 @@
 //    positions to RA/DEC angles.
 //
 //  Created by Barry Bryant on 1/7/22.
-
-// Local Reference Frame - Right Handed Coordinate System
-//   Local_X Level North
-//   Local_Y Level West
-//   Local_Z Up Opposite Gravity
-
-// Mount Reference Frame - Local Reference Frame rotated theta around Local_Y to point
-// to north celestial pole, near Polaris
-//   Mount_X rotated around Local_Y to north celestial pole.  theta = -(local latitude)
-//   Mount_Y level out left toward west, remains aligned with Local_Y
-//   Mount_Z rotated around Local_Y southward to equitorial
-
-// Pier Reference Frame - Mount reference frame rotated by phi around Mount_X
-//   Pier_X remains aligned with Mount_X
-//   Pier_Y and Pier_Z rotate around Mount_X,
-//   X rotation (phi) aligns target RA, and is function of target RA and LST
-
-// Telescope Reference Frame - Pier Reference frame rotated by psi around Pier_Z axis.
-//   Tele_X forward out optical axis of telescope
-//   Tele_Y out left side of telescope (left defined when aligned with Local frame)
-//   Tele_Z remains aligned with Pier_Z. Out top of telescope
-//   Z rotation (psi) aligns target DEC, and is function of RA, LST and DEC.
-
-// Mount hardware order of rotations, defined by cascaded hardware design:
-//   theta: +CW pitch around Local_Y/Mount_Y to point to Polaris (theta = -Latitude)
-//   phi: +CW roll around Mount_X/Pier_X to align RA (phi = -pierDeg)
-//   psi: +CW yaw around Pier_Z/Tele_Z to align DEC (psi = 90 - diskDeg)
-
-//  Mount pier angle (pierDeg) rotates in Right Ascension, around Mount_X/Pier_X
-//  Increases CCW looking out Mount_X, away from mount, toward polaris.
-//  I suspect the origin of this CCW is the westward tracking advance.
-//  pierDeg is:
-//   +90º when pier is horizontal on west side
-//   -90º when pier is horizontal on east side
-//     0 when pier is vertical
-//  -180 <= pierDeg < +180.  Add or subtract 360 to keep in this range.
-//  Pier angle range of motion mechanically limited to +- ~95º
-//  phi = -pierDeg; // due to CCW direction of pierDeg.
-
-//  Mount Disk angle (diskDeg) rotates in Declination, around Pier_Z/Tele_Z
-//  + is CCW looking up from bottom of disk.
-//  diskDeg is:
-//   +90 pointing at north end of pier
-//   -90 pointing at south end of pier
-//     0 pointing to west side of pier
-// -180 <= diskDeg < 180. Add or subtract 360 to keep in this range.
-// Disk angle is not mechanically limited.  Can do 360's all day.
-// psi = (90 - diskDeg); // Due to 90 degree offset and CCW direction of diskDeg.
-
-// LST runs North to South and is always straight up f(time, longitude)
-//   0 <= LST < 360º (0 <= LST < 24 hr)
-// RA is fixed to celstial sphere
-//   0 <= RA < 360º (0 <= RA < 24 hr)
-//   increases CW looking at Polaris
-// (RA-LST) is always = 0 up.  = 90º East.  = 270º West. = 180º down into ground.
-//    0 <= (RA-LST) < 360
-//    increases CW looking at Polaris
-
-// DEC is fixed to celestial sphere
-//   +90 at north pole
-//     0 at equator
-//   -90 at south pole
-//   -90 <= DEC <= +90
-//    if |DEC| == 90, RA rotates FOV but does not change where telescope is pointing
-
-//  RA/DEC to pierDeg/diskDeg mapping depends on target's side of pier
-//  determined by (RA-LST)
-//    If target is west of LST use normal declination (NW or SW Quadrants)
-//      180 <= (RA-LST) <= 360
-//      PierMode = .east
-//      (RA-LST) = -90 - pierDeg
-//      pierDeg = -90 - (RA-LST) = LST - 90 - RA
-//      RA = LST - 90 - pierDeg
-//      Note that pierDeg decreases as RA increases.
-//      This fits since pierDeg increases CCW and RA increases CW.
-//      diskDeg = DEC   //-90 <= diskDeg <= +90
-//      DEC = diskDeg
-//      |diskDeg| <= 90
-//  If target is east of LST use flipped declination (NE or SE Quadrant)
-//      0 < (RA-LST) < 180
-//      PierMode = .west
-//      (RA-LST) = 90 - pierDeg
-//      pierDeg = 90 - (RA-LST) = LST + 90 - RA
-//      RA = LST + 90 - pierDeg
-//      diskDeg = 180 - DEC
-//      DEC = 180 - diskDeg
-//      |diskDeg| > 90
-//   After mapping, always limit:
-//     -180 <= pierDeg < 180
-//     -180 <= diskDeg < 180
-//     0 <= (RA-LST) < 360
-//     -90 <= DEC <= +90
-
-//  TODO: consider adding ~2 degree padding on pier declination flip.
-//  Upgrade: For eastern targets near LST, use normal declination to prevent
-//    westward tracking from quickly running into 95º hardware limit
-//    - If eastern target is within padº of vertical, start with pier on east.
-//    - Detect with (RA-LST) < padº, or (RA-LST) < (180º+pad)
-//    - Do I need pierDeg/diskDeg to RA/DEC calcs to have opposite logic?
-
-// HOME Position:
-//   - pier Vertical: pierDeg = 0
-//   - disk points West: diskDeg = 0.  Supports focus motor setup.
-//   - x axis now points west.  y axis now points south.
-//   - Since dskDeg < 90, use DecMode.normal angle mapping
-//     (RA-LST) = -90º - pierDeg = -90º;  RA = LST - 90º
-//     DEC = dskDeg = 0º
-
-// EAST PIER Position: (Not to be confused with PierMode East)
-//   - pier Horizontal with mount on east side of pier:  pierDeg = -90º
-//   - disk points up at LST. diskDeg = 0.
-//   - This is edge case in raDecToMountAngles since LST can be viewed from either:
-//     -- pierDeg = -90, diskDeg = 0, DecMode.normal, pier on east
-//     -- pierDeg = 90, diskDeg = -180, DecMode.flipped, pier on West
-//     - added test in raDecToMountAngles to force this to DecMode.normal
-//   - x axis points up at equitorial plane
-//   - y axis points at north pole
-//   - z axis is horizontal
-//   - since dskDeg < 90, use DecMode.normal angle mapping
-//     (RA-LST) = -90º - pierDeg = -90º - (-90º) = 0;  RA = LST
-//     DEC = dskDeg = 0º
+//
+// See CoordinateSystems.md for reference frame definitions
+// See AstroTermsDefined.md for definitions of common terms (Pier Mode, Hour Angle, ..)
 
 import SwiftUI
 import CoreBluetooth
@@ -132,28 +14,8 @@ import Combine
 import CoreLocation
 import simd
 
-// PierMode is a standard astronomical term
-// When PierMode is .east
-//   - The target is on west. 180 <= (RA-LST) <= 360  (360 maps to 0)
-//   - I define the (RA-LST) = 0 or 180 edge cases as west targets
-//   - Pier is on east for North/West quadrant targets
-//   - Pier is on west for South/West quadrant targets
-// When PierMode is .west
-//   - The target is on the east, 0 < (RA-LST) < 180
-//   - Pier is on west for North/East quadrant targets
-//   - Pier is on east for South/Wast quadrant targets
-// Initially PierMode is .unknown
-//   - RA of where telescope is pointing is .unknown
-//   - Pier position is .unknown until a Mark or Manual GoTo
-//   - arbitrarily use .east calculations for N/S/E/W pointing
-// Only set to after MarkTarget, GoToTarget
-//   - Manual Mode GoTo Home or EastPier are both PierMode.east with (RA-LST) = 0
-//   - When an eastern target (tracked in PierMode.west) tracks past LST to become a
-//     western target, the mount will not automatically switch to PierMode.east
-//     In that case, the mount can run to pierDeg hardware limit near -95º
-
 enum PierMode {
-  case unknown  // arbitrarily use .east calulations
+  case unknown  // arbitrarily use .east calulations when unknown
   case east     // target on west, calculations normal
   case west     // target on east, calculations flipped
 }
@@ -214,8 +76,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var pointingKnowledge = PointingKnowledge.none
   @Published var lstValid = false
   
-  var xlAligned = simd_float3(x: 0, y: 0, z: 0)
-  var theta = Float(0.0)  // Mount pitch toward Polaris, or rotation around Mount_Y
+  @Published var xlAligned = simd_float3(x: 0, y: 0, z: 0)
+  @Published var theta = Float(0.0)  // Mount pitch toward Polaris, or rotation around Mount_Y
   
   @Published var raIsTracking = true
   
@@ -230,7 +92,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   private let GUIDE_DEVICE_NAME = "EqMountGuideService"
   private let GUIDE_SERVICE_UUID = CBUUID(
     string: "828b0010-046a-42c7-9c16-00ca297e95eb")
-  private let GUIDE_DATA_BLOCK_UUID = CBUUID(
+  private let MOUNT_DATA_UUID = CBUUID(
     string: "828b0011-046a-42c7-9c16-00ca297e95eb")
   private let GUIDE_COMMAND_UUID = CBUUID(
     string: "828b0012-046a-42c7-9c16-00ca297e95eb")
@@ -251,7 +113,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     self.rocketMount = MyPeripheral(
       deviceName: GUIDE_DEVICE_NAME,
       serviceUUID: GUIDE_SERVICE_UUID,
-      dataUUIDs: [GUIDE_DATA_BLOCK_UUID, GUIDE_COMMAND_UUID])
+      dataUUIDs: [MOUNT_DATA_UUID, GUIDE_COMMAND_UUID])
     
     // Must implement all delegate methods of MyPeripheralDelegate protocol
     rocketMount.mpDelegate = self
@@ -339,6 +201,11 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   func goHomeRa() -> Bool {
     let ay = pierModelLink?.xlAligned.y ?? 0.0
 
+    // Use this offset until Pier accelAlign rotation transform is improved.
+    // This is adequate for HOME/EAST finding.  Not for general reverse solution.
+    let yOffset = Float(0.035)
+    let ayCal = ay - yOffset
+
     let slowThreshold = Float(0.1)
     let stopThreshold = Float(0.005)
     let west_fast = Int32(-2)
@@ -346,17 +213,17 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let east_fast = Int32(2)
     let east_slow = Int32(1)
 
-    if (ay > slowThreshold) {
+    if (ayCal > slowThreshold) {
       guideCommandMove(ra: west_fast, dec: 0)
       return false;
-    } else if (ay < -slowThreshold) {
+    } else if (ayCal < -slowThreshold) {
       guideCommandMove(ra: east_fast, dec: 0)
       return false;
     }
-    else if (ay > stopThreshold) {
+    else if (ayCal > stopThreshold) {
       guideCommandMove(ra: west_slow, dec: 0)
       return false;
-    } else if (ay < -stopThreshold) {
+    } else if (ayCal < -stopThreshold) {
       guideCommandMove(ra: east_slow, dec: 0)
       return false;
     }
@@ -432,23 +299,28 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let az = pierModelLink?.xlAligned.z ?? 0.0
     let ay = pierModelLink?.xlAligned.y ?? 0.0
 
+    // Use this offset until Pier accelAlign rotation transform is improved.
+    // This is adequate for HOME/EAST finding.  Not for general reverse solution.
+    let zOffset = Float(-0.005)
+    let azCal = az - zOffset
+
     let slowThreshold = Float(0.1)
     let stopThreshold = Float(0.005)
     let west_fast = Int32(-2)
     let west_slow = Int32(-1)
     let east_fast = Int32(2)
     let east_slow = Int32(1)
-    if (ay < Float(0.0) || az >= slowThreshold) {
+    if (ay < Float(0.0) || azCal >= slowThreshold) {
       guideCommandMove(ra: east_fast, dec: 0)
       return false
-    } else if (az < -slowThreshold) {
+    } else if (azCal < -slowThreshold) {
       guideCommandMove(ra: west_fast, dec: 0)
       return false
     }
-    else if (az > stopThreshold) {
+    else if (azCal > stopThreshold) {
       guideCommandMove(ra: east_slow, dec: 0)
       return false
-    } else if (az < -stopThreshold) {
+    } else if (azCal < -stopThreshold) {
       guideCommandMove(ra: west_slow, dec: 0)
       return false
     } else {
@@ -542,12 +414,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // TODO: Requires buffering, or handshake acknowledment of commands or use of .withResponse.
   }
   
-  
-
 
   //MARK: === Angle Processing ===
   
-
   func updateLstDeg() {
     if let longitudeDeg = locationData.longitudeDeg {
       lstValid = true
@@ -570,13 +439,12 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     updateLstDeg() // LST is function of time and longitude
     
+    // TODO: Confirm this description with CoordinateSystems.md
     // Positive Count's advance axes CCW, looking to Polaris or top of scope
-    pierCurrentDeg = mountDataBlock.pierCountDeg + pierOffsetDeg
-    diskCurrentDeg = mountDataBlock.diskCountDeg + diskOffsetDeg
-    
-    pierCurrentDeg = pierCurrentDeg.mapAnglePm180()
-    diskCurrentDeg = diskCurrentDeg.mapAnglePm180()
-    
+    pierCurrentDeg = (mountDataBlock.pierCountDeg + pierOffsetDeg).mapAnglePm180()
+    diskCurrentDeg = (mountDataBlock.diskCountDeg + diskOffsetDeg).mapAnglePm180()
+
+    // TODO: use HA and/or PierMode for this mountAnglesToRaDec mapping
     // Looking to which side of pier |disk|<=90 no flip; |disk|>90 DEC Flip
     if lstValid && (pointingKnowledge != PointingKnowledge.none) {
       if (fabs(diskCurrentDeg) <= 90.0) { // lens is looking to west side of pier
@@ -593,33 +461,30 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     currentPosition.ra = currentPosition.ra.mapAngle0To360()
     currentPosition.dec = currentPosition.dec.mapAnglePm180()
-    
   } // end updateMountAngles
-  
+
   // Raw Mount Angles from coord of observed target and LST
-  func raDecToMountAngles(_ coord: RaDec) ->
+  // All angles in degrees
+  func raDecToMountAngles(_ coord: RaDec, lst: Double) ->
   (pierDeg: Double, diskDeg:Double, decModeUsed:PierMode) {
     var pierDeg = 0.0
     var diskDeg = 0.0
     var decModeUsed = PierMode.unknown
     
-    // Find angle from LST to RA = (end - start) = (RA-LST)
-    var lstToRa = coord.ra - lstDeg;
+    // Find Hour Angle (ha) of coordinate
+    // ha = angle from RA to LST = (end - start) = (LST - RA)
+    let ha = (lst - coord.ra).mapAnglePm180()
     
-    // Map to 0.0 <= raLst < 360.0
-    lstToRa = lstToRa.mapAngle0To360()
-
-    // Select pier and disk angles based on target side of lst (lstToRa = RA-LST)
-    // For 0 <= raLst < 360:  (360.0 maps to 0.0)
-    // looking east:  0 < raLst < 180.0
-    // Looking west: 180.0 <= raLst <= 360.0 (define 360=0 and 180 as looking west)
-    if lstToRa > 0 && lstToRa < 180.0  { // looking east
+    // Select pier and disk angles based on coordinate side of lst
+    // looking east:  ha < 0
+    // Looking west: ha >= 0 (defines ha = 0 as looking west)
+    if ha < 0  { // looking east
       decModeUsed = PierMode.west
-      pierDeg = 90.0 - lstToRa
+      pierDeg = 90.0 + ha     // pierDeg = +90 is horizontal west
       diskDeg = 180.0 - coord.dec
     } else {                             // looking west
       decModeUsed = PierMode.east
-      pierDeg = -90.0 - lstToRa
+      pierDeg = -90.0 + ha    // pierDeg = -90 is horizontal east
       diskDeg = coord.dec
     }
 
@@ -628,13 +493,47 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     return (pierDeg, diskDeg, decModeUsed)
   }
-    
+  
+  // TODO: lstToRa approach worked.  Refactored to use HA.  Keep until tested.
+  // // Raw Mount Angles from coord of observed target and LST
+  //    func raDecToMountAngles(_ coord: RaDec) ->
+  //    (pierDeg: Double, diskDeg:Double, decModeUsed:PierMode) {
+  //      var pierDeg = 0.0
+  //      var diskDeg = 0.0
+  //      var decModeUsed = PierMode.unknown
+  //
+  //      // Find angle from LST to RA = (end - start) = (RA-LST)
+  //      var lstToRa = coord.ra - lstDeg;
+  //
+  //      // Map to 0.0 <= lstToRa < 360.0
+  //      lstToRa = lstToRa.mapAngle0To360()
+  //
+  //      // Select pier and disk angles based on target side of lst (lstToRa = RA-LST)
+  //      // For 0 <= raLst < 360:  (360.0 maps to 0.0)
+  //      // looking east:  0 < raLst < 180.0
+  //      // Looking west: 180.0 <= raLst <= 360.0 (define 360=0 and 180 as looking west)
+  //      if lstToRa > 0 && lstToRa < 180.0  { // looking east
+  //        decModeUsed = PierMode.west
+  //        pierDeg = 90.0 - lstToRa
+  //        diskDeg = 180.0 - coord.dec
+  //      } else {                             // looking west
+  //        decModeUsed = PierMode.east
+  //        pierDeg = -90.0 - lstToRa
+  //        diskDeg = coord.dec
+  //      }
+  //
+  //      pierDeg = pierDeg.mapAnglePm180()
+  //      diskDeg = diskDeg.mapAnglePm180()
+  //
+  //      return (pierDeg, diskDeg, decModeUsed)
+  //    }
+  
   // Uses LST, to build mount angle changes required to move fromCoord toCoord
   // TODO: what do I do if LST or REF knowledge == .none
   func mountAngleChange(fromCoord: RaDec, toCoord: RaDec) ->
   (pierAngle: Double, diskAngle: Double) {
-    let (fromPierDeg, fromDiskDeg, _) = raDecToMountAngles(fromCoord)
-    let (toPierDeg, toDiskDeg, _) = raDecToMountAngles(toCoord)
+    let (fromPierDeg, fromDiskDeg, _) = raDecToMountAngles(fromCoord, lst: lstDeg)
+    let (toPierDeg, toDiskDeg, _) = raDecToMountAngles(toCoord, lst: lstDeg)
     
     let deltaPierDeg = toPierDeg - fromPierDeg
     var deltaDiskDeg = toDiskDeg - fromDiskDeg
@@ -665,7 +564,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     updateLstDeg()
     
-    let (refPierAngle, refDiskAngle, _) = raDecToMountAngles(reference)
+    let (refPierAngle, refDiskAngle, _) = raDecToMountAngles(reference, lst: lstDeg)
     
     // given:
     //  pierAngle = guideDataBlock.pierCountDeg + pierOffsetDeg
@@ -710,11 +609,11 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // align accelerometer so y component is zero
     //let offset = rhsNormMountXl.y
     let xCorrection = rhsNormMountXl.y  // rotate theta to zero psi
-    let xRotation = xRot3x3(thetaRad: xCorrection)
+    let xRotation = xRot3x3(phiRad: xCorrection)
     xlAligned = xRotation * rhsNormMountXl
     
     // This is the only angle with any meaming on the mount.
-    theta = atan2(xlAligned.x, xlAligned.z) - PI // TODO: WHY PI (180) here
+    theta = -atan2(xlAligned.x, xlAligned.z)
     
     // Process specific MountDataBlock commands
     if mountDataBlock.mountState == MountState.PowerUp.rawValue {
@@ -736,10 +635,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   /// ========== Transmit Commands to Mount ==========
   /// Build and transmit GuideCommandBlocks
   /// Convert native iOS app types to Arduino types here - i.e. Doubles to Int32 Counts
-  /// No angle conversions or hemisphere awareness at this level.
-  
+  /// No angle conversions or SideOfPier awareness at this level.
+
+  private var cmdId = Int32(0)
   func guideCommand(_ writeBlock:GuideCommandBlock) {
-    rocketMount.bleWrite(GUIDE_COMMAND_UUID, writeData: writeBlock)
+    var cmdBlock = writeBlock
+    cmdId += 1
+    cmdBlock.id = cmdId
+    rocketMount.bleWrite(GUIDE_COMMAND_UUID, writeData: cmdBlock, withResponse: true)
   }
   
   // Send track rate adjustment to Mount.
@@ -836,7 +739,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   }
   
   func onReady(){
-    rocketMount.setNotify(GUIDE_DATA_BLOCK_UUID) { [weak self] (buffer:Data)->Void in
+    rocketMount.setNotify(MOUNT_DATA_UUID) { [weak self] (buffer:Data)->Void in
       
       // Copy the Data to a local MountDataBlock structure
       let numBytes = min(buffer.count,

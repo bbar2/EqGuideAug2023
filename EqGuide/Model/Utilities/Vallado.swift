@@ -43,7 +43,7 @@ func intevalTo(y: Int, m: Int, d: Int, h: Int, min: Int) -> TimeInterval {
 }
 
 // Build a UT Date from Components specified in GMT TimeZone
-func utDateFromGmtTerms(y: Int, m: Int, d: Int,
+public func utDateFromGmtTerms(y: Int, m: Int, d: Int,
                          h: Int = 0, min: Int = 0, sec: Int = 0) -> Date {
   var dateComponents = DateComponents()
   dateComponents.year = y
@@ -58,7 +58,7 @@ func utDateFromGmtTerms(y: Int, m: Int, d: Int,
 }
 
 // Build a UT Date from Components specified in local TimeZone
-func utDateFromLocalTerms(y: Int, m: Int, d: Int,
+public func utDateFromLocalTerms(y: Int, m: Int, d: Int,
                          h: Int = 0, min: Int = 0, sec: Int = 0) -> Date {
   var dateComponents = DateComponents()
   dateComponents.year = y
@@ -70,20 +70,9 @@ func utDateFromLocalTerms(y: Int, m: Int, d: Int,
   return Calendar.current.date(from:dateComponents) ?? Date()
 }
 
-// Return angle so: 0 <= angle < 360.  Inputs can be pos or neg.
-extension Double {
-  func clampAngle0To360() -> Double {
-    var clampedValue = (self).truncatingRemainder(dividingBy: 360.0)
-    if clampedValue < 0.0 {
-      clampedValue += 360.0
-    }
-    return clampedValue
-  }
-}
-
 // Algorithm 14 from p183 Vallado 4th Ed
 // Result is within one second of jdFromDate below (~ 1e-6 different.  1 Sec ~ 1.16e-5)
-func jdFrom(utDate: Date) -> Double {
+public func jdFrom(utDate: Date) -> Double {
   
   let gmtComponents = utDate.gmtComponents()
   
@@ -111,12 +100,12 @@ func julianCentury(utDate: Date) -> Double {
   
   // gmst uses JulianCenturies from jan,1,2000 12:00 PM = J2000.0
   // JD of Jan 1, 2000 12:00PM = 2451545.0
-  return Double( (jd - 2451545.0) / 36525.0)
+  return Double( (jd - 2451545.0) / (365.25 * 100) )
 }
 
 // Algorithm 15: From p188 Vallado 4th Ed
 // Greenwich Mean Siderial Time
-func gmstDegFrom(utDate: Date) -> Double {
+public func gmstDegFrom(utDate: Date) -> Double {
   
   let tjc = julianCentury(utDate: utDate)
   
@@ -125,32 +114,32 @@ func gmstDegFrom(utDate: Date) -> Double {
   let t2 = Double(0.093104) * pow(tjc, 2.0)
   let t3 = Double(6.2e-6) * pow(tjc, 3.0)
   
-  let secondsInDay = Double(86400.0)
+  let secondsInDay = Double(60.0 * 60.0 * 24.0)
   let gmstSecs = (t0 + t1 + t2 - t3).truncatingRemainder(dividingBy: secondsInDay)
   
-  let gmstDeg = gmstSecs / 240.0
+  let gmstDeg = (gmstSecs / secondsInDay) * 360.0
 
-  return gmstDeg.clampAngle0To360()
+  return gmstDeg.mapAngle0To360()
 }
 
 // Algorithm 15: From p215 Vallado 4th Ed
 // Local Siderial Time
-func lstDegFrom(utDate: Date, localLongitudeDeg: Double) -> Double {
+public func lstDegFrom(utDate: Date, localLongitudeDeg: Double) -> Double {
   let gmstDeg = gmstDegFrom(utDate: utDate)
   let lstDeg = gmstDeg + localLongitudeDeg
 
-  return lstDeg.clampAngle0To360()
+  return lstDeg.mapAngle0To360()
 }
 
 // Algorithm 15: From p215 Vallado 4th Ed
 // Local Siderial Time
 func lstDegFrom(gmstDeg: Double, localLongitudeDeg: Double) -> Double {
   let lstDeg = gmstDeg + localLongitudeDeg
-  return lstDeg.clampAngle0To360()
+  return lstDeg.mapAngle0To360()
 }
 
 // Utility func for figuring out what's going on
-func printDateComponents(_ label: String, _ date: Date) {
+public func printDateComponents(_ label: String, _ date: Date) {
   let localComponents = date.localComponents()
   var year = localComponents.year!
   var month = localComponents.month!
@@ -174,3 +163,30 @@ func printDateComponents(_ label: String, _ date: Date) {
 
   print("DateString = \(date.description)\n")
 }
+
+// From https://astrogreg.com/convert_ra_dec_to_alt_az.html
+// Although not directly from Vallado, consistent with Vallado eq 4-11 thru 4-14
+// All input and output angles are in degrees
+func raDecToAltAz(lstDeg: Double, latDeg:Double, raDeg:Double, decDeg:Double) ->
+(altDeg: Double, azDeg:Double, haDeg:Double) {
+  
+  let haDeg = lstDeg - raDeg
+  
+  let ha = haDeg.degToRad()
+  let dec = decDeg.degToRad()
+  let lat = latDeg.degToRad()
+  
+  let alt: Double = asin(
+    sin(dec)*sin(lat) +
+    cos(dec)*cos(lat)*cos(ha)
+  )
+  
+  var az: Double = atan2(sin(ha), cos(ha)*sin(lat)-tan(dec)*cos(lat))
+  az = az - Double.pi
+  
+  return(alt.radToDeg().mapAnglePm180(), // alt will be pm90
+         az.radToDeg().mapAnglePm180(), // I like pm180, though az standard is 0to360
+         haDeg.mapAnglePm180())
+}
+
+

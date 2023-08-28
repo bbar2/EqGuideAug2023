@@ -60,15 +60,28 @@ struct HardwareView: View {
         .padding([.bottom], 1)
         
         HStack {
+          let (alt, az, _) = raDecToAltAz(lstDeg: mountModel.lstDeg,
+                                          latDeg: mountModel.locationData.latitudeDeg ?? 0,
+                                          raDeg: mountModel.currentPosition.ra,
+                                          decDeg: mountModel.currentPosition.dec)
+          Text("Alt: " + Dms(alt).string(viewOptions.showDmsHms))
+          Spacer()
+          Text("Az: " + Dms(az).string(viewOptions.showDmsHms))
+        }
+        .font(viewOptions.smallValueFont)
+        .foregroundColor(pointingKnowledgeColor())
+        
+        HStack {
           Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
-            .foregroundColor(lstValidColor())
           Spacer()
           let latString = Dms(mountModel.locationData.latitudeDeg ?? 0).string(viewOptions.showDmsHms)
-          Text("Lat:" + latString).foregroundColor(lstValidColor())
+          Text("Lat:" + latString)
           Spacer()
           let longString = Dms(mountModel.locationData.longitudeDeg ?? 0).string(viewOptions.showDmsHms)
-          Text("Lng:" + longString).foregroundColor(lstValidColor())
-        }.font(viewOptions.smallValueFont)
+          Text("Lng:" + longString)
+        }
+        .font(viewOptions.smallValueFont)
+        .foregroundColor(lstValidColor())
         
         Divider()
       }
@@ -84,39 +97,39 @@ struct HardwareView: View {
         GridRow {
           Text("Ax:")
           cell(cellValue: mountModel.xlAligned.x)
-          cell(cellValue: mountModel.pierModelLink?.xlAligned.x ?? 0.0)
-          cell(cellValue: mountModel.focusModelLink?.xlAligned.x ?? 0.0)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.x ?? 8.88)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.x ?? 8.88)
         }
         GridRow {
           Text("Ay:")
           cell(cellValue: mountModel.xlAligned.y)
-          cell(cellValue: mountModel.pierModelLink?.xlAligned.y ?? 0.0)
-          cell(cellValue: mountModel.focusModelLink?.xlAligned.y ?? 0.0)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.y ?? 8.88)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.y ?? 8.88)
         }
         GridRow {
           Text("Az:")
           cell(cellValue: mountModel.xlAligned.z)
-          cell(cellValue: mountModel.pierModelLink?.xlAligned.z ?? 0.0)
-          cell(cellValue: mountModel.focusModelLink?.xlAligned.z ?? 0.0)
+          cell(cellValue: mountModel.pierModelLink?.xlAligned.z ?? 8.88)
+          cell(cellValue: mountModel.focusModelLink?.xlAligned.z ?? 8.88)
         }
         Divider().gridCellUnsizedAxes([ .vertical])
         GridRow {
           Text("theta")
           cell(cellValue: toDeg(mountModel.theta))
-          cell(cellValue: toDeg(mountModel.pierModelLink?.theta ?? 0.0))
-          cell(cellValue: toDeg(mountModel.focusModelLink?.theta ?? 0.0))
+          cell(cellValue: toDeg(mountModel.pierModelLink?.theta ?? 8.88))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.theta ?? 8.88))
         }
         GridRow {
           Text("phi")
           Text("n/a")
-          cell(cellValue: toDeg(mountModel.pierModelLink?.phi ?? 0.0))
-          cell(cellValue: toDeg(mountModel.focusModelLink?.phi ?? 0.0))
+          cell(cellValue: toDeg(mountModel.pierModelLink?.phi ?? 8.88))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.phi ?? 8.88))
         }
         GridRow {
           Text("psi")
           Text("n/a")
           Text("n/a")
-          cell(cellValue: toDeg(mountModel.focusModelLink?.psi ?? 0.0))
+          cell(cellValue: toDeg(mountModel.focusModelLink?.psi ?? 8.88))
         }
       }
       Spacer()

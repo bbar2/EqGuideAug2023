@@ -4,25 +4,15 @@ This is a Mark Down file. What are formating options in md files?
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
+2023-08-24: HourAngle - add option to display HA instead of RA.  HA = LST-RA
 2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.  I think I can use PierMode.unknown to detect this. Working in: enableAutoDisconnect()
 2023-07-24: Manual - Home/EastPier either disable if no Focus and Pier BLE connection, or issue connects to both before executing Home/EastPier operations.  Maybe, disable if no Pier, and issue Focus connect if not connected.
 2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
-2023-07-02: Should a Reset set pointing knowledge to none?
+2023-07-02: Should a Reset command change the pointing knowledge to none?
 2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
 2023-06-17: Hardware Red button, should also neutralize ios move commands. Directly, and probably through the data block sent to ios.
 2023-06-08: Hardware - Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
 2023-06-08: Decide on colors for Gray/Disabled, Yellow/NoBle, Red/Good.  When to use yellow vs gray.  Use the orange from LST app.
-2022-05-27: GUI reconfigure - No functional change to GuideMount
-  New main Guide with: 
-    done - BLE Link indication for all three BLE devices - for status display
-    done - East/West Pier indicator, 
-    AZ/EL conversion
-    Done - Current RA/DEC (Yellow from angle, Red from Ref)
-    Done - LST, Lat, Long
-    Done - Target RA/DEC - select and swap controls
-    Done - Ref RA/DEC - select control
-    Done - Pause Guiding Control.
-    Done - Swap and Set Target and Ref Control which transmits to mount
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
@@ -31,6 +21,18 @@ This is a Mark Down file. What are formating options in md files?
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-08-04: GuideCommands can be lost.  Need a handshake or queue approach. Used BLEWrite (withResponse implied) property on the Characteristic for GuideCommandData
+2022-08-23: GUI reconfigure - No functional change to GuideMount
+  New main Guide with: 
+    done - BLE Link indication for all three BLE devices - for status display
+    done - East/West Pier indicator
+    done - AZ/EL conversion
+    Done - Current RA/DEC (Yellow from angle, Red from Ref)
+    Done - LST, Lat, Long
+    Done - Target RA/DEC - select and swap controls
+    Done - Ref RA/DEC - select control
+    Done - Pause Guiding Control
+    Done - Swap and Set Target and Ref Control which transmits to mount
 2023-07-24: Done - Mount BLE reconnects. Make Pier and Focus do it too.
 2023-07-24: NO - Mount does this with counts:  While guiding to a target, Pause Tracking to improve accuracy.
 2023-07-02: Done - Add a way to select the fixed angle refPierVert/East/West reference points. 

@@ -18,7 +18,7 @@ struct RaDec {
   init(ra: Double = 0.0, dec: Double = 0.0) {
     _ra = ra.truncatingRemainder(dividingBy: 360.0)
     _dec = dec.truncatingRemainder(dividingBy: 360.0)
-    _dec = mapTo180(_dec);
+    _dec = _dec.mapAnglePm180();
   }
   
   var ra: Double {
@@ -36,7 +36,7 @@ struct RaDec {
     }
     set {
       _dec = newValue.truncatingRemainder(dividingBy: 360.0)
-      _dec = mapTo180(_dec)
+      _dec = _dec.mapAnglePm180()
     }
   }
     
@@ -48,14 +48,4 @@ struct RaDec {
     return RaDec(ra: left._ra - right._ra, dec: left._dec - right._dec)
   }
   
-  private func mapTo180(_ input: Double) -> Double {
-    if input >= 180.0 {   // 180 will map to -180
-      return input - 360.0
-    } else if input < -180.0 {
-      return input + 360.0
-    } else {  // -180 <= input < 180
-      return input
-    }
-  }
-
 }

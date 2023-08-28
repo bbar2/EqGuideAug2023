@@ -27,8 +27,8 @@ struct ContentView: View {
     case manual
     case guide
     case rate
-    case focus
     case hardware
+    case focus
 //    case light
   }
   
@@ -53,18 +53,18 @@ struct ContentView: View {
           Label("Track Rate", systemImage: "cursorarrow.click.badge.clock")
         }
         .tag(Tab.rate)
-
-      FocusView(focusModel: focusDeviceModel, pierModel: pierDeviceModel)
-        .tabItem {
-          Label("Focus", systemImage: "staroflife.circle")
-        }
-        .tag(Tab.focus)
       
       HardwareView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Hardware", systemImage: "angle")
         }
         .tag(Tab.hardware)
+
+      FocusView(focusModel: focusDeviceModel, pierModel: pierDeviceModel)
+        .tabItem {
+          Label("Focus", systemImage: "staroflife.circle")
+        }
+        .tag(Tab.focus)
 
 //      LightView()
 //        .tabItem {

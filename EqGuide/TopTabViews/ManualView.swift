@@ -54,12 +54,12 @@ struct ManualView: View {
         {
           Spacer()
           BigButton(label:"HOME") {
-            mountModel.goHome()
+            _ = mountModel.goHome()
             heavyBump()
           }
           Spacer()
           BigButton(label:"EAST") {
-            mountModel.goEastPier()
+            _ = mountModel.goEastPier()
             heavyBump()
           }
           Spacer()

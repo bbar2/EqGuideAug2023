@@ -5,7 +5,7 @@
 //  Created by Barry Bryant on 3/18/23.
 //
 // Core Bluetooth Peripheral wrapper, using a CentralManager singleton.
-// Use one of these for each peripheral, then implement MyPeripheralDelegate
+// Use one of these for each remote peripheral, then implement MyPeripheralDelegate
 // methods in the object holding a MyPeripheral object.
 
 import CoreBluetooth
@@ -34,6 +34,8 @@ class MyPeripheral :NSObject, CBPeripheralDelegate, MyCentralManagerDelegate {
   // Dictionaries to look up characteristics and responders by UUID
   private var characteristicDictionary: [CBUUID: CBCharacteristic?] = [:]
   private var readResponder: [CBUUID: (Data)->Void] = [:]
+  
+  private var commandDepth = 0
   
   init(deviceName: String, serviceUUID: CBUUID, dataUUIDs: [CBUUID])
   {
@@ -152,16 +154,35 @@ class MyPeripheral :NSObject, CBPeripheralDelegate, MyCentralManagerDelegate {
     }
   }
   
+  func peripheral(_ peripheral: CBPeripheral,
+                  didWriteValueFor: CBCharacteristic,
+                  error: Error?) {
+    if let e = error {
+      print("error not nil in peripheral.didWriteValueFor")
+      print(e.localizedDescription)
+      return
+    }
+    print("didWriteValue Response: \(commandDepth)")
+    commandDepth -= 1
+  }
+  
   //MARK: My BLE IO Methods - used to read and write BLE data
   
   // Write single WriteType data item to BLE
-  func bleWrite<WriteType>(_ write_uuid: CBUUID, writeData: WriteType) {
+  func bleWrite<WriteType>(_ write_uuid: CBUUID,
+                           writeData: WriteType,
+                           withResponse: Bool = false) {
     if let write_characteristic = characteristicDictionary[write_uuid] {
       let data = Data(bytes: [writeData], count: MemoryLayout<WriteType>.size)
       cbPeripheral?.writeValue(data,
                                for: write_characteristic!,
-                               type: .withoutResponse)
+                               //type: .withoutResponse)
+                               type: withResponse ? .withResponse : .withoutResponse)
     }
+    if withResponse {
+      commandDepth += 1
+    }
+
   }
   
   // Example bleRead or setNotify closure. Copy and change xlData to any data item

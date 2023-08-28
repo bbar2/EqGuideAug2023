@@ -16,7 +16,7 @@
 		3521684728145C2A00C76670 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521684628145C2A00C76670 /* Haptics.swift */; };
 		352168492814A86D00C76670 /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168482814A86D00C76670 /* LocationData.swift */; };
 		35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */; };
-		35558F2C2A537790004E6C76 /* MapAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F2B2A537790004E6C76 /* MapAngles.swift */; };
+		35558F2C2A537790004E6C76 /* DoubleAngleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */; };
 		3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B72A5621EE00E16091 /* PierModeView.swift */; };
 		3565E1BA2A572B0600E16091 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B92A572B0600E16091 /* StatusBar.swift */; };
 		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
@@ -71,7 +71,7 @@
 		3521684628145C2A00C76670 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		352168482814A86D00C76670 /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
 		35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeFormatControl.swift; sourceTree = "<group>"; };
-		35558F2B2A537790004E6C76 /* MapAngles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAngles.swift; sourceTree = "<group>"; };
+		35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleAngleExtensions.swift; sourceTree = "<group>"; };
 		3565E1B72A5621EE00E16091 /* PierModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierModeView.swift; sourceTree = "<group>"; };
 		3565E1B92A572B0600E16091 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
@@ -95,6 +95,8 @@
 		35C1E54B2A37AB46003C68B0 /* ArrowPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPadView.swift; sourceTree = "<group>"; };
 		35C9A95427F09D1400BFE4CE /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecInputView.swift; sourceTree = "<group>"; };
+		35C9F4472A8D6FB900CB1897 /* CoordinateSystems.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CoordinateSystems.md; sourceTree = "<group>"; };
+		35C9F4482A8D70A300CB1897 /* AstroTermsDefined.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AstroTermsDefined.md; sourceTree = "<group>"; };
 		35DE202727F3D66600D96C68 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
 		35DE202B27F4AD8500D96C68 /* DmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DmsInputView.swift; sourceTree = "<group>"; };
 		35DE202D27F4AEB600D96C68 /* Dms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dms.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		35A7F64128240EDE008EBC8C /* DataTypes */ = {
 			isa = PBXGroup;
 			children = (
+				35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */,
 				352168482814A86D00C76670 /* LocationData.swift */,
 				3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
@@ -164,7 +167,6 @@
 				3521684628145C2A00C76670 /* Haptics.swift */,
 				3599A1E7280CB9ED00E1C442 /* Vallado.swift */,
 				35A7F64828242638008EBC8C /* LoadJson.swift */,
-				35558F2B2A537790004E6C76 /* MapAngles.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -183,9 +185,9 @@
 				350DF8A92A335F1D00205FCB /* ManualView.swift */,
 				35C9A95427F09D1400BFE4CE /* GuideView.swift */,
 				35F6244B283C04C200762730 /* RaRateView.swift */,
+				35E3D7B82A2278BD002D1BFE /* HardwareView.swift */,
 				35E3D7B62A2277BF002D1BFE /* FocusView.swift */,
 				352168442814392100C76670 /* LightView.swift */,
-				35E3D7B82A2278BD002D1BFE /* HardwareView.swift */,
 			);
 			path = TopTabViews;
 			sourceTree = "<group>";
@@ -271,6 +273,8 @@
 				35A7F64728241821008EBC8C /* Resources */,
 				35FBF05927879640001EFA53 /* Preview Content */,
 				35FBF0632787AF67001EFA53 /* ToDo.md */,
+				35C9F4472A8D6FB900CB1897 /* CoordinateSystems.md */,
+				35C9F4482A8D70A300CB1897 /* AstroTermsDefined.md */,
 			);
 			path = EqGuide;
 			sourceTree = "<group>";
@@ -393,7 +397,7 @@
 				351204AF27F214F5006DF60B /* DoubleInputView.swift in Sources */,
 				35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */,
 				35C9A95A27F0BD5900BFE4CE /* RaDecInputView.swift in Sources */,
-				35558F2C2A537790004E6C76 /* MapAngles.swift in Sources */,
+				35558F2C2A537790004E6C76 /* DoubleAngleExtensions.swift in Sources */,
 				35BE5CCC2A3DF87A0055FF5D /* StopControlView.swift in Sources */,
 				35DE202827F3D66600D96C68 /* BigButton.swift in Sources */,
 				35DE202C27F4AD8500D96C68 /* DmsInputView.swift in Sources */,

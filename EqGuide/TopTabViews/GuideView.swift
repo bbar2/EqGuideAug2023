@@ -75,7 +75,7 @@ struct GuideView: View {
                              unitHmsDms: viewOptions.showDmsHms,
                              catalog: mountModel.catalog)
             } label: {
-              let (refPierDeg, refDiskDeg, _) = mountModel.raDecToMountAngles( mountModel.refCoord)
+              let (refPierDeg, refDiskDeg, _) = mountModel.raDecToMountAngles( mountModel.refCoord, lst: mountModel.lstDeg)
               RaDecPairView(pairTitle: "Reference:\n\(mountModel.refName)",
                             pair: mountModel.refCoord,
                             showDmsHms: viewOptions.showDmsHms,
@@ -92,7 +92,8 @@ struct GuideView: View {
                              catalog: mountModel.catalog)
               
             } label: {
-              let (targetPierDeg, targetDiskDeg, _) = mountModel.raDecToMountAngles(mountModel.targetCoord)
+              let (targetPierDeg, targetDiskDeg, _) =  mountModel.raDecToMountAngles(
+                mountModel.targetCoord, lst: mountModel.lstDeg)
               RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
                             pair: mountModel.targetCoord,
                             showDmsHms: viewOptions.showDmsHms,

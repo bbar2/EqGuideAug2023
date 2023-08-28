@@ -31,6 +31,7 @@ struct MountDataBlock {
   var mountTimeMs: UInt32 = 0
   var pierCount: Int32 = 0
   var diskCount: Int32 = 0
+  var debugWord: Int32 = 0
   
   var pierCountDeg: Double {
       return Double(pierCount) * Double(pierDegPerStep)
