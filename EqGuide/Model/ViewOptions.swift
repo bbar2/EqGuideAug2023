@@ -13,6 +13,7 @@ final class ViewOptions: ObservableObject {
   @Published var forceDarkMode = false
 
   @Published var showDmsHms: Bool = true;
+  @Published var showRaAsHA: Bool = false;
   
   let appRedColor = Color(red:159/255, green: 0, blue: 0)
   let appActionColor = Color(red:200.0/255.0, green: 0, blue: 0)

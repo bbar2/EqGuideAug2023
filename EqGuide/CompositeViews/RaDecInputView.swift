@@ -12,8 +12,8 @@ struct RaDecInputView: View {
   var label:String
   @Binding var coord: RaDec
   @Binding var name: String
-  var unitHmsDms: Bool
   var catalog : [Target]
+  var lstDeg: Double
 
   @EnvironmentObject var viewOptions: ViewOptions
   @Environment(\.dismiss) private var dismissView
@@ -47,7 +47,7 @@ struct RaDecInputView: View {
       .padding([.top], 10)
 
       VStack {
-        if unitHmsDms {
+        if viewOptions.showDmsHms {
           HmsInputView(decimalDegrees: $editCoord.ra, prefix: "RA")
           DmsInputView(decimalDegrees: $editCoord.dec, prefix: "DEC")
         } else {
@@ -65,7 +65,7 @@ struct RaDecInputView: View {
       
       TargetListView(catalog: catalog,
                      targetTapAction: makeTargetCurrent,
-                     unitHmsDms: unitHmsDms)
+                     lstDeg: lstDeg)
     }
     .navigationBarBackButtonHidden(true)
     .navigationBarTitle("") // needed for navigationBarHidden to work.
@@ -113,8 +113,8 @@ struct RaInputView_Previews: PreviewProvider {
     RaDecInputView(label: "Enter RA/DEC Pair",
                    coord: $testCoord,
                    name: $name,
-                   unitHmsDms: useHmsDms,
-                   catalog: guideModel.catalog)
+                   catalog: guideModel.catalog,
+                   lstDeg: 0.0)
       .environmentObject(viewOptions)
       .preferredColorScheme(.dark)
       .foregroundColor(viewOptions.appRedColor)

@@ -22,6 +22,8 @@
 		356CDF8627FB68B800F44A99 /* HmsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356CDF8527FB68B800F44A99 /* HmsInputView.swift */; };
 		3574C9F527F8D6FE0036CD94 /* MountDataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */; };
 		3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9F627F8D7280036CD94 /* GuideCommand.swift */; };
+		35766F752A9D2EC90024ADD4 /* TabTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35766F742A9D2EC90024ADD4 /* TabTitleView.swift */; };
+		35766F772A9D3E4B0024ADD4 /* RaFormatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35766F762A9D3E4B0024ADD4 /* RaFormatControl.swift */; };
 		358067EC27EF938400CAF595 /* RaDecPairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067EB27EF938400CAF595 /* RaDecPairView.swift */; };
 		358067EE27EFA0B200CAF595 /* RawDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358067ED27EFA0B200CAF595 /* RawDataView.swift */; };
 		358516FE2A1EB653009C505D /* PierBleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358516FD2A1EB653009C505D /* PierBleModel.swift */; };
@@ -77,6 +79,8 @@
 		356CDF8527FB68B800F44A99 /* HmsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HmsInputView.swift; sourceTree = "<group>"; };
 		3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountDataBlock.swift; sourceTree = "<group>"; };
 		3574C9F627F8D7280036CD94 /* GuideCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCommand.swift; sourceTree = "<group>"; };
+		35766F742A9D2EC90024ADD4 /* TabTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTitleView.swift; sourceTree = "<group>"; };
+		35766F762A9D3E4B0024ADD4 /* RaFormatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaFormatControl.swift; sourceTree = "<group>"; };
 		358067EB27EF938400CAF595 /* RaDecPairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaDecPairView.swift; sourceTree = "<group>"; };
 		358067ED27EFA0B200CAF595 /* RawDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDataView.swift; sourceTree = "<group>"; };
 		358516FD2A1EB653009C505D /* PierBleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierBleModel.swift; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 		35C9A95627F09E8200BFE4CE /* CompositeViews */ = {
 			isa = PBXGroup;
 			children = (
+				35766F742A9D2EC90024ADD4 /* TabTitleView.swift */,
 				35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */,
 				35FBF0612787AF52001EFA53 /* TargetListView.swift */,
 				3565E1B92A572B0600E16091 /* StatusBar.swift */,
@@ -238,6 +243,7 @@
 				35C1E5492A37A0F3003C68B0 /* TouchImage.swift */,
 				35EE3F9727F6958F007DA575 /* SignButton.swift */,
 				35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */,
+				35766F762A9D3E4B0024ADD4 /* RaFormatControl.swift */,
 			);
 			path = SingleControlViews;
 			sourceTree = "<group>";
@@ -373,6 +379,7 @@
 				351A40D429FF0A7C003B9A0F /* FocusBleModel.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
+				35766F752A9D2EC90024ADD4 /* TabTitleView.swift in Sources */,
 				35E3D7B92A2278BD002D1BFE /* HardwareView.swift in Sources */,
 				358516FE2A1EB653009C505D /* PierBleModel.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
@@ -405,6 +412,7 @@
 				35E3D7B72A2277BF002D1BFE /* FocusView.swift in Sources */,
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
+				35766F772A9D3E4B0024ADD4 /* RaFormatControl.swift in Sources */,
 				35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */,
 				350DF8AA2A335F1D00205FCB /* ManualView.swift in Sources */,
 			);

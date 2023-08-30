@@ -154,6 +154,8 @@ class MyPeripheral :NSObject, CBPeripheralDelegate, MyCentralManagerDelegate {
     }
   }
   
+  // I'm not really using this, other than the fact that this is part of the
+  // characteristic write with response mode processing.
   func peripheral(_ peripheral: CBPeripheral,
                   didWriteValueFor: CBCharacteristic,
                   error: Error?) {
@@ -162,7 +164,7 @@ class MyPeripheral :NSObject, CBPeripheralDelegate, MyCentralManagerDelegate {
       print(e.localizedDescription)
       return
     }
-    print("didWriteValue Response: \(commandDepth)")
+//    print("didWriteValue Response: \(commandDepth)")
     commandDepth -= 1
   }
   

@@ -44,7 +44,7 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
       if !isFound {
         if let service = nameToService[peripheralName] {
           serviceList.append(service)
-          print("  -- add \(peripheralName) to servicesNotFound")
+//          print("  -- add \(peripheralName) to servicesNotFound")
         }
       }
     }
@@ -67,7 +67,7 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
                              withService peripheralService: CBUUID,
                              mcmDelegate: MyCentralManagerDelegate)
   {
-    print("MyCentralManager findPeripheral named \(peripheralName)")
+//    print("MyCentralManager findPeripheral named \(peripheralName)")
     
     // Update Dictionaries used by CBCentralManagerDelegate to map to MyPeripheral(s)
     nameToMcmDelegate[peripheralName] = mcmDelegate
@@ -76,10 +76,10 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
     
     // Start Core BlueTooth connection process
     if let cbCM = cbCentralManager {
-      if (cbCM.state != .poweredOn) {
-        print("  -- cbCentralManager is not powered on")
-      } else {
+      if (cbCM.state == .poweredOn) {
         scanForServicesNotYetFound()
+      } else {
+//        print("  -- cbCentralManager is not powered on")
       }
     } else {
       print("cbCentralManager does not exist")
@@ -98,7 +98,7 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
   // Inform all MyPeripheral devices that Central has Started or is NotAvailable
   func centralManagerDidUpdateState(_ central: CBCentralManager)
   {
-    print("MyCentralManager - centralManagerDidUpdateState")
+//    print("MyCentralManager - centralManagerDidUpdateState")
     
     // If these dictionaries are populated, must issue scanForPeripherals
     // now because it could not have been issued in findPeripheral above
@@ -118,7 +118,7 @@ class MyCentralManager: NSObject, CBCentralManagerDelegate {
   {
     // Select the associated MyCentralManagerDelegate (MyPeripheral Object)
     if let discoveredName = discoveredPeripheral.name {
-      print("discoveredName = \(discoveredName)")
+//      print("discoveredName = \(discoveredName)")
 
       // Stop scanning for this guy, and resume scanning for anyone else
       nameToBeenFound[discoveredName] = true

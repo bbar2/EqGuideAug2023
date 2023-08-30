@@ -36,23 +36,15 @@ struct HardwareView: View {
   }
   
   var body: some View {
-//    let floatFormat = "%.2f"
+
     VStack {
 
-      VStack {
-        Text("Hardware View").font(viewOptions.appHeaderFont)
-        
-        HStack {
-          Spacer()
-          DegreeFormatControl()
-        }
-      }
+      TabTitleView(label: "Hardware View", mountModel: mountModel)
 
       VStack {
         RaDecPairView(
           pairTitle: "Current\nPosition",
           pair: mountModel.currentPosition,
-          showDmsHms: viewOptions.showDmsHms,
           pierDeg: mountModel.pierCurrentDeg,
           diskDeg: mountModel.diskCurrentDeg
         )
@@ -138,8 +130,6 @@ struct HardwareView: View {
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
       
-      StatusBarView(mountModel: mountModel)
-
     }.font(viewOptions.bigValueFont)
   }
   

@@ -9,14 +9,17 @@
 import SwiftUI
 
 struct TargetListView: View {
+  
+  @EnvironmentObject var viewOptions: ViewOptions
+
   var catalog: [Target]
   var targetTapAction: (_: Target)->Void // let caller handle target taps
-  var unitHmsDms: Bool
-  
+  var lstDeg: Double
+
   var body: some View {
     List(catalog){
       let gestureTarget = $0
-      TargetRow(target: $0, unitHmsDms: unitHmsDms)
+      TargetRow(target: $0, lstDeg: lstDeg)
         .gesture(TapGesture().onEnded() { targetTapAction(gestureTarget) } )
     }
   }
@@ -32,10 +35,7 @@ struct ObjectListView_Previews: PreviewProvider {
     Group {
       TargetListView(catalog: guideModel.catalog,
                      targetTapAction: targetTapAction,
-                     unitHmsDms: true)
-      TargetListView(catalog: guideModel.catalog,
-                     targetTapAction: targetTapAction,
-                     unitHmsDms: false)
+                     lstDeg: 0.0)
     }
   }
 }

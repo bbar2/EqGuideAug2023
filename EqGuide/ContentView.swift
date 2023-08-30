@@ -77,14 +77,15 @@ struct ContentView: View {
     .accentColor(viewOptions.appRedColor)
     .onChange(of: scenePhase) { newPhase in
       if newPhase == .active {
-        print("ScenePhase = Active")
+//        print("ScenePhase = Active")
       } else if newPhase == .inactive {
         mountDeviceModel.endXlControl()
-        print("ScenePhase = Inactive")
+//        print("ScenePhase = Inactive")
       } else if newPhase == .background {
         mountDeviceModel.endXlControl()
-        print("ScenePhase = Background")
+//        print("ScenePhase = Background")
       } else {
+        mountDeviceModel.endXlControl()
         print("ScenePhase = ?")
       }
     }

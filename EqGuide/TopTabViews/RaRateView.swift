@@ -32,10 +32,8 @@ struct RaRateView: View {
             .tag(TrackMode.lunar)
         }
                .pickerStyle(.segmented)
-        //               .padding([.leading, .trailing], 60)
         
         Image(systemName: trackMode == .star ? "star": "moon").font(.system(size:100))
-        //          .padding([.top], 30)
           .fixedSize(horizontal: true, vertical: true)
         
         switch trackMode {
@@ -48,7 +46,6 @@ struct RaRateView: View {
         let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.mountDataBlock.raRateOffsetDegPerSec
         Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
-        //.padding([.bottom], 20)
       }
       
       Spacer()
@@ -61,7 +58,6 @@ struct RaRateView: View {
           DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
                           prefix: "",
                           numDigits: 0)
-          //.padding([.top], -10)
         }
       }
       

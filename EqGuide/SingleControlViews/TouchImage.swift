@@ -20,8 +20,7 @@ struct TouchImage: View {
   var body: some View {
     Image(systemName: systemName)
       .resizable()
-      .frame(width: 100, height: 90)
-    //.offset(x:canTouchDown ? 0 : 2, y:canTouchDown ? 0 : 2)
+      .frame(width: 95, height: 85)
     .gesture(
       DragGesture(minimumDistance: 0)
         .onChanged { value in

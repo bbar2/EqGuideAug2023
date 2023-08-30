@@ -10,9 +10,9 @@ import SwiftUI
 struct RaDecPairView: View {
   var pairTitle: String
   var pair: RaDec
-  var showDmsHms: Bool = false
   var pierDeg: Double = 0.0
   var diskDeg: Double = 0.0
+  var lstDeg: Double = 0.0
   
   var gapPad = 30.0
 
@@ -30,14 +30,22 @@ struct RaDecPairView: View {
           .multilineTextAlignment(.leading)
         Spacer()
         VStack (alignment: .trailing){
-          Text("RA")
+          if viewOptions.showRaAsHA {
+            Text("HA")
+          } else {
+            Text("RA")
+          }
           Text("Dec")
         }
         .font(viewOptions.smallValueFont)
 
         VStack (alignment: .trailing){
-          Text(Hms(pair.ra).string(showDmsHms))
-          Text(Dms(pair.dec).string(showDmsHms))
+          if viewOptions.showRaAsHA {
+            Text(Hms(lstDeg - pair.ra).string(viewOptions.showDmsHms))
+          } else {
+            Text(Hms(pair.ra).string(viewOptions.showDmsHms))
+          }
+          Text(Dms(pair.dec).string(viewOptions.showDmsHms))
         }
         .font(viewOptions.smallValueFont)
 

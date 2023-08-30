@@ -12,14 +12,14 @@ struct PierModeView: View {
 
   var body: some View {
     HStack {
-      Text("PierMode: ").foregroundColor(viewOptions.appRedColor)
+      Text("Pier: ").foregroundColor(viewOptions.appRedColor)
       switch pierMode {
         case .unknown:
           Text("Unknown").foregroundColor(viewOptions.noBleColor)
         case .east:
-          Text("EastPier").foregroundColor(viewOptions.appRedColor)
+          Text("East").foregroundColor(viewOptions.appRedColor)
         case .west:
-          Text("WestPier").foregroundColor(viewOptions.appRedColor)
+          Text("West").foregroundColor(viewOptions.appRedColor)
       }
     }.font(viewOptions.smallHeaderfont)
   }

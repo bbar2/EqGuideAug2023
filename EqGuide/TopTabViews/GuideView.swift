@@ -39,20 +39,14 @@ struct GuideView: View {
   var body: some View {
     
     VStack {
-      
-      VStack {
-        HStack{
-          if !mountModel.bleConnected() {
-            Text(mountModel.statusString)
-          } else {
-            let stateEnum = MountState(rawValue: gdb.mountState)
-            Text(String("\(stateEnum ?? MountState.StateError)"))
-          }
-        }.font(viewOptions.appHeaderFont)
-        HStack {
-          Spacer()
-          DegreeFormatControl()
-        }
+
+      if !mountModel.bleConnected() {
+        TabTitleView(label: mountModel.statusString,
+                       mountModel: mountModel)
+      } else {
+        let stateEnum = MountState(rawValue: gdb.mountState)
+        TabTitleView(label: String("\(stateEnum ?? MountState.StateError)"),
+                       mountModel: mountModel)
       }
       
       NavigationView {
@@ -61,10 +55,9 @@ struct GuideView: View {
           RaDecPairView(
             pairTitle: "Current\nPosition",
             pair: mountModel.currentPosition,
-            showDmsHms: viewOptions.showDmsHms,
             pierDeg: mountModel.pierCurrentDeg,
-            diskDeg: mountModel.diskCurrentDeg
-          )
+            diskDeg: mountModel.diskCurrentDeg,
+            lstDeg: mountModel.lstDeg)
           .foregroundColor(pointingKnowledgeColor())
           .padding([.bottom], 1)
 
@@ -72,15 +65,15 @@ struct GuideView: View {
               RaDecInputView(label: "Select Reference",
                              coord: $mountModel.refCoord,
                              name: $mountModel.refName,
-                             unitHmsDms: viewOptions.showDmsHms,
-                             catalog: mountModel.catalog)
+                             catalog: mountModel.catalog,
+                             lstDeg: mountModel.lstDeg)
             } label: {
               let (refPierDeg, refDiskDeg, _) = mountModel.raDecToMountAngles( mountModel.refCoord, lst: mountModel.lstDeg)
               RaDecPairView(pairTitle: "Reference:\n\(mountModel.refName)",
                             pair: mountModel.refCoord,
-                            showDmsHms: viewOptions.showDmsHms,
                             pierDeg: refPierDeg,
-                            diskDeg: refDiskDeg)
+                            diskDeg: refDiskDeg,
+                            lstDeg: mountModel.lstDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
@@ -88,17 +81,17 @@ struct GuideView: View {
               RaDecInputView(label: "Select Target",
                              coord: $mountModel.targetCoord,
                              name: $mountModel.targName,
-                             unitHmsDms: viewOptions.showDmsHms,
-                             catalog: mountModel.catalog)
+                             catalog: mountModel.catalog,
+                             lstDeg: mountModel.lstDeg)
               
             } label: {
               let (targetPierDeg, targetDiskDeg, _) =  mountModel.raDecToMountAngles(
                 mountModel.targetCoord, lst: mountModel.lstDeg)
               RaDecPairView(pairTitle: "Target:\n\(mountModel.targName)",
                             pair: mountModel.targetCoord,
-                            showDmsHms: viewOptions.showDmsHms,
                             pierDeg: targetPierDeg,
-                            diskDeg: targetDiskDeg)
+                            diskDeg: targetDiskDeg,
+                            lstDeg: mountModel.lstDeg)
               .foregroundColor(viewOptions.appActionColor)
             }
             
@@ -135,8 +128,6 @@ struct GuideView: View {
             Spacer()
 
             StopControlView(mountModel: mountModel)
-            
-            StatusBarView(mountModel: mountModel)
           }
           
         } // VStack in NavigationView
@@ -147,7 +138,6 @@ struct GuideView: View {
       
     } // Top Level VStack
     .onAppear{
-//      setupSegmentControl()
       softBump()
     } // body: some View
   }
@@ -155,23 +145,6 @@ struct GuideView: View {
   func lstValidColor() -> Color {
     return mountModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
   }
-  
-//  func setupSegmentControl() {
-//    // Set color of "thumb" that selects between items
-//    UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(viewOptions.thumbColor)
-//    
-//    // Set color for whole "bar" background
-//    UISegmentedControl.appearance().backgroundColor = UIColor(viewOptions.thumbBarColor)
-//    
-//    // Set font attributes - call once for each state (.normal, .selected)
-//    UISegmentedControl.appearance().setTitleTextAttributes(
-//      [.font : UIFont.preferredFont(forTextStyle: .title2),
-//       .foregroundColor : UIColor(viewOptions.appActionColor)], for: .normal)
-//    
-//    UISegmentedControl.appearance().setTitleTextAttributes(
-//      [.foregroundColor : UIColor(viewOptions.appActionColor),
-//       .font : UIFont.preferredFont(forTextStyle: .title2)], for: .selected)
-//  }
   
 }
 

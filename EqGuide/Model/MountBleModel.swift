@@ -64,7 +64,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   // FIXME: this is not quite right.  look into diskCurrentDeg, vs Current....
   func setPierMode() {
-    print("diskCurrentDeg = \(diskCurrentDeg)")
+//    print("diskCurrentDeg = \(diskCurrentDeg)")
     if fabs(diskCurrentDeg) > 90 {
       pierMode = .west
     } else {
@@ -238,7 +238,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   func goHomeDec() -> Bool {
     let ax = focusModelLink?.xlAligned.x ?? 0.0
 
-    let slowThreshold = Float(0.1)
+    let slowThreshold = Float(0.3)
     let stopThreshold = Float(0.005)
     let north_fast = Int32(2)
     let north_slow = Int32(1)
@@ -335,7 +335,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let focusY = focusModelLink?.xlAligned.y ?? 0.0
     let targetY = (pierModelLink?.xlAligned.x ?? 0.0) * -1.0
 
-    let slowThreshold = Float(0.1)
+    let slowThreshold = Float(0.3)
     let stopThreshold = Float(0.005)
     let north_fast = Int32(2)
     let north_slow = Int32(1)
@@ -576,8 +576,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     pierOffsetDeg = pierOffsetDeg.mapAnglePm180()
     diskOffsetDeg = diskOffsetDeg.mapAnglePm180()
     
-    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(mountDataBlock.pierCountDeg + pierOffsetDeg)")
-    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(mountDataBlock.diskCountDeg + diskOffsetDeg)")
+//    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(mountDataBlock.pierCountDeg + pierOffsetDeg)")
+//    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(mountDataBlock.diskCountDeg + diskOffsetDeg)")
     
     // Used for color coding values that depend on references
 //    pointingKnowledge = lstValid ? .marked : .none

@@ -4,7 +4,11 @@ This is a Mark Down file. What are formating options in md files?
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
-2023-08-24: HourAngle - add option to display HA instead of RA.  HA = LST-RA
+2023-08-28: Fix Pier East display.
+2023-08-29: If tracking, stop if armAngle > 93ish.  Don't track into rail.  Simply issuing a GotoTarget will do a flip. Do that automatically????
+2023-08-28: Move LST to center of status bar.
+2023-08-29: GoTo Target should resume Tracking.
+2023-08-28: Why do GoHome and GoEast not end on the mark on first try?
 2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.  I think I can use PierMode.unknown to detect this. Working in: enableAutoDisconnect()
 2023-07-24: Manual - Home/EastPier either disable if no Focus and Pier BLE connection, or issue connects to both before executing Home/EastPier operations.  Maybe, disable if no Pier, and issue Focus connect if not connected.
 2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
@@ -21,6 +25,7 @@ This is a Mark Down file. What are formating options in md files?
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-08-28: Done - HourAngle - add option to display HA instead of RA.  HA = LST-RA
 2023-08-04: GuideCommands can be lost.  Need a handshake or queue approach. Used BLEWrite (withResponse implied) property on the Characteristic for GuideCommandData
 2022-08-23: GUI reconfigure - No functional change to GuideMount
   New main Guide with: 

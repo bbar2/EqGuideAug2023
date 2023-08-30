@@ -33,21 +33,16 @@ struct ManualView: View {
   var body: some View {
     
     VStack {
-      VStack {
-        Text("Manual Control").font(viewOptions.appHeaderFont)
-      }
-      
-      Spacer()
 
+      TabTitleView(label: "Manual Control", mountModel: mountModel)
+      
       RaDecPairView(
         pairTitle: "Current\nPosition",
         pair: mountModel.currentPosition,
-        showDmsHms: viewOptions.showDmsHms,
         pierDeg: mountModel.pierCurrentDeg,
-        diskDeg: mountModel.diskCurrentDeg
-      )
+        diskDeg: mountModel.diskCurrentDeg,
+        lstDeg: mountModel.lstDeg)
       .foregroundColor(pointingKnowledgeColor())
-//      .padding([.bottom], 1)
 
       HStack {
         if ((mountModel.pierModelLink?.bleConnected()) != nil)
@@ -87,8 +82,6 @@ struct ManualView: View {
       Spacer()
       
       StopControlView(mountModel: mountModel)
-
-      StatusBarView(mountModel: mountModel)
 
     } // end Main VStack
     

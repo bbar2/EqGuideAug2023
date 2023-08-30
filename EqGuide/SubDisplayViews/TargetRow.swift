@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct TargetRow: View {
+
+  @EnvironmentObject var viewOptions: ViewOptions
+
   var target: Target
-  var unitHmsDms: Bool
+  var lstDeg: Double
   
   var body: some View {
     VStack {
@@ -20,8 +23,12 @@ struct TargetRow: View {
         }
         Spacer()
         VStack (alignment: .trailing) {
-          Text("RA: " + Hms(target.ra).string(unitHmsDms))
-          Text("DEC: " + Dms(target.dec).string(unitHmsDms))
+          if viewOptions.showRaAsHA {
+            Text("HA: " + Hms(lstDeg - target.ra).string(viewOptions.showDmsHms))
+          } else {
+            Text("RA: " + Hms(target.ra).string(viewOptions.showDmsHms))
+          }
+          Text("DEC: " + Dms(target.dec).string(viewOptions.showDmsHms))
         }
       }
     }
@@ -34,8 +41,7 @@ struct TargetRow_Previews: PreviewProvider {
 
   static var previews: some View {
     Group {
-      TargetRow(target: guideModel.catalog[0], unitHmsDms: true)
-      TargetRow(target: guideModel.catalog[0], unitHmsDms: false)
+      TargetRow(target: guideModel.catalog[0], lstDeg: 0.0)
     }
     .previewLayout(.fixed(width: 300, height: 70))
     .preferredColorScheme(.dark)
