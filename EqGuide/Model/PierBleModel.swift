@@ -17,7 +17,7 @@ class PierBleModel : MyPeripheralDelegate,
     case ready
   }
   
-  private var bleState = BleState.disconnected
+  @Published var bleState = BleState.disconnected
   
   func bleConnected() -> Bool {
     return bleState == .ready

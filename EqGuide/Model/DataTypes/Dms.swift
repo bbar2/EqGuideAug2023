@@ -5,7 +5,7 @@
 //  Created by Barry Bryant on 3/30/22.
 //
 // Dms is either Float Degrees or DMS integers, where:
-//   -180 < D <= 180, 0<=M<60, 0<=S<60
+//   -180 <= D < 180, 0<=M<60, 0<=S<60
 //
 // To operate with a 0 to 360 range, comment out mapTo180
 //
@@ -19,45 +19,9 @@
 struct Dms {
   private var _degrees: Double
   
-  let MinPerDeg = Double(60.0)
-  let SecPerDeg = Double(60.0 * 60.0)
-  
-  init(_ deg: Double) {
-    _degrees = deg.truncatingRemainder(dividingBy: 360.0)
-    mapTo180()
-    buildDmsTermsFromDegrees()
-  }
-  
-  private mutating func mapTo180() {
-    if _degrees > 180.0 {
-      _degrees -= 360.0
-    } else if _degrees <= -180.0 {
-      _degrees += 360.0
-    }
-  }
-
-  init (d:Int, m:Int, s:Int) {
-    _degrees = Double(
-      Double(d) +
-      Double(m) / 60.0 +
-      Double(s) / 3600.0
-    ).truncatingRemainder(dividingBy: 360.0)
-    mapTo180()
-    buildDmsTermsFromDegrees()
-  }
-  
   private var _d = Int(0.0)
   private var _m = Int(0.0)
   private var _s = Int(0.0)
-  
-  private mutating func buildDmsTermsFromDegrees() {
-    let roundingTerm = self.sign * Double(0.5)
-    let totalSeconds = Int(_degrees * 3600 + roundingTerm)
-    _s = totalSeconds % 60
-    let totalMinutes = totalSeconds / 60
-    _m = totalMinutes % 60
-    _d = totalMinutes / 60
-  }
   
   var degrees: Double {
     get {
@@ -68,10 +32,6 @@ struct Dms {
       mapTo180()
       buildDmsTermsFromDegrees()
     }
-  }
-
-  var sign:Double {
-    return _degrees < 0.0 ? -1.0 : 1.0
   }
   
   var d: Int {
@@ -85,11 +45,64 @@ struct Dms {
       return _m
     }
   }
-        
+  
+  // Floating point minutes for use with int degree and floating point minute format
+  var md: Double {
+    get {
+      return Double(_m) + Double(_s)/60.0
+    }
+  }
+  
   var s: Int {
     get {
       return _s
     }
+  }
+  
+  var sign:Double {
+    return _degrees < 0.0 ? -1.0 : 1.0
+  }
+  
+  let MinPerDeg = Double(60.0)
+  let SecPerDeg = Double(60.0 * 60.0)
+  
+  init(_ deg: Double) {
+    _degrees = deg.truncatingRemainder(dividingBy: 360.0)
+    mapTo180()
+    buildDmsTermsFromDegrees()
+  }
+  
+  init (d:Int, m:Int, s:Int) {
+    _degrees = Double(
+      Double(d) +
+      Double(m) / 60.0 +
+      Double(s) / 3600.0
+    ).truncatingRemainder(dividingBy: 360.0)
+    mapTo180()
+    buildDmsTermsFromDegrees()
+  }
+  
+  init (d:Int, m:Double) {
+    _degrees = Double(Double(d) + m / 60.0).truncatingRemainder(dividingBy: 360.0)
+    mapTo180()
+    buildDmsTermsFromDegrees()
+  }
+  
+  private mutating func mapTo180() {
+    if _degrees >= 180.0 {
+      _degrees -= 360.0
+    } else if _degrees < -180.0 {
+      _degrees += 360.0
+    }
+  }
+  
+  private mutating func buildDmsTermsFromDegrees() {
+    let roundingTerm = self.sign * Double(0.5)
+    let totalSeconds = Int(_degrees * 3600 + roundingTerm)
+    _s = totalSeconds % 60
+    let totalMinutes = totalSeconds / 60
+    _m = totalMinutes % 60
+    _d = totalMinutes / 60
   }
   
   func string(_ inDms: Bool = true) -> String {
@@ -103,7 +116,7 @@ struct Dms {
       return String(format: "%.02fº", degrees)
     }
   }
-
+  
   static func + (left: Dms, right: Dms) -> Dms {
     return Dms(left.degrees + right.degrees)
   }

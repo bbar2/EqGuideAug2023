@@ -15,8 +15,8 @@ import Combine
 
 struct DoubleInputView: View {
   @Binding var doubleValue: Double
-  var prefix = String("")
-  var numDigits: Int = 2
+  var prefix: String?
+  var numDigits: Int = 4
 
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -26,8 +26,8 @@ struct DoubleInputView: View {
 
   var body: some View {
     HStack {
-      if prefix != "" {
-        Text(prefix)
+      if let label = prefix {
+        Text(label)
       }
       
       SignButton(isPos: $isPos)

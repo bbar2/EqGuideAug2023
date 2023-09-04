@@ -24,6 +24,11 @@ struct RaRateView: View {
     VStack {
       VStack {
         Text("Tracking Mode").font(viewOptions.appHeaderFont)
+
+        Text(" ").font(viewOptions.smallHeaderfont)
+        StatusBarView(mountModel: mountModel)
+        Divider()
+
         Picker(selection: $trackMode,
                label: Text("???")) {
           Text("Stars")
@@ -73,8 +78,6 @@ struct RaRateView: View {
       
       StopControlView(mountModel: mountModel)
       
-      StatusBarView(mountModel: mountModel)
-
     } // Top Level VStack
     .foregroundColor(viewOptions.appRedColor)
     .onAppear{

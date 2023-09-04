@@ -1,30 +1,36 @@
 Can I write freeform text in here.  Apparently yes.
 Do I get spel checking.  No.
 This is a Mark Down file. What are formating options in md files? 
+  # makes a title
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
-2023-08-28: Fix Pier East display.
+2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
+2023-09-01: Move XlToAngle calculations from HardwareView into MountModel.
+2023-09-01: Check and clamp XlAngle calcs to avoid NaN.
+2023-08-31: Why is Alt/Az moving when not Tracking, and PointingKnowledge.none ?
+2023-08-29: Why are PierOffset's 15, 63, 31.  Seems like should be multiples of 16.
+2023-08-31: Why HW View, XL Rots, not updating on first display?  Must jump to Focus View, then back to get them updating.  The source accels are updating.
 2023-08-29: If tracking, stop if armAngle > 93ish.  Don't track into rail.  Simply issuing a GotoTarget will do a flip. Do that automatically????
-2023-08-28: Move LST to center of status bar.
-2023-08-29: GoTo Target should resume Tracking.
 2023-08-28: Why do GoHome and GoEast not end on the mark on first try?
 2023-06-08: Focus - Only auto disconnect after first Mark. Leave a disconnect button.  I think I can use PierMode.unknown to detect this. Working in: enableAutoDisconnect()
 2023-07-24: Manual - Home/EastPier either disable if no Focus and Pier BLE connection, or issue connects to both before executing Home/EastPier operations.  Maybe, disable if no Pier, and issue Focus connect if not connected.
-2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
 2023-07-02: Should a Reset command change the pointing knowledge to none?
 2023-06-17: Add a 30 degree RA button to help with Polemaster alignment operation.
 2023-06-17: Hardware Red button, should also neutralize ios move commands. Directly, and probably through the data block sent to ios.
-2023-06-08: Hardware - Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
 2023-06-08: Decide on colors for Gray/Disabled, Yellow/NoBle, Red/Good.  When to use yellow vs gray.  Use the orange from LST app.
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
-2022-05-05: LST should run, even if BLE not conntected.  Probably own timer.
+2022-05-05: LST should run, even if BLE not connected.  Probably own timer.
 2022-10-10: Add time varying coordinates for Planets - or just enter them manually at show time. 
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-06-08: Hardware - Done - Used appDisabledColor.  Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
+2023-08-30: Done - GoTo Target (and Mark Target) should resume Tracking.
+2023-08-30: Reject since HA is now a viewMode and it combines LST and RA. - Consider moving LST to center of status bar.
+2023-08-30: Done - Fix Pier East/West display.
 2023-08-28: Done - HourAngle - add option to display HA instead of RA.  HA = LST-RA
 2023-08-04: GuideCommands can be lost.  Need a handshake or queue approach. Used BLEWrite (withResponse implied) property on the Characteristic for GuideCommandData
 2022-08-23: GUI reconfigure - No functional change to GuideMount

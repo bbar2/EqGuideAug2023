@@ -1,22 +1,12 @@
 //
-//  DmsInput.swift
-//  EqGuide
+//  DmInput.swift - Integer Degrees and floating point Minute format.
 //
-//  Display and edit binding to a float for decimalDegrees - using integer
-//  Degrees, ArcMinutes and ArcSeconds
-//  Although not mathematically necessary, force Deg, Min, and Sec to have the
-//  same sign by using  a Sign Button for the group of input fields.
-//  Use of Sign Button also addresses .decimalPad lack of sign key.
-//  Encapsulate the string conversions here
-//  Update the bound value:Float on every keystroke
-//  Could add keyboard filtering, but being lazy and relying on .keyboardType
-//  Parent must dismiss the view to terminate this editing session
-//
+//  Modified version of DmsInput.swift to use floating point minutes, and no seconds.
 
 import SwiftUI
 import Combine
 
-struct DmsInputView: View {
+struct DmInputView: View {
   @Binding var decimalDegrees: Double
   var prefix = String("")
   
@@ -24,14 +14,13 @@ struct DmsInputView: View {
   
   @State var degString = String(33)
   @State var minString = String(11)
-  @State var secString = String(44)
   @State var isPos = true
 
   enum InputField {
     case degree
     case minute
-    case second
   }
+  
   @FocusState private var kbFocused: InputField?
   
   var body: some View {
@@ -47,8 +36,9 @@ struct DmsInputView: View {
         }
       
       HStack {
-        TextField("dd", text: $degString)
+        TextField("ddd", text: $degString)
           .focused($kbFocused, equals: .degree)
+          .keyboardType(.numberPad)
           .frame(width:60)
           .border(.black)
           .onChange(of: degString) { _ in
@@ -58,10 +48,10 @@ struct DmsInputView: View {
         Text("º")
         
         Spacer()
-        TextField("dd", text: $minString)
+        TextField("m.mm", text: $minString)
           .focused($kbFocused, equals: .minute)
           .keyboardType(.decimalPad)
-          .frame(width:50)
+          .frame(width:100)
           .border(.black)
           .onChange(of: minString) { _ in
             reBuildFloatInput()
@@ -69,17 +59,6 @@ struct DmsInputView: View {
         
         Text("'")
         
-        Spacer()
-        TextField("dd", text: $secString)
-          .focused($kbFocused, equals: .second)
-          .frame(width:50)
-          .border(.black)
-          .onChange(of: secString) { _ in
-            reBuildFloatInput()
-          }
-        
-        Text("\"")
-
         // Control to raise or dismiss keyboard.
         // Cycles with right arrow's, until dismiss after editing seconds
         if let focus = kbFocused {
@@ -93,19 +72,11 @@ struct DmsInputView: View {
             }
             case .minute:
             Button() {
-              kbFocused = .second
-              initEditableStrings()
-            } label: {
-              Label("", systemImage: "arrow.right.square")
-            }
-            case .second:
-            Button() {
               kbFocused = nil
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.down.square")
             }
-
           }
           
         } else { // if nothing focused, button to bring up keyboard
@@ -117,7 +88,6 @@ struct DmsInputView: View {
         }
 
       }
-      .keyboardType(.numberPad)
       .onAppear() {
         initEditableStrings()
       }
@@ -146,25 +116,22 @@ struct DmsInputView: View {
   func initEditableStrings() {
     let dms = Dms(decimalDegrees)
     degString = String(abs(dms.d))
-    minString = String(abs(dms.m))
-    secString = String(abs(dms.s))
+    minString = String(format: "%.3f", fabs(dms.md))
     isPos = (dms.sign > 0 ? true : false)
   }
   
   func reBuildFloatInput() {
     decimalDegrees = Dms(d: Int(degString) ?? 0,
-                         m: Int(minString) ?? 0,
-                         s: Int(secString) ?? 0).degrees
+                         m: Double(minString) ?? 0).degrees
     decimalDegrees *= (isPos ? 1.0 : -1.0)
   }
-  
 }
 
-struct DmsInputView_Previews: PreviewProvider {
+struct DmInputView_Previews: PreviewProvider {
   @State static var angle = -90.5
   
   static var previews: some View {
-    DmsInputView(decimalDegrees: $angle)
+    DmInputView(decimalDegrees: $angle)
       .environmentObject(ViewOptions())
       .preferredColorScheme(.dark)
   }

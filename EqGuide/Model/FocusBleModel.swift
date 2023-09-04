@@ -289,7 +289,6 @@ class FocusBleModel : MyPeripheralDelegate,
     bleState = .disconnected;
     statusString = "Disconnected"
     connectionTimer.invalidate()
-    bleTimeoutEnable = false // TODO: not sure about this one
     
     // If user didn't ask for this, reconnect
     if !requestDisconnect {

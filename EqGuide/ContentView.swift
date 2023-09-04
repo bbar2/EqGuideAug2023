@@ -10,7 +10,6 @@ import SwiftUI
 
 struct ContentView: View {
 
-  // Models at Local scope.
   // Each model is associated with a different BLE Peripheral device
   // .onAppear puts focusDeviceModel and pierDeviceModel links in mountDeviceModel
   // Passing mountDeviceModel gives access to all model objects

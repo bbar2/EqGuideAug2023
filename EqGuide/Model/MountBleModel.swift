@@ -38,10 +38,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var mountDataBlock = MountDataBlock()
   @Published var refCoord = RaDec(ra: 0, dec: 0)
   @Published var targetCoord = RaDec(ra: 0, dec: 0)
-  @Published var locationData = LocationData() // Should I @Published since elements are @Published elements?
   @Published var refName = ""
   @Published var targName = ""
   
+  public var locationData = LocationData() 
+
+  var useAltTime = false
+  @Published var altTime: Date = Date.now
+
   let catalog: [Target] = loadJson("TargetData.json")
   
   var pierModelLink: PierBleModel?
@@ -63,18 +67,18 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var pierMode = PierMode.unknown
   
   // FIXME: this is not quite right.  look into diskCurrentDeg, vs Current....
-  func setPierMode() {
+  func setPierMode(_ newPierMode: PierMode) {
+    pierMode = newPierMode
 //    print("diskCurrentDeg = \(diskCurrentDeg)")
-    if fabs(diskCurrentDeg) > 90 {
-      pierMode = .west
-    } else {
-      pierMode = .east
-    }
+//    if fabs(diskCurrentDeg) > 90 {
+//      pierMode = .west
+//    } else {
+//      pierMode = .east
+//    }
   }
   
   var currentPosition = RaDec()
   @Published var pointingKnowledge = PointingKnowledge.none
-  @Published var lstValid = false
   
   @Published var xlAligned = simd_float3(x: 0, y: 0, z: 0)
   @Published var theta = Float(0.0)  // Mount pitch toward Polaris, or rotation around Mount_Y
@@ -100,10 +104,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   private let rocketMount: MyPeripheral
   private var initialized = false
   
-  private var lstOffset = 0.0  // must be 0.0 for normal operation.
-                  //lstOffset = 282.0 - lstDeg // Staunton River, Sep 14, 8:30PM
-                  //lstOffset = 90.0 - lstDeg // match figure
-
   private var xlControlTimer = Timer()
   @Published var xlControlActive = false
   private var raOnXlTarget = false
@@ -187,8 +187,8 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
           updateLstDeg()
           let homeCoord = RaDec(ra: lstDeg - 90.0, dec: 0.0)
           updateOffsetsTo(reference: homeCoord)
-          pointingKnowledge = lstValid ? .estimated : .none
-          setPierMode()
+          pointingKnowledge = .estimated
+          setPierMode(.east)
           
           if let focusModel = focusModelLink {
             focusModel.enableBleTimeout()  // let focus disconnect after timeout
@@ -280,13 +280,12 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
           updateLstDeg()
           let eastPierCoord = RaDec(ra: lstDeg, dec: 0.0)
           updateOffsetsTo(reference: eastPierCoord)
-          pointingKnowledge = lstValid ? .estimated : .none
-          setPierMode()
+          pointingKnowledge = .estimated
+          setPierMode(.east)
           
           if let focusModel = focusModelLink {
             focusModel.enableBleTimeout()  // can let focus timeout now
           }
-          
         }
       } // focusModelLink?.bleConnected()
     }
@@ -306,22 +305,22 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
 
     let slowThreshold = Float(0.1)
     let stopThreshold = Float(0.005)
-    let west_fast = Int32(-2)
-    let west_slow = Int32(-1)
-    let east_fast = Int32(2)
-    let east_slow = Int32(1)
+    let westFast = Int32(-2)
+    let westSlow = Int32(-1)
+    let eastFast = Int32(2)
+    let eastSlow = Int32(1)
     if (ay < Float(0.0) || azCal >= slowThreshold) {
-      guideCommandMove(ra: east_fast, dec: 0)
+      guideCommandMove(ra: eastFast, dec: 0)
       return false
     } else if (azCal < -slowThreshold) {
-      guideCommandMove(ra: west_fast, dec: 0)
+      guideCommandMove(ra: westFast, dec: 0)
       return false
     }
     else if (azCal > stopThreshold) {
-      guideCommandMove(ra: east_slow, dec: 0)
+      guideCommandMove(ra: eastSlow, dec: 0)
       return false
     } else if (azCal < -stopThreshold) {
-      guideCommandMove(ra: west_slow, dec: 0)
+      guideCommandMove(ra: westSlow, dec: 0)
       return false
     } else {
       guideCommandMoveNull()
@@ -334,26 +333,27 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   func goEastPierDec() -> Bool {
     let focusY = focusModelLink?.xlAligned.y ?? 0.0
     let targetY = (pierModelLink?.xlAligned.x ?? 0.0) * -1.0
+    let yError = focusY - targetY
 
     let slowThreshold = Float(0.3)
     let stopThreshold = Float(0.005)
-    let north_fast = Int32(2)
-    let north_slow = Int32(1)
-    let south_fast = Int32(-2)
-    let south_slow = Int32(-1)
+    let northFast = Int32(2)
+    let northSlow = Int32(1)
+    let southFast = Int32(-2)
+    let southSlow = Int32(-1)
 
-    if ((focusY-targetY) > slowThreshold) {
-      guideCommandMove(ra: 0, dec: north_fast)
+    if (yError > slowThreshold) {
+      guideCommandMove(ra: 0, dec: northFast)
       return false;
-    } else if ((focusY-targetY) < -slowThreshold) {
-      guideCommandMove(ra: 0, dec: south_fast)
+    } else if (yError < -slowThreshold) {
+      guideCommandMove(ra: 0, dec: southFast)
       return false;
     }
-    else if ((focusY-targetY) > stopThreshold) {
-      guideCommandMove(ra: 0, dec: north_slow)
+    else if (yError > stopThreshold) {
+      guideCommandMove(ra: 0, dec: northSlow)
       return false;
-    } else if ((focusY-targetY) < -stopThreshold) {
-      guideCommandMove(ra: 0, dec: south_slow)
+    } else if (yError < -stopThreshold) {
+      guideCommandMove(ra: 0, dec: southSlow)
       return false;
     }
     else {
@@ -410,24 +410,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     guideCommandMoveNull()
     xlControlTimer.invalidate()
     xlControlActive = false
-    //resumeTracking() // TODO: definitely overwrites MoveNull command - sometimes.
-    // TODO: Requires buffering, or handshake acknowledment of commands or use of .withResponse.
   }
   
 
   //MARK: === Angle Processing ===
   
   func updateLstDeg() {
-    if let longitudeDeg = locationData.longitudeDeg {
-      lstValid = true
-      lstDeg = lstDegFrom(utDate: Date.now, localLongitudeDeg: longitudeDeg)
-      
-      lstDeg += lstOffset // used for testing offsets from current LST
-            
-    } else {
-      lstValid = false
-      lstDeg = 0.0
-    }
+    lstDeg = lstDegFrom(utDate: Date.now,
+                        localLongitudeDeg: locationData.longitudeDeg)
   }
   
   // Update all time dependent model calcs at once
@@ -446,11 +436,12 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
 
     // TODO: use HA and/or PierMode for this mountAnglesToRaDec mapping
     // Looking to which side of pier |disk|<=90 no flip; |disk|>90 DEC Flip
-    if lstValid && (pointingKnowledge != PointingKnowledge.none) {
-      if (fabs(diskCurrentDeg) <= 90.0) { // lens is looking to west side of pier
+    if pointingKnowledge != PointingKnowledge.none {
+      if (fabs(diskCurrentDeg) <= 90.0) { // PierMode.east - lens looks to west hemi
+//      if (pierMode == .east) { // works, but diskCurrentDeg seems to fit better
         currentPosition.ra = lstDeg - 90.0 - pierCurrentDeg
         currentPosition.dec = diskCurrentDeg
-      } else { // looking to east side of pier
+      } else { // PierMode.west - lens looks to east hemisphere
         currentPosition.ra = lstDeg + 90.0 - pierCurrentDeg
         currentPosition.dec = 180.0 - diskCurrentDeg
       }
@@ -462,7 +453,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     currentPosition.ra = currentPosition.ra.mapAngle0To360()
     currentPosition.dec = currentPosition.dec.mapAnglePm180()
   } // end updateMountAngles
-
+  
   // Raw Mount Angles from coord of observed target and LST
   // All angles in degrees
   func raDecToMountAngles(_ coord: RaDec, lst: Double) ->
@@ -472,17 +463,16 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     var decModeUsed = PierMode.unknown
     
     // Find Hour Angle (ha) of coordinate
-    // ha = angle from RA to LST = (end - start) = (LST - RA)
-    let ha = (lst - coord.ra).mapAnglePm180()
+    let ha = hourAngle(ra: coord.ra, lstDeg: lst)
     
     // Select pier and disk angles based on coordinate side of lst
-    // looking east:  ha < 0
-    // Looking west: ha >= 0 (defines ha = 0 as looking west)
-    if ha < 0  { // looking east
+    // looking east:  ha < 0; piermode is west
+    // Looking west: ha >= 0 (defines ha = 0 as looking west); piermode is east
+    if ha < 0  {
       decModeUsed = PierMode.west
       pierDeg = 90.0 + ha     // pierDeg = +90 is horizontal west
       diskDeg = 180.0 - coord.dec
-    } else {                             // looking west
+    } else {
       decModeUsed = PierMode.east
       pierDeg = -90.0 + ha    // pierDeg = -90 is horizontal east
       diskDeg = coord.dec
@@ -529,7 +519,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   //    }
   
   // Uses LST, to build mount angle changes required to move fromCoord toCoord
-  // TODO: what do I do if LST or REF knowledge == .none
   func mountAngleChange(fromCoord: RaDec, toCoord: RaDec) ->
   (pierAngle: Double, diskAngle: Double) {
     let (fromPierDeg, fromDiskDeg, _) = raDecToMountAngles(fromCoord, lst: lstDeg)
@@ -575,12 +564,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     // not sure these need to be mapped, but it shouldn't hurt.
     pierOffsetDeg = pierOffsetDeg.mapAnglePm180()
     diskOffsetDeg = diskOffsetDeg.mapAnglePm180()
-    
-//    print("refPierAngle = \(refPierAngle)  pierOffsetDeg = \(pierOffsetDeg)  pierAngle = \(mountDataBlock.pierCountDeg + pierOffsetDeg)")
-//    print("refDiskAngle = \(refDiskAngle)  diskOffsetDeg = \(diskOffsetDeg)  diskAngle = \(mountDataBlock.diskCountDeg + diskOffsetDeg)")
-    
-    // Used for color coding values that depend on references
-//    pointingKnowledge = lstValid ? .marked : .none
     
   }  // end updateOffsetsTo
   
@@ -700,9 +683,13 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   // Update model angle offsets after manually fine aligning telescope view to target
   func guideCommandMarkTarget() {
     updateOffsetsTo(reference: targetCoord)  // update model angles
-    pointingKnowledge = lstValid ? .marked : .none
-
-    setPierMode()
+    pointingKnowledge = .marked
+    
+    var markedPierMode = PierMode.unknown
+    (_, _, markedPierMode) = raDecToMountAngles(targetCoord, lst: lstDeg)
+    setPierMode(markedPierMode)
+    
+    guideCommandResumeTracking() // normal operation is to track after mark.
   }
   
   // Initiate a move by Offset between Current and Target.
@@ -715,9 +702,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       pierOffset: Int32( Float32(pierDeg) / mountDataBlock.pierDegPerStep),
       diskOffset: Int32( Float32(diskDeg) / mountDataBlock.diskDegPerStep)
     )
+    print("PierOffset \(Int32( Float32(pierDeg) / mountDataBlock.pierDegPerStep))")
     guideCommand(goToTargetCommand)
 
-    setPierMode()
+    var goToPierMode = PierMode.unknown
+    (_, _, goToPierMode) = raDecToMountAngles(targetCoord, lst: lstDeg)
+    setPierMode(goToPierMode)
+    
+    guideCommandResumeTracking() // when guide is complete, it will track.
   }
   
   //MARK: === MyPeripheral Delegate Methods ===

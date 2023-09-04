@@ -45,34 +45,17 @@ struct ManualView: View {
       .foregroundColor(pointingKnowledgeColor())
 
       HStack {
-        if ((mountModel.pierModelLink?.bleConnected()) != nil)
-        {
-          Spacer()
-          BigButton(label:"HOME") {
-            _ = mountModel.goHome()
-            heavyBump()
-          }
-          Spacer()
-          BigButton(label:"EAST") {
-            _ = mountModel.goEastPier()
-            heavyBump()
-          }
-          Spacer()
+        Spacer()
+        BigButton(label:"HOME") {
+          _ = mountModel.goHome()
+          heavyBump()
         }
-        else
-        {
-          Spacer()
-          BigButton(label:"HOME",
-                    textColor: viewOptions.appDisabledColor) {
-            softBump()
-          }
-          Spacer()
-          BigButton(label:"EAST\nPIER",
-                    textColor: viewOptions.appDisabledColor) {
-            softBump()
-          }
-          Spacer()
+        Spacer()
+        BigButton(label:"EAST") {
+          _ = mountModel.goEastPier()
+          heavyBump()
         }
+        Spacer()
       }
       
       Spacer()

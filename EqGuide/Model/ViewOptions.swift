@@ -13,7 +13,7 @@ final class ViewOptions: ObservableObject {
   @Published var forceDarkMode = false
 
   @Published var showDmsHms: Bool = true;
-  @Published var showRaAsHA: Bool = false;
+  @Published var showRaAsHA: Bool = true;
   
   let appRedColor = Color(red:159/255, green: 0, blue: 0)
   let appActionColor = Color(red:200.0/255.0, green: 0, blue: 0)
@@ -30,11 +30,12 @@ final class ViewOptions: ObservableObject {
   }
     
   let appHeaderFont = Font.system(.title).monospacedDigit().bold()
+  let smallHeaderfont = Font.headline.weight(.light)
+  let sectionHeaderFont = Font.system(.title3).bold()
   let labelFont = Font.system(.title3)
   let bigValueFont = Font.system(.title2).bold().monospacedDigit()
   let smallValueFont = Font.system(.body).monospacedDigit()
   let noteFont =  Font.system(.body)
-  let smallHeaderfont = Font.headline.weight(.light)
   
   let leadingPad = CGFloat(10)
   let trailingPad = CGFloat(10)

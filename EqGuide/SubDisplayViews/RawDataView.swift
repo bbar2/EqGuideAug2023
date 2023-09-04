@@ -32,14 +32,6 @@ struct RawDataView: View {
         Text("Dec: \(gdb.diskCount)")
       }
 
-      HStack {
-        AccelView(label: "RawAx: ", value: gdb.accel_x)
-        Spacer()
-        AccelView(label: "RawAy: ", value: gdb.accel_y)
-        Spacer()
-        AccelView(label: "RawAz: ", value: gdb.accel_z)
-      }
-
       let totalSeconds = gdb.mountTimeMs / UInt32(1000)
       let hour = totalSeconds / UInt32(3600)
       let minSecs = totalSeconds % UInt32(3600)

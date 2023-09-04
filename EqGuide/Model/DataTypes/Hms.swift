@@ -4,7 +4,7 @@
 //
 //  Created by Barry Bryant on 3/30/22.
 //
-// Right Ascension is either Float Degrees or HMS integers, where:
+// Right Ascension is either floating point Degrees or HMS integers, where:
 //   0 <= H < 24, 0 <= M < 60, 0 <= S < 60
 //   Note Factor of 15 between 24 Hours and 360 Degrees.
 //

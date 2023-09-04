@@ -39,9 +39,10 @@ struct RaDecPairView: View {
         }
         .font(viewOptions.smallValueFont)
 
-        VStack (alignment: .trailing){
+        VStack (alignment: .trailing) {
           if viewOptions.showRaAsHA {
-            Text(Hms(lstDeg - pair.ra).string(viewOptions.showDmsHms))
+            let ha = hourAngle(ra: pair.ra, lstDeg: lstDeg)
+            Text(Hms(ha).string(viewOptions.showDmsHms))
           } else {
             Text(Hms(pair.ra).string(viewOptions.showDmsHms))
           }

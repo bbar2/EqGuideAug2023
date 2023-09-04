@@ -17,8 +17,8 @@ struct BleStatusView: View {
                                     viewOptions.appRedColor : viewOptions.noBleColor)
       Text("Pier").foregroundColor(mountModel.pierModelLink?.bleConnected() ?? false ?
                                    viewOptions.appRedColor : viewOptions.noBleColor)
-      Text("Focus").foregroundColor(mountModel.focusModelLink?.bleConnected() ?? false ?
-                                    viewOptions.appRedColor : viewOptions.noBleColor)
+      Text("Saddle").foregroundColor(mountModel.focusModelLink?.bleConnected() ?? false ?
+                                    viewOptions.appRedColor : viewOptions.appDisabledColor)
     }.font(viewOptions.smallHeaderfont)
   }
 }

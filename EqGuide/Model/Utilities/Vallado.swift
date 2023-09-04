@@ -189,4 +189,12 @@ func raDecToAltAz(lstDeg: Double, latDeg:Double, raDeg:Double, decDeg:Double) ->
          haDeg.mapAnglePm180())
 }
 
+// Not strictly Vallado - Simple HourAngle (HA) calculation.
+// Avoid getting this backwards or forgetting the pm180 mapping.
+// HA = angle from RA to LST = (end - start) = (LST - RA)
+// I prefer pm180 HA, so it's easy to see east as HA<0, and west as HA => 0
+func hourAngle(ra: Double, lstDeg: Double) -> Double {
+  return (lstDeg - ra).mapAnglePm180()
+}
+
 

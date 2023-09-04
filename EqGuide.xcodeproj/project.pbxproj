@@ -15,6 +15,12 @@
 		352168452814392100C76670 /* LightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168442814392100C76670 /* LightView.swift */; };
 		3521684728145C2A00C76670 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521684628145C2A00C76670 /* Haptics.swift */; };
 		352168492814A86D00C76670 /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352168482814A86D00C76670 /* LocationData.swift */; };
+		3553E7E42AA283EB002EC055 /* LocationOptionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7E32AA283EB002EC055 /* LocationOptionSheet.swift */; };
+		3553E7E62AA29489002EC055 /* XlGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7E52AA29489002EC055 /* XlGridView.swift */; };
+		3553E7E82AA294B2002EC055 /* XlAngleGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7E72AA294B2002EC055 /* XlAngleGridView.swift */; };
+		3553E7EA2AA294C9002EC055 /* LocationDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7E92AA294C9002EC055 /* LocationDataView.swift */; };
+		3553E7EC2AA4C37C002EC055 /* LocationStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7EB2AA4C37C002EC055 /* LocationStatusView.swift */; };
+		3553E7EE2AA54BCB002EC055 /* DmInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3553E7ED2AA54BCB002EC055 /* DmInputView.swift */; };
 		35558F2A2A5324EE004E6C76 /* DegreeFormatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */; };
 		35558F2C2A537790004E6C76 /* DoubleAngleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */; };
 		3565E1B82A5621EE00E16091 /* PierModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3565E1B72A5621EE00E16091 /* PierModeView.swift */; };
@@ -72,6 +78,12 @@
 		352168442814392100C76670 /* LightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightView.swift; sourceTree = "<group>"; };
 		3521684628145C2A00C76670 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		352168482814A86D00C76670 /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
+		3553E7E32AA283EB002EC055 /* LocationOptionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationOptionSheet.swift; sourceTree = "<group>"; };
+		3553E7E52AA29489002EC055 /* XlGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XlGridView.swift; sourceTree = "<group>"; };
+		3553E7E72AA294B2002EC055 /* XlAngleGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XlAngleGridView.swift; sourceTree = "<group>"; };
+		3553E7E92AA294C9002EC055 /* LocationDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataView.swift; sourceTree = "<group>"; };
+		3553E7EB2AA4C37C002EC055 /* LocationStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationStatusView.swift; sourceTree = "<group>"; };
+		3553E7ED2AA54BCB002EC055 /* DmInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DmInputView.swift; sourceTree = "<group>"; };
 		35558F292A5324EE004E6C76 /* DegreeFormatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DegreeFormatControl.swift; sourceTree = "<group>"; };
 		35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleAngleExtensions.swift; sourceTree = "<group>"; };
 		3565E1B72A5621EE00E16091 /* PierModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PierModeView.swift; sourceTree = "<group>"; };
@@ -139,6 +151,7 @@
 			children = (
 				351204AE27F214F5006DF60B /* DoubleInputView.swift */,
 				35DE202B27F4AD8500D96C68 /* DmsInputView.swift */,
+				3553E7ED2AA54BCB002EC055 /* DmInputView.swift */,
 				356CDF8527FB68B800F44A99 /* HmsInputView.swift */,
 			);
 			path = SubInputViews;
@@ -203,6 +216,7 @@
 				35C9A95927F0BD5900BFE4CE /* RaDecInputView.swift */,
 				35FBF0612787AF52001EFA53 /* TargetListView.swift */,
 				3565E1B92A572B0600E16091 /* StatusBar.swift */,
+				3553E7E32AA283EB002EC055 /* LocationOptionSheet.swift */,
 			);
 			path = CompositeViews;
 			sourceTree = "<group>";
@@ -232,6 +246,10 @@
 				35BE5CCB2A3DF87A0055FF5D /* StopControlView.swift */,
 				35E3D7BC2A229884002D1BFE /* BleStatusView.swift */,
 				3565E1B72A5621EE00E16091 /* PierModeView.swift */,
+				3553E7E52AA29489002EC055 /* XlGridView.swift */,
+				3553E7E72AA294B2002EC055 /* XlAngleGridView.swift */,
+				3553E7E92AA294C9002EC055 /* LocationDataView.swift */,
+				3553E7EB2AA4C37C002EC055 /* LocationStatusView.swift */,
 			);
 			path = SubDisplayViews;
 			sourceTree = "<group>";
@@ -365,6 +383,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3553E7EE2AA54BCB002EC055 /* DmInputView.swift in Sources */,
 				35A7F6442824103F008EBC8C /* Target.swift in Sources */,
 				351A40D629FF0A9E003B9A0F /* OnShake.swift in Sources */,
 				359E419729F5741600664AFC /* MyCentralManager.swift in Sources */,
@@ -377,10 +396,13 @@
 				35E3C8BC28E8CA4E000E25B5 /* MountChangeView.swift in Sources */,
 				359E419629F5741600664AFC /* MyPeripheral.swift in Sources */,
 				351A40D429FF0A7C003B9A0F /* FocusBleModel.swift in Sources */,
+				3553E7E62AA29489002EC055 /* XlGridView.swift in Sources */,
 				35FBF0562787963D001EFA53 /* ContentView.swift in Sources */,
 				3574C9F727F8D7280036CD94 /* GuideCommand.swift in Sources */,
 				35766F752A9D2EC90024ADD4 /* TabTitleView.swift in Sources */,
+				3553E7E82AA294B2002EC055 /* XlAngleGridView.swift in Sources */,
 				35E3D7B92A2278BD002D1BFE /* HardwareView.swift in Sources */,
+				3553E7EC2AA4C37C002EC055 /* LocationStatusView.swift in Sources */,
 				358516FE2A1EB653009C505D /* PierBleModel.swift in Sources */,
 				352168452814392100C76670 /* LightView.swift in Sources */,
 				35A7F64D28246EBD008EBC8C /* TargetRow.swift in Sources */,
@@ -398,6 +420,7 @@
 				352168432814357900C76670 /* ViewOptions.swift in Sources */,
 				35C1E54A2A37A0F3003C68B0 /* TouchImage.swift in Sources */,
 				35C9A95527F09D1400BFE4CE /* GuideView.swift in Sources */,
+				3553E7E42AA283EB002EC055 /* LocationOptionSheet.swift in Sources */,
 				35FBF0542787963D001EFA53 /* EqGuideApp.swift in Sources */,
 				35F6244C283C04C200762730 /* RaRateView.swift in Sources */,
 				359C8D9327F2063D00AA7E7B /* RaDec.swift in Sources */,
@@ -413,6 +436,7 @@
 				35B92FEF280068C800342F7F /* AppOptions.swift in Sources */,
 				3599A1E8280CB9ED00E1C442 /* Vallado.swift in Sources */,
 				35766F772A9D3E4B0024ADD4 /* RaFormatControl.swift in Sources */,
+				3553E7EA2AA294C9002EC055 /* LocationDataView.swift in Sources */,
 				35F5B1B42A223FF100630459 /* Transform3x3.swift in Sources */,
 				350DF8AA2A335F1D00205FCB /* ManualView.swift in Sources */,
 			);

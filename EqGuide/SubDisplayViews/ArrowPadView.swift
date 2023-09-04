@@ -25,8 +25,8 @@ struct ArrowPadView: View {
           softBump()
         }
       
-      let speed :Int32 = mountModel.arrowPadSpeed == ManualControlSpeeed.fast ? 2 : 1
-      
+      let speed:Int32 = mountModel.arrowPadSpeed == ManualControlSpeeed.fast ? 2 : 1
+
       TouchImage(systemName: "arrowtriangle.up",
                  touchAction: {
         mountModel.guideCommandMove(ra: 0, dec: speed)
@@ -37,6 +37,7 @@ struct ArrowPadView: View {
         softBump()
       },
                  enable: !mountModel.xlControlActive)
+      
       HStack {
         TouchImage(systemName: "arrowtriangle.left",
                    touchAction: {

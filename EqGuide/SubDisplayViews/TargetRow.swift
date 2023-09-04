@@ -24,7 +24,8 @@ struct TargetRow: View {
         Spacer()
         VStack (alignment: .trailing) {
           if viewOptions.showRaAsHA {
-            Text("HA: " + Hms(lstDeg - target.ra).string(viewOptions.showDmsHms))
+            let ha = (lstDeg - target.ra).mapAnglePm180()
+            Text("HA: " + Hms(ha).string(viewOptions.showDmsHms))
           } else {
             Text("RA: " + Hms(target.ra).string(viewOptions.showDmsHms))
           }

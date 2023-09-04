@@ -142,10 +142,7 @@ struct GuideView: View {
     } // body: some View
   }
   
-  func lstValidColor() -> Color {
-    return mountModel.lstValid ? viewOptions.appRedColor : viewOptions.confNoneColor
-  }
-  
+
 }
 
 struct GuideView_Previews: PreviewProvider {
