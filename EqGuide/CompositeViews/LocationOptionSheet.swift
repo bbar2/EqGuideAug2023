@@ -17,6 +17,7 @@ extension CLLocationCoordinate2D: Identifiable {
 
 struct LocationOptionSheet: View {
   @ObservedObject var locData: LocationData
+  var lstDeg : Double
 
   @EnvironmentObject var viewOptions: ViewOptions
 
@@ -36,8 +37,8 @@ struct LocationOptionSheet: View {
     VStack {
       
       VStack {
-        Text("Manual Entry").font(viewOptions.appHeaderFont)
         Text("Time and Location").font(viewOptions.appHeaderFont)
+        Text("Manual Entry").font(viewOptions.appHeaderFont)
         HStack {
           Spacer()
           DegreeFormatControl()
@@ -57,11 +58,22 @@ struct LocationOptionSheet: View {
 //          Text("anchor here").padding()
 //        }
         
-
         Divider()
-        Text("Site Coordinates").font(.title2)
+        Text("Phone GPS Site Coordinates").font(.title2).bold()
+        if let coord = locData.reportedCoord {
+          HStack {
+            Text("Lat:" + Dms(coord.latitude).string(viewOptions.showDmsHms))
+            Spacer()
+            Text("Lng:" + Dms(coord.longitude).string(viewOptions.showDmsHms))
+          }
+        } else {
+          Text("NO Phone GPS Location Data")
+        }
+        Divider()
+
         
 //        Text("Alt Longitude = \(region.center.longitude)º")
+        Text("Alternate Site Coordinates").font(.title2).bold()
         VStack {
           if viewOptions.showDmsHms {
             DmInputView(decimalDegrees: $locData.altLatDeg, prefix: "Alt Lat")
@@ -72,28 +84,30 @@ struct LocationOptionSheet: View {
           }
         }
         Toggle(isOn: $locData.useAltLocation) {
-          Text("Use Manualy Entered Coordinates")
+          Text("Use Alternate Site Coordinates")
         }
         Divider()
+//        Text("Site Coordintes In Use").font(.title2).bold()
+//        LocationDataView(locData: locData, lstDeg: lstDeg)
       }
       
-      VStack {
-        Divider()
-        DatePicker("Alternate Date", selection:  $altTime,
-                   displayedComponents: [.date] )
-        DatePicker("Alternate Local Time", selection: $altTime,
-                   displayedComponents: [.hourAndMinute] )
-        Toggle(isOn: $useAltTime) {
-          Text("Use Alternate Time")
-        }
-        Divider()
-      }
+//      VStack {
+//        Divider()
+//        DatePicker("Alternate Date", selection:  $altTime,
+//                   displayedComponents: [.date] )
+//        DatePicker("Alternate Local Time", selection: $altTime,
+//                   displayedComponents: [.hourAndMinute] )
+//        Toggle(isOn: $useAltTime) {
+//          Text("Use Alternate Time")
+//        }
+//        Divider()
+//      }
 //      .padding([.bottom], 50)
       Spacer()
       Button {
         dismiss()
       } label: {
-        Text("OK")
+        Text("OK").font(viewOptions.appHeaderFont)
       }
       Spacer()
       
@@ -122,7 +136,8 @@ struct LocationOptionSheet: View {
 struct LocationOptionSheet_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      LocationOptionSheet(locData: LocationData())
+      LocationOptionSheet(locData: LocationData(),
+                          lstDeg: 0.0)
     }
   }
 }

@@ -41,14 +41,16 @@ struct HardwareView: View {
           pairTitle: "Current\nPosition",
           pair: mountModel.currentPosition,
           pierDeg: mountModel.pierCurrentDeg,
-          diskDeg: mountModel.diskCurrentDeg
+          diskDeg: mountModel.diskCurrentDeg,
+          lstDeg: mountModel.lstDeg
         )
         .foregroundColor(pointingKnowledgeColor())
         .padding([.bottom], 1)
         
         HStack {
+          let latDeg = mountModel.locationDataLink?.latitudeDeg ?? 0.0
           let (alt, az, _) = raDecToAltAz(lstDeg: mountModel.lstDeg,
-                                          latDeg: mountModel.locationData.latitudeDeg,
+                                          latDeg: latDeg,
                                           raDeg: mountModel.currentPosition.ra,
                                           decDeg: mountModel.currentPosition.dec)
           Text("Alt: " + Dms(alt).string(viewOptions.showDmsHms))
@@ -59,15 +61,21 @@ struct HardwareView: View {
         .foregroundColor(pointingKnowledgeColor())
       }
       Divider()
-      Button {
-        showOptions = true
-      } label: {
-        LocationDataView(mountModel: mountModel)
+      if let locData = mountModel.locationDataLink {
+        LocationDataView(locData: locData,
+                         lstDeg: mountModel.lstDeg)
+      } else {
+        Text("ERROR: LocationDataView(locationDataLink)")
+        Text("       locationDataLink is nil in HardwareView.swift")
       }
-      .sheet(isPresented: $showOptions,
-             onDismiss: didDismiss) {
-        LocationOptionSheet(locData: mountModel.locationData)
-      }
+//        if let locationData = mountModel.locationDataLink {
+//          LocationOptionSheet(locData: locationData,
+//                              lstDeg: mountModel.lstDeg)
+//        } else {
+//          Text("ERROR: LocationOptionSheet(locationDataLink)")
+//          Text("       locationDataLink is nil in HardwareView.swift")
+//        }
+//      }
       Divider()
       
       Spacer()
@@ -82,7 +90,7 @@ struct HardwareView: View {
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
       
-    }
+    }.foregroundColor(viewOptions.appRedColor)
     
   }
   

@@ -16,6 +16,7 @@ struct ContentView: View {
   @StateObject private var mountDeviceModel = MountBleModel()
   @StateObject private var focusDeviceModel = FocusBleModel()
   @StateObject private var pierDeviceModel = PierBleModel()
+  @StateObject private var locationData = LocationData()
 
   // ViewOptions at App scope
   @EnvironmentObject var viewOptions: ViewOptions
@@ -90,8 +91,9 @@ struct ContentView: View {
     }
     .onAppear {
       mountDeviceModel.mountModelInit()
-      mountDeviceModel.linkPierModel(pierDeviceModel)
-      mountDeviceModel.linkFocusModel(focusDeviceModel)
+      mountDeviceModel.pierModelLink = pierDeviceModel
+      mountDeviceModel.focusModelLink = focusDeviceModel
+      mountDeviceModel.locationDataLink = locationData
       viewOptions.setupSegmentControl()
     }
   }

@@ -23,7 +23,7 @@ struct RaRateView: View {
   var body: some View {
     VStack {
       VStack {
-        Text("Tracking Mode").font(viewOptions.appHeaderFont)
+        Text("Tracking Rate").font(viewOptions.appHeaderFont)
 
         Text(" ").font(viewOptions.smallHeaderfont)
         StatusBarView(mountModel: mountModel)

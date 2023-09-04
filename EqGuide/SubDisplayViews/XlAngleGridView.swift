@@ -25,7 +25,7 @@ struct XlAngleGridView: View {
       Divider().gridCellUnsizedAxes([ .vertical])
       GridRow {
         HStack {
-          Text("XL Based Rotations").font(viewOptions.sectionHeaderFont)
+          Text("XL Estimated Rotations").font(viewOptions.sectionHeaderFont)
           Spacer()
         }.gridCellColumns(4)}
       GridRow {

@@ -68,6 +68,13 @@ class LocationData : NSObject, ObservableObject, CLLocationManagerDelegate{
     }
   }
   
+  // What's Phone GPS saying.  Nil if no GPS.
+  var reportedCoord : CLLocationCoordinate2D? {
+    get {
+      return coordDeg2D
+    }
+  }
+  
   override init() {
     super.init()
 

@@ -20,12 +20,12 @@ struct LocationStatusView: View {
       case .alt:
         return viewOptions.confEstColor
       case .gps:
-        return viewOptions.appRedColor
+        return viewOptions.appActionColor
     }
   }
 
   var body: some View {
-    Text("GPS").foregroundColor(knowledgeColor(knowledge))
+    Text("Lat/Long").foregroundColor(knowledgeColor(knowledge))
   }
 }
 

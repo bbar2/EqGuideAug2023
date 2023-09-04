@@ -21,16 +21,19 @@ struct StatusBarView: View {
       Button {
         showOptions = true
       } label: {
-        HStack {
-          Text("Time")
-          LocationStatusView(knowledge: mountModel.locationData.knowledge)
-        }
+        let locationKnowledge = mountModel.locationDataLink?.knowledge ?? .none
+        LocationStatusView(knowledge: locationKnowledge)
       }
       Spacer()
       BleStatusView(mountModel: mountModel)
     }
     .sheet(isPresented: $showOptions) {
-      LocationOptionSheet(locData: mountModel.locationData)
+      if let locationData = mountModel.locationDataLink {
+        LocationOptionSheet(locData: locationData,
+                            lstDeg: mountModel.lstDeg)
+      } else {
+        Text("ERROR: locationDataLink nil in StatusBar.swift")
+      }
     }
   }
 }

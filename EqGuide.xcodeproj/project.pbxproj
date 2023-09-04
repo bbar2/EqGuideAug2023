@@ -161,7 +161,6 @@
 			isa = PBXGroup;
 			children = (
 				35558F2B2A537790004E6C76 /* DoubleAngleExtensions.swift */,
-				352168482814A86D00C76670 /* LocationData.swift */,
 				3574C9F427F8D6FE0036CD94 /* MountDataBlock.swift */,
 				3574C9F627F8D7280036CD94 /* GuideCommand.swift */,
 				359C8D9227F2063D00AA7E7B /* RaDec.swift */,
@@ -227,6 +226,7 @@
 				35FBF06727888866001EFA53 /* MountBleModel.swift */,
 				358516FD2A1EB653009C505D /* PierBleModel.swift */,
 				351A40D329FF0A7C003B9A0F /* FocusBleModel.swift */,
+				352168482814A86D00C76670 /* LocationData.swift */,
 				35B92FEE280068C800342F7F /* AppOptions.swift */,
 				352168422814357900C76670 /* ViewOptions.swift */,
 				35A7F64228240F1B008EBC8C /* Utilities */,

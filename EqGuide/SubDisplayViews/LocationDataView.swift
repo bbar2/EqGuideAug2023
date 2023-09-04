@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct LocationDataView: View {
-  @ObservedObject var mountModel: MountBleModel
+  @ObservedObject var locData: LocationData
+  var lstDeg : Double
   
   @EnvironmentObject var viewOptions: ViewOptions
   
@@ -17,16 +18,16 @@ struct LocationDataView: View {
       HStack {
         Text("Location Data")
           .font(viewOptions.sectionHeaderFont)
-          .foregroundColor(viewOptions.appActionColor)
+          .foregroundColor(viewOptions.appRedColor)
         Spacer()
       }
       HStack {
-        Text("LST: " + Hms(mountModel.lstDeg).string(viewOptions.showDmsHms))
+        Text("LST: " + Hms(lstDeg).string(viewOptions.showDmsHms))
         Spacer()
-        let latString = Dms(mountModel.locationData.latitudeDeg).string(viewOptions.showDmsHms)
+        let latString = Dms(locData.latitudeDeg).string(viewOptions.showDmsHms)
         Text("Lat:" + latString)
         Spacer()
-        let longString = Dms(mountModel.locationData.longitudeDeg).string(viewOptions.showDmsHms)
+        let longString = Dms(locData.longitudeDeg).string(viewOptions.showDmsHms)
         Text("Lng:" + longString)
       }
       .font(viewOptions.smallValueFont)
@@ -40,6 +41,7 @@ struct LocationDataView: View {
 
 struct LocationDataView_Previews: PreviewProvider {
   static var previews: some View {
-    LocationDataView(mountModel: MountBleModel())
+    LocationDataView(locData: LocationData(),
+                     lstDeg: 0.0)
   }
 }

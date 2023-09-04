@@ -41,15 +41,14 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   @Published var refName = ""
   @Published var targName = ""
   
-  public var locationData = LocationData() 
-
   var useAltTime = false
   @Published var altTime: Date = Date.now
 
   let catalog: [Target] = loadJson("TargetData.json")
   
-  var pierModelLink: PierBleModel?
-  var focusModelLink: FocusBleModel?
+  public var pierModelLink: PierBleModel?
+  public var focusModelLink: FocusBleModel?
+  public var locationDataLink: LocationData?
   
   // These offsets, with current counts (in MountDataBlock), determine angles.
   // xxAngleDeg = (xxOffsetCount * xxDegPerStep) + xxOffsetDeg
@@ -134,15 +133,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let targIndex = 13 // m101 Pinwheel Galaxy
     targetCoord = RaDec(ra: catalog[targIndex].ra, dec: catalog[targIndex].dec)
     targName = catalog[targIndex].name
-  }
-
-  // ContentView.onAppear calls these to tie models together.
-  func linkPierModel(_ pierModel: PierBleModel) {
-    pierModelLink = pierModel
-  }
-  
-  func linkFocusModel(_ focusModel: FocusBleModel){
-    focusModelLink = focusModel
   }
   
   // Called by focusMotorInit & BleDelegate overrides on BLE Connect or Disconnect
@@ -416,8 +406,9 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   //MARK: === Angle Processing ===
   
   func updateLstDeg() {
+    let longitude = locationDataLink?.longitudeDeg ?? 0.0
     lstDeg = lstDegFrom(utDate: Date.now,
-                        localLongitudeDeg: locationData.longitudeDeg)
+                        localLongitudeDeg: longitude)
   }
   
   // Update all time dependent model calcs at once

@@ -5,7 +5,7 @@ This is a Mark Down file. What are formating options in md files?
 
 # ToDo - Date put on list. Top Priority at top of list. 
 
-2023-06-18: Add Lat/Long to hardware view, with option for manual entry. Consider an alternate date and a Time offset, or LST offset?
+2023-09-04: Add Time offset driven by alt time in LocationOptionSheet.
 2023-09-01: Move XlToAngle calculations from HardwareView into MountModel.
 2023-09-01: Check and clamp XlAngle calcs to avoid NaN.
 2023-08-31: Why is Alt/Az moving when not Tracking, and PointingKnowledge.none ?
@@ -27,6 +27,7 @@ This is a Mark Down file. What are formating options in md files?
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-06-18: Done - Created DmInputView and added init(d,m) to Dms type. - Add Lat/Long to hardware view, with option for manual entry. 
 2023-06-08: Hardware - Done - Used appDisabledColor.  Blend BLE Yellow indicators into the accel/angle table lables, and maybe columns.  Columns might be too much yellow.
 2023-08-30: Done - GoTo Target (and Mark Target) should resume Tracking.
 2023-08-30: Reject since HA is now a viewMode and it combines LST and RA. - Consider moving LST to center of status bar.
