@@ -33,7 +33,7 @@ final class ViewOptions: ObservableObject {
   let smallHeaderfont = Font.headline.weight(.light)
   let sectionHeaderFont = Font.system(.title3).bold()
   let labelFont = Font.system(.title3)
-  let bigValueFont = Font.system(.title2).bold().monospacedDigit()
+  let bigValueFont = Font.system(.title2).monospacedDigit()
   let smallValueFont = Font.system(.body).monospacedDigit()
   let noteFont =  Font.system(.body)
   

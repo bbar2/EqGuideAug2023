@@ -29,8 +29,7 @@ struct StatusBarView: View {
     }
     .sheet(isPresented: $showOptions) {
       if let locationData = mountModel.locationDataLink {
-        LocationOptionSheet(locData: locationData,
-                            lstDeg: mountModel.lstDeg)
+        LocationOptionSheet(locData: locationData)
       } else {
         Text("ERROR: locationDataLink nil in StatusBar.swift")
       }

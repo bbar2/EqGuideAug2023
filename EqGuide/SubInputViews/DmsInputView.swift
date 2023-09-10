@@ -50,7 +50,7 @@ struct DmsInputView: View {
         TextField("dd", text: $degString)
           .focused($kbFocused, equals: .degree)
           .frame(width:60)
-          .border(.black)
+          .border(.clear)
           .onChange(of: degString) { _ in
             reBuildFloatInput()
           }
@@ -62,7 +62,7 @@ struct DmsInputView: View {
           .focused($kbFocused, equals: .minute)
           .keyboardType(.decimalPad)
           .frame(width:50)
-          .border(.black)
+          .border(.clear)
           .onChange(of: minString) { _ in
             reBuildFloatInput()
           }
@@ -73,7 +73,7 @@ struct DmsInputView: View {
         TextField("dd", text: $secString)
           .focused($kbFocused, equals: .second)
           .frame(width:50)
-          .border(.black)
+          .border(.clear)
           .onChange(of: secString) { _ in
             reBuildFloatInput()
           }

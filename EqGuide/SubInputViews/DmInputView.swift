@@ -27,6 +27,8 @@ struct DmInputView: View {
     HStack {
       if prefix != "" {
         Text(prefix)
+          .font(viewOptions.bigValueFont)
+          .foregroundColor(viewOptions.appRedColor)
       }
       Spacer()
       
@@ -40,7 +42,7 @@ struct DmInputView: View {
           .focused($kbFocused, equals: .degree)
           .keyboardType(.numberPad)
           .frame(width:60)
-          .border(.black)
+          .border(.clear)
           .onChange(of: degString) { _ in
             reBuildFloatInput()
           }
@@ -52,7 +54,7 @@ struct DmInputView: View {
           .focused($kbFocused, equals: .minute)
           .keyboardType(.decimalPad)
           .frame(width:100)
-          .border(.black)
+          .border(.clear)
           .onChange(of: minString) { _ in
             reBuildFloatInput()
           }
@@ -107,7 +109,7 @@ struct DmInputView: View {
       }
 
     }
-    .font(.title)
+    .font(viewOptions.bigValueFont)
     .multilineTextAlignment(.trailing)
     .foregroundColor(viewOptions.appActionColor)
   }

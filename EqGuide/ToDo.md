@@ -20,11 +20,11 @@ This is a Mark Down file. What are formating options in md files?
 2023-05-27: Shutdown should be more orderly.  Close BLE connections, then shutdown.
 2022-05-07: Add filters to TargetList.  At least filter by constellation and type
 2022-05-07: Add ability to see description for each TargetList Item.  Impacts how UI works.
-2022-05-05: LST should run, even if BLE not connected.  Probably own timer.
 2022-10-10: Add time varying coordinates for Planets - or just enter them manually at show time. 
 
 # Done Items - Newest on top.  Date item completed.
 
+2023-09-10: OBE Why did I want this?  LST should run, even if BLE not connected.  Probably own timer.
 2023-09-09: Done.  Did this in onAppear and onDissapear for relevant tabs - Focus - Only auto disconnect after first Mark. Leave a disconnect button.  I think I can use PierMode.unknown to detect this.
 2023-09-09: Done. went with the issue connect approach - Manual - Home/EastPier either disable if no Focus and Pier BLE connection, or issue connects to both before executing Home/EastPier operations.  Maybe, disable if no Pier, and issue Focus connect if not connected.
 2023-09-09: Done - Move XlToAngle calculations from HardwareView into MountModel.

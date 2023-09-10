@@ -23,12 +23,14 @@ struct RaRateView: View {
   var body: some View {
     VStack {
       VStack {
-        Text("Tracking Rate").font(viewOptions.appHeaderFont)
-
+        Text("Adjust Track Rate").font(viewOptions.appHeaderFont)
+        
         Text(" ").font(viewOptions.smallHeaderfont)
         StatusBarView(mountModel: mountModel)
         Divider()
-
+      }
+      
+      VStack {
         Picker(selection: $trackMode,
                label: Text("???")) {
           Text("Stars")
@@ -43,37 +45,33 @@ struct RaRateView: View {
         
         switch trackMode {
           case .star:
-            Text("Star Track Mode").font(viewOptions.labelFont)
+            Text("Star: Start with 0 acrSec/min").font(viewOptions.labelFont)
           case .lunar:
-            Text("Use -32 arcSec / min").font(viewOptions.labelFont)
+            Text("Lunar: Start with -32 arcSec/min").font(viewOptions.labelFont)
         }
         
         let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.mountDataBlock.raRateOffsetDegPerSec
-        Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
+        Text(String(format: "Current Rate Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
+        Divider()
       }
       
-      Spacer()
+ //     Spacer()
       
-      VStack{
-        Text("New Fine Tune Offset").font(viewOptions.appHeaderFont)
-        Text("arcSec / min (+ccw)").font(viewOptions.labelFont)
-        HStack {
-          Spacer()
-          DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
-                          prefix: "",
-                          numDigits: 0)
+      VStack {
+        Text("New Rate Offset").font(viewOptions.appHeaderFont)
+        Text("arcSec / min").font(viewOptions.labelFont)
+        DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
+                        prefix: "(+west)",
+                        numDigits: 0)
+            
+        BigButton(label: "Update\nRate Offset", minWidth: 200, minHeight: 90) {
+          let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
+          mountModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
         }
+        Divider()
       }
-      
-      
-      Spacer()
-      
-      BigButton(label: "Update\nFine Tune\n Offset", minWidth: 200) {
-        let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
-        mountModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
-      }
-      
+
       Spacer()
       
       StopControlView(mountModel: mountModel)

@@ -73,7 +73,7 @@ struct ContentView: View {
 //        }
 //        .tag(Tab.light)
     }
-    .statusBar(hidden: true)
+    .statusBarHidden(true)
     .accentColor(viewOptions.appRedColor)
     .onChange(of: scenePhase) { newPhase in
       if newPhase == .active {

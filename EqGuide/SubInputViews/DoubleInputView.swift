@@ -39,7 +39,7 @@ struct DoubleInputView: View {
         .focused($kbFocused)
         .frame(width:125)
         .multilineTextAlignment(.leading)
-        .border(.black)
+        .border(.clear)
         .foregroundColor(viewOptions.appActionColor)
         .keyboardType(numDigits != 0 ? .decimalPad : .numberPad)
         .onChange(of: doubleString) { _ in
@@ -79,7 +79,7 @@ struct DoubleInputView: View {
     .onAppear() {
       initDoubleString()
     }
-    .font(.title)
+    .font(viewOptions.bigValueFont)
     .multilineTextAlignment(.center)
   }
   

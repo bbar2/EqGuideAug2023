@@ -9,9 +9,10 @@ import SwiftUI
 
 struct XlAngleGridView: View {
   @ObservedObject var mountModel: MountBleModel
-  
+
   @EnvironmentObject var viewOptions: ViewOptions
 
+  
   struct cell: View {
     var cellValue: Float
     var body: some View {
@@ -40,7 +41,6 @@ struct XlAngleGridView: View {
       }
       GridRow {
         Text("x:Pier").font(viewOptions.labelFont)
-        // Map calcualted x rotations, phi, to Pier angle.
         Text("n/a")
         if let pierModel = mountModel.pierModelLink {
           cell(cellValue: toDeg(pierModel.xlEstPier))

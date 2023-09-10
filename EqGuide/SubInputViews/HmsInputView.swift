@@ -51,7 +51,7 @@ struct HmsInputView: View {
         TextField("dd", text: $hourString)
           .focused($kbFocused, equals: .hour)
           .frame(width:60)
-          .border(.black)
+          .border(.clear)
           .onChange(of: hourString) { _ in
             reBuildFloatInput()
           }
@@ -61,7 +61,7 @@ struct HmsInputView: View {
         TextField("dd", text: $minString)
           .focused($kbFocused, equals: .minute)
           .frame(width:50)
-          .border(.black)
+          .border(.clear)
           .onChange(of: minString) { _ in
             reBuildFloatInput()
           }
@@ -71,7 +71,7 @@ struct HmsInputView: View {
         TextField("dd", text: $secString)
           .focused($kbFocused, equals: .second)
           .frame(width:50)
-          .border(.black)
+          .border(.clear)
           .onChange(of: secString) { _ in
             reBuildFloatInput()
           }

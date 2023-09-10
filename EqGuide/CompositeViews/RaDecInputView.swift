@@ -77,6 +77,10 @@ struct RaDecInputView: View {
       tempName = name
       softBump()
     }
+    .onDisappear{
+      // If parent tab changes with this InputView open, dismiss this InputView.
+      dismissView()
+    }
     
     // Detect manual coordinate edits, and rename the coordinate
     .onChange(of: editCoord.ra) { newValue in
