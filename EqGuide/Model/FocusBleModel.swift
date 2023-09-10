@@ -83,10 +83,9 @@ class FocusBleModel : MyPeripheralDelegate,
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // is left handed
   @Published var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)
-  @Published var theta = Float(0.0)
-  @Published var phi = Float(0.0)
   @Published var psi = Float(0.0)
-  
+  @Published var xlEstDisk = Float(0.0)
+
   // Focus Service provides focus motor control and focus motor accelerations
   private let FOCUS_DEVICE_NAMED = "FocusMotor"
   private let FOCUS_SERVICE_UUID = CBUUID(string: "828b0000-046a-42c7-9c16-00ca297e95eb")
@@ -113,8 +112,6 @@ class FocusBleModel : MyPeripheralDelegate,
     // Focus Accel is mounted:    +X back,            +Y right,       +Z down
     // Map Left Handed accelerometer to Right Handed Telescope Frame
     let xlRhs = simd_float3(x: -xlRaw.x, y: -xlRaw.y, z: -xlRaw.z)
-    
-    // normalize
     let xlNorm = simd_normalize(xlRhs)
     
     // TBD Measured offsets between pier and focus accelerometers
@@ -127,16 +124,31 @@ class FocusBleModel : MyPeripheralDelegate,
     let alignTform = zRot * xRot * yRot // tbd for now
     xlAligned = alignTform * xlNorm
     
-    // Get theta (pitch) and Phi (roll) from Pier Acceleromter
-    theta = (pierAccelModel?.theta ?? 0.0)
-    phi = (pierAccelModel?.phi ?? 0.0)
+    // Get Saddle theta (pitch) and Phi (roll) from Pier Acceleromter
+    let saddle_theta = (pierAccelModel?.theta ?? 0.0)
+    let saddle_phi = (pierAccelModel?.phi ?? 0.0)
     
     // Based on Rz' * Rx' * Ry' for known theta and phi
-    let CT = cos(theta)
-    let ST = sin(theta)
-    let SP = sin(phi)
+    let CT = cos(saddle_theta) // only zero if theta = 90 when site on north pole
+    let ST = sin(saddle_theta) // only zero if theta = 0 when site located on equator
+    let SP = sin(saddle_phi)   // zero when HA = 0, which is common
     let CTSP = CT*SP
-    psi = acos( (CTSP*xlAligned.y/ST - xlAligned.x) / (CTSP*CTSP/ST + ST) )
+    
+    var acosTerm: Float
+    if ST != 0 {
+      let denom = (CTSP*CTSP/ST + ST) // When ST !=0, denom != 0
+      acosTerm = (CTSP*xlAligned.y/ST - xlAligned.x) / denom
+    } else {
+      acosTerm = 0.0 // ST == 0 is site on equator case.  Don't worry about it.
+    }
+
+    // avoid nan mostly due to XL misalignment and lesser to noise.
+    // I've seen 1.005 which translates to about 2 degrees of psi error.
+    if abs(acosTerm) > 1.0 {
+      acosTerm = 1.0 * sign(acosTerm)
+    }
+    psi = acos(acosTerm)
+    xlEstDisk = Float.pi/2 - psi
   }
   
   init() {

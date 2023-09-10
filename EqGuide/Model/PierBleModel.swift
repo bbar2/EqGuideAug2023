@@ -34,8 +34,10 @@ class PierBleModel : MyPeripheralDelegate,
   
   private var xlRaw = BleXlData(x: 0.0, y: 0.0, z: 0.0) // left handed
   @Published var xlAligned = simd_float3(x: 0.0, y: 0.0, z: 0.0)   // axis aligned
-  @Published var theta: Float = 0.0 // roll around X
-  @Published var phi: Float = 0.0   // pitch around Y
+  @Published var theta: Float = 0.0  // roll around X
+  @Published var phi:   Float = 0.0  // pitch around Y
+  @Published var xlEstLat:  Float = 0.0  // estimate latitude from theta
+  @Published var xlEstPier: Float = 0.0  // estimate pier angle from phi
 
   private var alignPierAccelTransform = matrix_identity_float3x3
 
@@ -101,7 +103,21 @@ class PierBleModel : MyPeripheralDelegate,
     // From algebra of inverse transform mapping [0 0 -1] gravity to Telescope frame
     // based on Rx' * Ry' and fixed psi.
     theta = asin(-xlAligned.x)
-    phi = asin(xlAligned.y / cos(theta))
+    xlEstLat = -theta  // theta maps to latitude
+
+    let denom = cos(theta)
+    var asinTerm: Float
+    if denom != 0 {
+      asinTerm = xlAligned.y / denom
+    } else {
+      asinTerm = 0.0 // if denom == 0; theta=90 so .x=1 and .y=0; so asinTerm=0
+    }
+    // avoid nan when XL noise causes |asinTerm| to exceed.  I've seen 1.0000001
+    if abs(asinTerm) > 1.0 {
+      asinTerm = 1.0 * sign(asinTerm)
+    }
+    phi = asin(asinTerm)
+    xlEstPier = -phi // phi maps to pier angle
   }
   
   // Build calibration transform to align pier accelerometer so pier X axis

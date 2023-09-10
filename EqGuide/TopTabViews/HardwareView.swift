@@ -90,7 +90,27 @@ struct HardwareView: View {
         .foregroundColor((mountModel.bleConnected() ? viewOptions.appRedColor : viewOptions.appDisabledColor) )
         .font(viewOptions.smallValueFont)
       
-    }.foregroundColor(viewOptions.appRedColor)
+    }
+    .foregroundColor(viewOptions.appRedColor)
+    .onAppear{
+      softBump()
+      // Keep focus connected to view saddle angles
+      if let focusModel = mountModel.focusModelLink {
+        focusModel.connectBle() // initiate connection.
+        // after a little delay to let departing tab's onDisappear to run.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+          focusModel.disableBleTimeout()
+        }
+      }
+    }
+    .onDisappear{
+      // Let saddle BLE go, if pointing knowledge established
+      if mountModel.pointingKnowledge != .none {
+        if let focusModel = mountModel.focusModelLink {
+          focusModel.enableBleTimeout()
+        }
+      }
+    }
     
   }
   

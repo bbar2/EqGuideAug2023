@@ -81,6 +81,7 @@ struct RaRateView: View {
     } // Top Level VStack
     .foregroundColor(viewOptions.appRedColor)
     .onAppear{
+      softBump()
       viewOptions.setupSegmentControl()
     }
     .ignoresSafeArea(.keyboard)

@@ -40,7 +40,6 @@ struct FocusView: View {
         }.font(.title)
       }.foregroundColor(viewOptions.appRedColor)
 
-        
       VStack {
         if focusModel.bleConnected() {
           HStack{
@@ -122,6 +121,7 @@ struct FocusView: View {
         focusModel.connectBle()
       } else if newPhase == .inactive {
         focusModel.disconnectBle()
+        print("inactive")
       } else if newPhase == .background {
         focusModel.disconnectBle()
       }
@@ -129,14 +129,17 @@ struct FocusView: View {
     .preferredColorScheme(.dark)
     
     .onAppear{
-      // FocusBleModel needs access to PierBleModel
+      softBump()
       focusModel.linkPierModel(pierModel)
+      focusModel.connectBle() // always connect. Don't change bleTimeout.
+    }
+    .onDisappear{
+      focusModel.enableBleTimeout() // pointingKnowledge is not handy, so let it go
     }
     .onShake {
       focusModel.connectBle()
     }
   }
-    
 }
 
 struct MainView_Previews: PreviewProvider {

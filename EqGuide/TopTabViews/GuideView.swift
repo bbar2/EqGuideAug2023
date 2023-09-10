@@ -120,9 +120,16 @@ struct GuideView: View {
             
             Spacer()
 
-            BigButton(label: "GoTo Target") {
+            if mountModel.pointingKnowledge != .none {
+              BigButton(label: "GoTo Target") {
                 mountModel.guideCommandGoToTarget()
                 heavyBump()
+              }
+            } else {
+              BigButton(label: "GoTo Target",
+                        textColor: viewOptions.confNoneColor) {
+                softBump()
+              }
             }
 
             Spacer()

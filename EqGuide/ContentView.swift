@@ -26,8 +26,8 @@ struct ContentView: View {
   enum Tab {
     case manual
     case guide
-    case rate
     case hardware
+    case rate
     case focus
 //    case light
   }
@@ -48,18 +48,18 @@ struct ContentView: View {
         }
         .tag(Tab.guide)
       
-      RaRateView(mountModel: mountDeviceModel)
-        .tabItem {
-          Label("Track Rate", systemImage: "cursorarrow.click.badge.clock")
-        }
-        .tag(Tab.rate)
-      
       HardwareView(mountModel: mountDeviceModel)
         .tabItem {
           Label("Hardware", systemImage: "angle")
         }
         .tag(Tab.hardware)
 
+      RaRateView(mountModel: mountDeviceModel)
+        .tabItem {
+          Label("Track Rate", systemImage: "cursorarrow.click.badge.clock")
+        }
+        .tag(Tab.rate)
+      
       FocusView(focusModel: focusDeviceModel, pierModel: pierDeviceModel)
         .tabItem {
           Label("Focus", systemImage: "staroflife.circle")

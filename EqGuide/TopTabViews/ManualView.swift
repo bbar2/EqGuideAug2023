@@ -67,6 +67,30 @@ struct ManualView: View {
       StopControlView(mountModel: mountModel)
 
     } // end Main VStack
+    .onAppear{
+      softBump()
+      
+      // Only auto connect focus if no pointing knowledge yet
+      if mountModel.pointingKnowledge == .none {
+        if let focusModel = mountModel.focusModelLink {
+          // a little delay because, the last tab's onDissappear hasn't run yet.
+          DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            focusModel.disableBleTimeout()
+          }
+          focusModel.connectBle()
+        }
+      }
+    } // body: some View
+
+    .onDisappear{
+      // Let focus disconnect if pointingKnowledge established
+      if mountModel.pointingKnowledge != .none {
+        if let focusModel = mountModel.focusModelLink {
+          focusModel.enableBleTimeout()
+        }
+      }
+    }
+
     
   }
   

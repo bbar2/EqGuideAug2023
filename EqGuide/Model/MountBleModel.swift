@@ -81,6 +81,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   
   @Published var xlAligned = simd_float3(x: 0, y: 0, z: 0)
   @Published var theta = Float(0.0)  // Mount pitch toward Polaris, or rotation around Mount_Y
+  @Published var xlEstLat = Float(0.0)
   
   @Published var raIsTracking = true
   
@@ -228,7 +229,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
   func goHomeDec() -> Bool {
     let ax = focusModelLink?.xlAligned.x ?? 0.0
 
-    let slowThreshold = Float(0.3)
+    let slowThreshold = Float(0.2)
     let stopThreshold = Float(0.005)
     let north_fast = Int32(2)
     let north_slow = Int32(1)
@@ -325,7 +326,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     let targetY = (pierModelLink?.xlAligned.x ?? 0.0) * -1.0
     let yError = focusY - targetY
 
-    let slowThreshold = Float(0.3)
+    let slowThreshold = Float(0.2)
     let stopThreshold = Float(0.005)
     let northFast = Int32(2)
     let northSlow = Int32(1)
@@ -588,6 +589,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     
     // This is the only angle with any meaming on the mount.
     theta = -atan2(xlAligned.x, xlAligned.z)
+    xlEstLat = -theta // use theta to estimate latitude
     
     // Process specific MountDataBlock commands
     if mountDataBlock.mountState == MountState.PowerUp.rawValue {

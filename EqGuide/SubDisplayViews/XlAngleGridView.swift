@@ -30,30 +30,24 @@ struct XlAngleGridView: View {
         }.gridCellColumns(4)}
       GridRow {
         Text("y:Lat").font(viewOptions.labelFont)
-        // Map calculated y rotataions, theta, to latitude
-        let mountXlLatDeg = -toDeg(mountModel.theta)
-        cell(cellValue: mountXlLatDeg)
-        let pierXlLatDeg  = -toDeg(mountModel.pierModelLink?.theta ?? 8.88)
-        cell(cellValue: pierXlLatDeg)
-        if saddleXlConnected {
-          let saddleXlLatDeg = -toDeg(mountModel.focusModelLink?.theta ?? 8.88)
-          cell(cellValue: saddleXlLatDeg)
+        cell(cellValue: toDeg(mountModel.xlEstLat) )
+        if let pierModel = mountModel.pierModelLink {
+          cell(cellValue: toDeg(pierModel.xlEstLat))
         } else {
-          Text("-").foregroundColor(viewOptions.appDisabledColor)
+          Text("X").foregroundColor(viewOptions.noBleColor)
         }
+        Text("n/a")
       }
       GridRow {
         Text("x:Pier").font(viewOptions.labelFont)
         // Map calcualted x rotations, phi, to Pier angle.
         Text("n/a")
-        let pierXlPierDeg  = -toDeg(mountModel.pierModelLink?.phi ?? 8.88)
-        cell(cellValue: pierXlPierDeg)
-        if saddleXlConnected {
-          let saddleXlPierDeg = -toDeg(mountModel.focusModelLink?.phi ?? 8.88)
-          cell(cellValue: saddleXlPierDeg)
+        if let pierModel = mountModel.pierModelLink {
+          cell(cellValue: toDeg(pierModel.xlEstPier))
         } else {
-          Text("-").foregroundColor(viewOptions.appDisabledColor)
+          Text("X").foregroundColor(viewOptions.noBleColor)
         }
+        Text("n/a")
       }
       GridRow {
         Text("z:Disk").font(viewOptions.labelFont)
@@ -61,8 +55,11 @@ struct XlAngleGridView: View {
         Text("n/a")
         Text("n/a")
         if saddleXlConnected {
-          let saddleXlDiskDeg = 90.0-toDeg(mountModel.focusModelLink?.psi ?? 8.88)
-          cell(cellValue: saddleXlDiskDeg)
+          if let focusModel = mountModel.focusModelLink {
+            cell(cellValue: toDeg(focusModel.xlEstDisk))
+          } else {
+            Text("X").foregroundColor(viewOptions.noBleColor)
+          }
         } else {
           Text("-").foregroundColor(viewOptions.appDisabledColor)
         }
