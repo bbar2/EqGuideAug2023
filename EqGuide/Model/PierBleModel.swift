@@ -40,6 +40,8 @@ class PierBleModel : MyPeripheralDelegate,
   @Published var xlEstPier: Float = 0.0  // estimate pier angle from phi
 
   private var alignPierAccelTransform = matrix_identity_float3x3
+  
+  public var framesProcessed = 0
 
   init() {
     pierPeripheral = MyPeripheral(deviceName: ARM_ACCEL_DEVICE_NAMED,
@@ -118,6 +120,8 @@ class PierBleModel : MyPeripheralDelegate,
     }
     phi = asin(asinTerm)
     xlEstPier = -phi // phi maps to pier angle
+    
+    framesProcessed += 1
   }
   
   // Build calibration transform to align pier accelerometer so pier X axis

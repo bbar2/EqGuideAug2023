@@ -11,15 +11,7 @@ import simd
 struct RawDataView: View {
   var gdb:MountDataBlock
  
-  struct AccelView: View {
-    var label: String
-    var value: Float
-    var format: String = "%.2f"
-    
-    var body: some View {
-      Text(String(format: label + format, value))
-    }
-  }
+  @EnvironmentObject var viewOptions: ViewOptions
   
   var body: some View {
     VStack(alignment: .leading){
@@ -42,8 +34,8 @@ struct RawDataView: View {
       
       Divider()
     }
+    .font(viewOptions.bigValueFont)
     .padding([.leading, .trailing], 5)
-
   }
 }
 

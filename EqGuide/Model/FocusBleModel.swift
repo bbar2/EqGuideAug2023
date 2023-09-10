@@ -100,8 +100,9 @@ class FocusBleModel : MyPeripheralDelegate,
   // Disconnect BLE if no UI inputs for this long, so other devices can control focus
   private let TIMER_DISCONNECT_SEC = 10
   private var connectionTimer = Timer()
-  private var requestDisconnect = false;
+  private var requestDisconnect = false
   
+  public var framesProcessed = 0
   
   // This runs everytime an FocusAccel data struct arrives via BLE.  Nominally at 5Hz.
   // Called by setNotify Closure
@@ -148,7 +149,9 @@ class FocusBleModel : MyPeripheralDelegate,
       acosTerm = 1.0 * sign(acosTerm)
     }
     psi = acos(acosTerm)
-    xlEstDisk = Float.pi/2 - psi
+    xlEstDisk = Float.pi/2 - psi // aka 90 - psi
+    
+    framesProcessed += 1
   }
   
   init() {

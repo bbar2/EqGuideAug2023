@@ -21,30 +21,29 @@ struct LocationOptionSheet: View {
     VStack {
       
       VStack {
-        Text("Local Coordinate").font(viewOptions.appHeaderFont)
-        Text("Manual Entry").font(viewOptions.appHeaderFont)
+        Text("Local Coordinates").font(viewOptions.appHeaderFont)
         HStack {
           Spacer()
           DegreeFormatControl()
         }
+        Divider()
       }
       
       VStack {
-        
-        Divider()
-        Text("Phone GPS Local Coordinates\n").font(.title2)//.bold()
+        Text("Phone GPS Local Coordinates").font(.title2)//.bold()
         if let coord = locData.reportedCoord {
-          HStack {
+          VStack {
             Text("Lat:" + Dms(coord.latitude).string(viewOptions.showDmsHms))
-            Spacer()
-            Text("Lng:" + Dms(coord.longitude).string(viewOptions.showDmsHms))
-          }.font(viewOptions.bigValueFont)
+           // Spacer()
+            Text("Lon:" + Dms(coord.longitude).string(viewOptions.showDmsHms))
+          }.font(viewOptions.inputFont)
         } else {
           Text("NO Phone GPS Location Data")
         }
         Divider()
-
-        
+      }
+      
+      VStack {
         Text("Alternate Local Coordinates").font(.title2)//.bold()
         VStack {
           if viewOptions.showDmsHms {

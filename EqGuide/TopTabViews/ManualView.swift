@@ -79,7 +79,7 @@ struct ManualView: View {
           }
           focusModel.connectBle()
         }
-      }
+      } // pointingKnowledge == .none
     } // body: some View
 
     .onDisappear{

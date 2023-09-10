@@ -15,7 +15,7 @@ struct DmInputView: View {
   @State var degString = String(33)
   @State var minString = String(11)
   @State var isPos = true
-
+  
   enum InputField {
     case degree
     case minute
@@ -27,7 +27,6 @@ struct DmInputView: View {
     HStack {
       if prefix != "" {
         Text(prefix)
-          .font(viewOptions.bigValueFont)
           .foregroundColor(viewOptions.appRedColor)
       }
       Spacer()
@@ -37,79 +36,77 @@ struct DmInputView: View {
           reBuildFloatInput()
         }
       
-      HStack {
-        TextField("ddd", text: $degString)
-          .focused($kbFocused, equals: .degree)
-          .keyboardType(.numberPad)
-          .frame(width:60)
-          .border(.clear)
-          .onChange(of: degString) { _ in
-            reBuildFloatInput()
-          }
-        
-        Text("º")
-        
-        Spacer()
-        TextField("m.mm", text: $minString)
-          .focused($kbFocused, equals: .minute)
-          .keyboardType(.decimalPad)
-          .frame(width:100)
-          .border(.clear)
-          .onChange(of: minString) { _ in
-            reBuildFloatInput()
-          }
-        
-        Text("'")
-        
-        // Control to raise or dismiss keyboard.
-        // Cycles with right arrow's, until dismiss after editing seconds
-        if let focus = kbFocused {
-          switch focus {
-            case .degree:
+      TextField("ddd", text: $degString)
+        .focused($kbFocused, equals: .degree)
+        .keyboardType(.numberPad)
+        .frame(width:40)
+        .border(.clear)
+        .onChange(of: degString) { _ in
+          reBuildFloatInput()
+        }
+      
+      Text("º")
+      
+      TextField("m.mm", text: $minString)
+        .focused($kbFocused, equals: .minute)
+        .keyboardType(.decimalPad)
+        .frame(width:100)
+        .border(.clear)
+        .onChange(of: minString) { _ in
+          reBuildFloatInput()
+        }
+      
+      Text("'")
+      
+      // Control to raise or dismiss keyboard.
+      // Cycles with right arrow's, until dismiss after editing seconds
+      if let focus = kbFocused {
+        switch focus {
+          case .degree:
             Button() {
               kbFocused = .minute
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.right.square")
+                .font(viewOptions.arrowButtonFont)
             }
-            case .minute:
+          case .minute:
             Button() {
               kbFocused = nil
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.down.square")
+                .font(viewOptions.arrowButtonFont)
             }
-          }
-          
-        } else { // if nothing focused, button to bring up keyboard
-          Button() {
-            kbFocused = .degree;
-          } label: {
-            Label("", systemImage: "arrow.up.square")
-          }
         }
-
+        
+      } else { // if nothing focused, button to bring up keyboard
+        Button() {
+          kbFocused = .degree;
+        } label: {
+          Label("", systemImage: "arrow.up.square")
+            .font(viewOptions.arrowButtonFont)
+        }
       }
-      .onAppear() {
+    }
+    .onAppear() {
+      initEditableStrings()
+    }
+    // This onChange() handles cases where caller makes a change after onAppear
+    .onChange(of: decimalDegrees) { _ in
+      if kbFocused == nil {
         initEditableStrings()
       }
-      // This onChange() handles cases where caller makes a change after onAppear
-      .onChange(of: decimalDegrees) { _ in
-        if kbFocused == nil {
-          initEditableStrings()
-        }
-      }
-      // Start Editing with all text selected
-      .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
-        if let textField = obj.object as? UITextField {
-          textField.selectedTextRange =
-          textField.textRange(from: textField.beginningOfDocument,
-                              to: textField.endOfDocument)
-        }
-      }
-
     }
-    .font(viewOptions.bigValueFont)
+    // Start Editing with all text selected
+    .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+      if let textField = obj.object as? UITextField {
+        textField.selectedTextRange =
+        textField.textRange(from: textField.beginningOfDocument,
+                            to: textField.endOfDocument)
+      }
+    }
+    .font(viewOptions.inputFont)
     .multilineTextAlignment(.trailing)
     .foregroundColor(viewOptions.appActionColor)
   }

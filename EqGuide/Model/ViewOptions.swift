@@ -36,6 +36,8 @@ final class ViewOptions: ObservableObject {
   let bigValueFont = Font.system(.title2).monospacedDigit()
   let smallValueFont = Font.system(.body).monospacedDigit()
   let noteFont =  Font.system(.body)
+  let arrowButtonFont = Font.system(size: 40)
+  let inputFont = Font.system(size:30).monospacedDigit()
   
   let leadingPad = CGFloat(10)
   let trailingPad = CGFloat(10)

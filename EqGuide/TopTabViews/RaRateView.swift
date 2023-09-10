@@ -23,7 +23,7 @@ struct RaRateView: View {
   var body: some View {
     VStack {
       VStack {
-        Text("Adjust Track Rate").font(viewOptions.appHeaderFont)
+        Text("Track Rate Offset").font(viewOptions.appHeaderFont)
         
         Text(" ").font(viewOptions.smallHeaderfont)
         StatusBarView(mountModel: mountModel)
@@ -45,27 +45,25 @@ struct RaRateView: View {
         
         switch trackMode {
           case .star:
-            Text("Star: Start with 0 acrSec/min").font(viewOptions.labelFont)
+            Text("Star: 0 acrSec/min").font(viewOptions.labelFont)
           case .lunar:
-            Text("Lunar: Start with -32 arcSec/min").font(viewOptions.labelFont)
+            Text("Lunar: -32 arcSec/min").font(viewOptions.labelFont)
         }
         
         let currentArcSecPerMin = 3600.0 * 60.0 * mountModel.mountDataBlock.raRateOffsetDegPerSec
-        Text(String(format: "Current Rate Offset: %.0f arcSec/min", currentArcSecPerMin))
+        Text(String(format: "Current Offset: %.0f arcSec/min", currentArcSecPerMin))
           .font(viewOptions.labelFont)
         Divider()
       }
-      
- //     Spacer()
-      
+            
       VStack {
-        Text("New Rate Offset").font(viewOptions.appHeaderFont)
-        Text("arcSec / min").font(viewOptions.labelFont)
+        Text("Enter New Offset").font(viewOptions.sectionHeaderFont)
+        Text("arcSec/min  (+faster to west)").font(viewOptions.labelFont)
         DoubleInputView(doubleValue: $newOffsetArcSecPerMin,
-                        prefix: "(+west)",
+                        prefix: "New Offset",
                         numDigits: 0)
             
-        BigButton(label: "Update\nRate Offset", minWidth: 200, minHeight: 90) {
+        BigButton(label: "Update Offset") {
           let newDegPerSec = newOffsetArcSecPerMin / (3600.0 * 60.0)
           mountModel.guideCommandSetRaRateOffsetDps(newDps: newDegPerSec)
         }

@@ -34,11 +34,12 @@ struct HmsInputView: View {
     case second
   }
   @FocusState private var kbFocused: InputField?
-
+  
   var body: some View {
     HStack {
       if prefix != "" {
         Text(prefix)
+          .foregroundColor(viewOptions.appRedColor)
       }
       Spacer()
       
@@ -47,98 +48,98 @@ struct HmsInputView: View {
           reBuildFloatInput()
         }
       
-      HStack {
-        TextField("dd", text: $hourString)
-          .focused($kbFocused, equals: .hour)
-          .frame(width:60)
-          .border(.clear)
-          .onChange(of: hourString) { _ in
-            reBuildFloatInput()
-          }
-        Text("h").font(viewOptions.labelFont)
-
-        Spacer()
-        TextField("dd", text: $minString)
-          .focused($kbFocused, equals: .minute)
-          .frame(width:50)
-          .border(.clear)
-          .onChange(of: minString) { _ in
-            reBuildFloatInput()
-          }
-        Text("m").font(viewOptions.labelFont)
-
-        Spacer()
-        TextField("dd", text: $secString)
-          .focused($kbFocused, equals: .second)
-          .frame(width:50)
-          .border(.clear)
-          .onChange(of: secString) { _ in
-            reBuildFloatInput()
-          }
-        Text("s").font(viewOptions.labelFont)
-
-        // Control to raise or dismiss keyboard.
-        // Cycles with right arrow's, until dismiss after editing seconds
-        if let focus = kbFocused {
-          switch focus {
-            case .hour:
+      TextField("dd", text: $hourString)
+        .focused($kbFocused, equals: .hour)
+        .frame(width:40)
+        .border(.clear)
+        .onChange(of: hourString) { _ in
+          reBuildFloatInput()
+        }
+      Text("h")
+      
+      TextField("dd", text: $minString)
+        .focused($kbFocused, equals: .minute)
+        .frame(width:40)
+        .border(.clear)
+        .onChange(of: minString) { _ in
+          reBuildFloatInput()
+        }
+      Text("m")
+      
+      TextField("dd", text: $secString)
+        .focused($kbFocused, equals: .second)
+        .frame(width:40)
+        .border(.clear)
+        .onChange(of: secString) { _ in
+          reBuildFloatInput()
+        }
+      Text("s")
+      
+      // Control to raise or dismiss keyboard.
+      // Cycles with right arrow's, until dismiss after editing seconds
+      if let focus = kbFocused {
+        switch focus {
+          case .hour:
             Button() {
               kbFocused = .minute
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.right.square")
+                .font(viewOptions.arrowButtonFont)
             }
-            case .minute:
+          case .minute:
             Button() {
               kbFocused = .second
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.right.square")
+                .font(viewOptions.arrowButtonFont)
             }
-            case .second:
+          case .second:
             Button() {
               kbFocused = nil
               initEditableStrings()
             } label: {
               Label("", systemImage: "arrow.down.square")
+                .font(viewOptions.arrowButtonFont)
             }
-
-          }
-          
-        } else { // if nothing focused, button to bring up keyboard
-          Button() {
-            kbFocused = .hour;
-          } label: {
-            Label("", systemImage: "arrow.up.square")
-          }
+            
         }
         
-      }
-      .keyboardType(.numberPad)
-      .onAppear() {
-        initEditableStrings()
-      }
-      // This onChange() handles cases where caller makes a change after onAppear
-      .onChange(of: decimalDegrees) {_ in
-        if kbFocused == nil {
-          initEditableStrings()
+      } else { // if nothing focused, button to bring up keyboard
+        Button() {
+          kbFocused = .hour;
+        } label: {
+          Label("", systemImage: "arrow.up.square")
+            .font(viewOptions.arrowButtonFont)
         }
       }
-      // Start Editing with all text selected
-      .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
-        if let textField = obj.object as? UITextField {
-          textField.selectedTextRange =
-          textField.textRange(from: textField.beginningOfDocument,
-                              to: textField.endOfDocument)
-        }
-      }
-
+      
+      
     }
-    .font(.title)
+    .font(viewOptions.inputFont)
     .multilineTextAlignment(.trailing)
     .foregroundColor(viewOptions.appActionColor)
+    .keyboardType(.numberPad)
+    .onAppear() {
+      initEditableStrings()
+    }
+    // This onChange() handles cases where caller makes a change after onAppear
+    .onChange(of: decimalDegrees) {_ in
+      if kbFocused == nil {
+        initEditableStrings()
+      }
+    }
+    // Start Editing with all text selected
+    .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+      if let textField = obj.object as? UITextField {
+        textField.selectedTextRange =
+        textField.textRange(from: textField.beginningOfDocument,
+                            to: textField.endOfDocument)
+      }
+    }
   }
-
+  
   // called by onAppear, and onChange when decimalDegrees changed by caller
   func initEditableStrings() {
     let hms = Hms(decimalDegrees)

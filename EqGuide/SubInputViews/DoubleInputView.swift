@@ -27,20 +27,20 @@ struct DoubleInputView: View {
   var body: some View {
     HStack {
       if let label = prefix {
-        Text(label)
+        Text(label).foregroundColor(viewOptions.appRedColor)
       }
+      Spacer()
       
       SignButton(isPos: $isPos)
         .onChange(of: isPos) { _ in
           reBuildDoubleValue()
         }
       
-      TextField(numDigits != 0 ? "xxx.yy" : "xx", text: $doubleString)
+      TextField(numDigits != 0 ? "xxx.yyyy" : "xx", text: $doubleString)
         .focused($kbFocused)
-        .frame(width:125)
+        .frame(width:60+CGFloat(numDigits*25))
         .multilineTextAlignment(.leading)
         .border(.clear)
-        .foregroundColor(viewOptions.appActionColor)
         .keyboardType(numDigits != 0 ? .decimalPad : .numberPad)
         .onChange(of: doubleString) { _ in
           reBuildDoubleValue()
@@ -66,12 +66,14 @@ struct DoubleInputView: View {
           initDoubleString()
         } label: {
           Label("", systemImage: "arrow.down.square")
+            .font(viewOptions.arrowButtonFont)
         }
       } else {
         Button() {
           kbFocused = true;
         } label: {
           Label("", systemImage: "arrow.up.square")
+            .font(viewOptions.arrowButtonFont)
         }
       }
       
@@ -79,8 +81,8 @@ struct DoubleInputView: View {
     .onAppear() {
       initDoubleString()
     }
-    .font(viewOptions.bigValueFont)
-    .multilineTextAlignment(.center)
+    .font(viewOptions.inputFont)
+    .foregroundColor(viewOptions.appActionColor)
   }
   
   // Create Double string to be edited, from input value

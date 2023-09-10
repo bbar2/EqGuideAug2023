@@ -60,7 +60,7 @@ struct XlGridView: View {
         }
       }
       
-    }.font(viewOptions.smallValueFont)
+    }.font(viewOptions.bigValueFont)
   }
 }
 

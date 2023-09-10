@@ -223,7 +223,6 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
       raOnXlTarget = true;
       return true;
     }
-
   }
   
   func goHomeDec() -> Bool {
@@ -411,11 +410,10 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     lstDeg = lstDegFrom(utDate: Date.now,
                         localLongitudeDeg: longitude)
   }
-  
+    
   // Update all time dependent model calcs at once
   // Update mount angles, and Current RA/DEC from new Counts.
-  // Don't do in calculated vars, because there is too much repetition building
-  // terms, and updating Views.
+  // Avoid calculated vars, to be explicit about order of udpating terms
   // Call this everytime a new MountDataBlock arrives from Mount
   func updateMountAngles() {
     
@@ -446,7 +444,7 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     currentPosition.dec = currentPosition.dec.mapAnglePm180()
   } // end updateMountAngles
   
-  // Raw Mount Angles from coord of observed target and LST
+  // Calcuate Mount Angles from coord of observed target and LST
   // All angles in degrees
   func raDecToMountAngles(_ coord: RaDec, lst: Double) ->
   (pierDeg: Double, diskDeg:Double, decModeUsed:PierMode) {
@@ -474,6 +472,22 @@ class MountBleModel : MyPeripheralDelegate, ObservableObject {
     diskDeg = diskDeg.mapAnglePm180()
     
     return (pierDeg, diskDeg, decModeUsed)
+  }
+  
+  // Estimate Mount angles from acceleromter (XL) data.
+  // All angles in degrees.
+  // Good for first estimate only.  Better estimate via HOME or EAST
+  // Best estimate from MARK using raDecToMountAngles()
+  func xlToMountAngles() -> (pierDeg: Double, diskDeg:Double, decModeUsed:PierMode) {
+    // if .none
+      // if pier and saddle ble ok
+        // if pier and saddle framesProcessed > 0
+        // take Pier and Disk angles from XL data
+        // set pointingknowledge = .estimated
+        // updateMountAngles()
+      // end if ble OK
+    // end if .none
+    return (0.0, 0.0, .unknown)
   }
   
   // TODO: lstToRa approach worked.  Refactored to use HA.  Keep until tested.

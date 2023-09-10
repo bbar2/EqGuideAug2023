@@ -64,7 +64,7 @@ struct XlAngleGridView: View {
           Text("-").foregroundColor(viewOptions.appDisabledColor)
         }
       }
-    }.font(viewOptions.smallValueFont)
+    }.font(viewOptions.bigValueFont)
   }
 }
 
